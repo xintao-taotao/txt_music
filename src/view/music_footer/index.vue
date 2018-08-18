@@ -11,6 +11,7 @@
 
 <script>
 import util from '../../mutu/mutu.js'
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -19,11 +20,10 @@ export default {
   },
   created(){
     this.music_width=`${document.body.clientWidth}px`;
-    util.ajax
-    .get("/api/flink")
+    axios('http://127.0.0.1:9096/api/flink/6')
     .then(rep => {
       console.log(rep);
-    });
+    })
   }
 };
 </script>
