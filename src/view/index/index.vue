@@ -1,25 +1,34 @@
 <template>
   <div class="page">
-    <div class="music_footer" :style="{width:music_width}">
-      <div class="music_icon_left">
-        <p></p>
-      </div>
-      <div class="music_content">
-        {{$t('projectName')}}
-      </div>
-    </div>
+    <musicfooter></musicfooter>
+    <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
   </div>
 </template>
 
 <script>
+import musicfooter from '../music_footer/index'
+import util from '../../mutu/mutu.js'
 export default {
+  components: {
+    musicfooter
+  },
   data () {
     return {
-      music_width:0
+      
     };
   },
   created(){
-    this.music_width=`${document.body.clientWidth}px`;
+    
+  },
+  methods:{
+    changeLang(lang) {
+      this.$store.commit("switchLang", lang);
+      util.title(
+        this.$t("projectName") +
+          "-" +
+          this.$t(this.breadItems[this.breadItems.length - 1].name)
+      );
+    }
   }
 }
 

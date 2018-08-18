@@ -17,6 +17,7 @@ const ajaxUrl = env === 'development' ?
   env === 'production' ?
     'http://test.deepbrief.net' :
     'https://debug.url.com';
+    
 util.baseURL = ajaxUrl;
 util.ajax = axios.create({
   baseURL: ajaxUrl,
@@ -35,20 +36,6 @@ util.ajax.interceptors.request.use((config) => {
   util.error(lang['networkError']);
   return Promise.reject(error);
 });
-util.ajax.interceptors.response.use((res) => {
-  if (res.data.code === '0002') {
-    util.removeToken();
-    window.location.reload();
-  } else if (res.data.code != '0000') {
-    util.error(res.data.message ? res.data.message : lang['dataError']);
-  }
-  return res.data;
-}, (error) => {
-  if (util.vue.loading) {
-    util.vue.loading = false;
-  }
-  return Promise.reject(error);
-});
 
 util.success = function (arg, callback) {
   alertMsg(arg, "success", callback);
@@ -65,3 +52,4 @@ util.warning = function (arg, callback) {
 util.info = function (arg, callback) {
   alertMsg(arg, 'info', callback);
 }
+export default util;
