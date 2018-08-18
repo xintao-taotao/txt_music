@@ -20,9 +20,9 @@ export default {
   },
   created(){
     this.music_width=`${document.body.clientWidth}px`;
-    axios('http://127.0.0.1:9096/api/flink/6')
+    util.ajax.get('/static/data.json')
     .then(rep => {
-      console.log(rep);
+      console.log(rep.data);
     })
   }
 };

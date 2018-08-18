@@ -16,7 +16,7 @@ util.title = function (title) {
 
 
 const ajaxUrl = env === 'development' ?
-  'https://api.douban.com/' :
+  'http://localhost:8081' :
   env === 'production' ?
     'http://test.deepbrief.net' :
     'https://debug.url.com';
