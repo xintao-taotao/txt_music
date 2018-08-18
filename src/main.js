@@ -41,22 +41,35 @@ router.afterEach(() => {
   window.scrollTo(0, 0);
 });
 /* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router: router,
-  store: store,
-  render: h => h(App)
-});
+
 
 const store = new Vuex.Store({
+  state: {
+    lang: '',
+    menuList: ''
+  },
+  getters: {
+
+  },
   mutations: {
     switchLang(state, lang) {
       state.lang = lang;
       Vue.config.lang = lang;
       localStorage.setItem("lang", lang);
+      console.log('chufa');
     },
     setPermissions(state, permissions) {
 
     }
+  },
+  actions: {
+
   }
+});
+
+new Vue({
+  el: '#app',
+  router: router,
+  store: store,
+  render: h => h(App)
 });

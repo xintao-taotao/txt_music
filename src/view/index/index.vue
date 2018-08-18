@@ -14,7 +14,11 @@ export default {
   },
   data () {
     return {
-      
+      breadItems: [
+        {
+          name: "home"
+        }
+      ],
     };
   },
   created(){
@@ -22,7 +26,9 @@ export default {
   },
   methods:{
     changeLang(lang) {
+      console.log(this);
       this.$store.commit("switchLang", lang);
+      console.log(util.title);
       util.title(
         this.$t("projectName") +
           "-" +
