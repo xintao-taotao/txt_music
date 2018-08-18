@@ -16,6 +16,7 @@
   margin: auto;
   background-color: red;
   height: 100%;
+  float: left;
 }
 .music_icon_left{
   float: left;
@@ -25,8 +26,8 @@
 }
 @keyframes anima-pointer
 {
-    0%   {opacity:0;left:20px}
-    100%  {opacity:1;left:0px;}
+  0%{opacity:0;left:20px}
+  100%{opacity:1;left:0px;}
 }
 .music_icon_left p{
   animation: anima-pointer 2s infinite;
@@ -37,4 +38,49 @@
   width: 60px;
   background: url("../../assets/images/index_01.png") no-repeat;
   background-position: center center;
+}
+.music_list{
+  position: fixed;
+  right: 0;
+  top: 79px;
+  transition: all .6s;
+  display:none;
+  height: 700px;
+  padding: 20px;
+  width: 400px;
+}
+
+@keyframes anima
+{
+  0%{opacity:0;top:99px}
+  100%{opacity:1;top:79px;}
+}
+.music_body::-webkit-scrollbar {
+  width: 10px;
+  height: 1px;
+}
+.music_body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  border-radius: 10px;
+   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #535353;
+}
+.music_body::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
+}
+.music_body{
+  height:660px;
+  overflow-y:scroll;
+  width: 360px;
+}
+.icon_music_list{
+  width: 100px;
+  background-color: blue;
+  height: 100%;
+  float: left;
+}
+.icon_music_list:hover .music_list,.music_list:hover{
+  animation: anima 2s;
+  display:inline-block;
 }
