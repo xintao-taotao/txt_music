@@ -1,6 +1,7 @@
 import axios from 'axios';
 import swal from "sweetalert";
 import Locales from "../language/locale"
+import env from '../config/env'
 
 const lang = Locales[window.localStorage.lang || 'zh-CN'];
 let util = {
@@ -10,7 +11,7 @@ let util = {
 util.title = function (title) {
   window.document.title = title;
 };
-console.log(env);
+
 const ajaxUrl = env === 'development' ?
   'http://127.0.0.1:9096' :
   env === 'production' ?

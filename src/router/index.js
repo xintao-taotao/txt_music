@@ -1,15 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import index from '@/view/index/index'
-
-Vue.use(Router)
-
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'index',
-      component: index
-    }
-  ]
-})
+const routers = [{
+  path: '/',
+  name: 'home',
+  meta: {
+      titleName: 'home'
+  },
+  component: (resolve) => require(['../view/index/index.vue'], resolve)
+}
+];
+export default routers;

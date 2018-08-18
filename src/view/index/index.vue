@@ -5,6 +5,7 @@
         <p></p>
       </div>
       <div class="music_content">
+        {{$t('projectName')}}
       </div>
     </div>
   </div>
