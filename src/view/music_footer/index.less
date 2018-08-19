@@ -14,7 +14,8 @@
 .music_content{
   width: 1200px;
   margin: auto;
-  background-color: red;
+  background-color: #d3d3d3;
+  padding: 10px;
   height: 100%;
   float: left;
 }
@@ -73,6 +74,8 @@
   height:660px;
   overflow-y:scroll;
   width: 360px;
+  border: 1px solid lightgray;
+  border-radius: 6px;
 }
 .icon_music_list{
   width: 100px;
@@ -81,6 +84,31 @@
   float: left;
 }
 .icon_music_list:hover .music_list,.music_list:hover{
-  animation: anima 2s;
+  animation: anima 1.5s;
   display:inline-block;
+}
+.musci_title_img{
+  float: left;
+
+}
+.music_body ul li{
+  height: 28px;
+  line-height: 28px;
+  background-color: azure;
+  list-style: none;
+}
+.li_left_margin{
+  padding-left: 20px;
+  float: left;
+  height: 28px;
+  width: 188px;
+  text-align: left;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.on_zhengzaibf{
+  background-color: lightgray;
 }
