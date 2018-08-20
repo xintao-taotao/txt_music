@@ -1,5 +1,5 @@
 .music_footer{
-  height: 90px;
+  height: 120px;
   background-color: #eee;
   position: fixed;
   bottom: 74px;
@@ -22,8 +22,8 @@
 .music_icon_left{
   float: left;
   width: 60px;
-  height: 90px;
-  line-height: 90px;
+  height: 120px;
+  line-height: 120px;
 }
 @keyframes anima-pointer
 {
@@ -35,7 +35,7 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  height: 90px;
+  height: 120px;
   width: 60px;
   background: url("../../assets/images/index_01.png") no-repeat;
   background-position: center center;
@@ -43,7 +43,7 @@
 .music_list{
   position: fixed;
   right: 0;
-  top: 79px;
+  top: 64px;
   transition: all .6s;
   display:none;
   height: 700px;
@@ -51,11 +51,11 @@
   width: 400px;
 }
 
-@keyframes anima
-{
-  0%{opacity:0;top:99px}
-  100%{opacity:1;top:79px;}
-}
+// @keyframes anima
+// {
+//   0%{opacity:0;top:84px}
+//   100%{opacity:1;top:64px;}
+// }
 .music_body::-webkit-scrollbar {
   width: 10px;
   height: 1px;
@@ -111,4 +111,30 @@
 }
 .on_zhengzaibf{
   background-color: lightgray;
+}
+.music_jindu{
+  width: 1000px;
+  margin: auto;
+  position: relative;
+}
+.music_show{
+  background-color: #eee;
+  border-bottom: 1px solid #d3d3d3;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+.music_show p{
+  float: left;
+  width: 80%;
+  height: 30px;
+  line-height: 30px;
+}
+.music_show p:nth-child(2){
+  width: 20%;
+}
+.music_search{
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
 }
