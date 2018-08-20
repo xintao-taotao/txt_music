@@ -11,7 +11,7 @@
           <img :src="img_title" :alt="img_alt" width="70px">
         </div>
         <div class="music_jindu">
-          <div class="music_jindu_title">
+          <!-- <div class="music_jindu_title">
             <Icon type="md-skip-backward" @click="on_click_music(2)" title="上一首" style="cursor:pointer;" size="24"/>
             <Icon type="ios-square" v-if="music_state" size="24" style="cursor:pointer;" @click="on_bofang(1)" title="暂停"/>
             <Icon type="md-play" v-else  size="24" style="cursor:pointer;" @click="on_bofang(2)" title="播放"/>
@@ -19,7 +19,15 @@
           </div>
           <div class="music_jindu_footer">
             总时长：{{this.lang_time}}      当前时间：{{this.dangqian_time}}
-          </div>
+          </div> -->
+          <aplayer autoplay
+  :music="{
+    title: 'secret base~君がくれたもの~',
+    artist: 'Silent Siren',
+    src: 'https://moeplayer.b0.upaiyun.com/aplayer/secretbase.mp3',
+    pic: 'https://moeplayer.b0.upaiyun.com/aplayer/secretbase.jpg'
+  }"
+/>
         </div>
         <div class="music_gongneng">
 
@@ -70,7 +78,11 @@
 <script>
 import util from '../../mutu/mutu.js'
 import axios from 'axios'
+import Aplayer from 'vue-aplayer'
 export default {
+  components: {
+    Aplayer
+  },
   data() {
     return {
       music_width:0,
