@@ -3,6 +3,7 @@
     <div class="music_icon_left">
       <p></p>
     </div>
+    <Button type="primary" @click="clearlocal(1)">退出！</Button>
     <div style="margin:auto;width:1300px;height:100%;" v-show="state">
       <div class="music_content">
         <audio id="audio" controls="controls" :src="music_url" autoplay v-show="false"></audio>
@@ -40,8 +41,10 @@
         </div>
       </div>
     </div>
-    <div class="we">
+    <div class="we" v-show="!state">
       <Button type="primary" @click="deLogin">登录</Button>
+      <Button type="primary" @click="zhuangtai">刷新登录状态</Button>
+      
       监测您未登录，请登录您的网易云账号，以便获取您的歌单，播放歌曲
       <Form :model="formLeft" :label-width="80" :rules="ruleInline">
         <FormItem label="账号：" prop="username">
@@ -51,7 +54,6 @@
           <Input v-model="formLeft.userpassword" type="password" placeholder="请填写密码" clearable style="width: 300px" />
         </FormItem>
       </Form>
-      
     </div>
   </div>
 </template>
@@ -89,20 +91,26 @@ export default {
   },
   created(){
     this.music_width=`${document.body.clientWidth}px`;
-    axios.get('http://localhost:3000/lyric?id=347230')
-    .then(rep => {
-      console.log(rep.data);
-      // this.music_list=rep.data.music.all;
-      // this.jishiqi= Math.floor(Math.random()*(1 - 356) + 356);
-      // this.music_url=this.music_list[this.jishiqi].url;
-      // this.img_alt=this.music_list[this.jishiqi].type;
-      // this.img_title=this.music_list[this.jishiqi].img_url;
-    })
-    
-    axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
-    .then(rep=>{
-      console.log(rep.data);
-    })
+    // axios.get('http://localhost:3000/lyric?id=347230')
+    // .then(rep => {
+    //   console.log(rep.data);
+    //   // this.music_list=rep.data.music.all;
+    //   // this.jishiqi= Math.floor(Math.random()*(1 - 356) + 356);
+    //   // this.music_url=this.music_list[this.jishiqi].url;
+    //   // this.img_alt=this.music_list[this.jishiqi].type;
+    //   // this.img_title=this.music_list[this.jishiqi].img_url;
+    // })
+    if(this.userid!=0||localStorage.getItem('userid')!=null){
+      axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
+      .then(rep=>{
+        console.log(rep.data);
+        this.state=true;
+      })
+    }
+    let that=this;
+    setTimeout(function(){
+      that.clearlocal();
+    },10800000);
   },
   methods:{
     on_click_music(type){
@@ -174,12 +182,37 @@ export default {
         console.log(data);
         this.state=true;
         this.userid=data.account.id;
-        console.log(this.userid);
+        localStorage.setItem('userid',this.userid);
         axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
         .then(rep=>{
           console.log(rep.data);
+          this.zhuangtai();
         })
       })
+    },
+    zhuangtai(){
+      console.log(localStorage.getItem('userid'));
+      if(localStorage.getItem('userid')!=""){
+        axios.get('http://localhost:3000/login/refresh')
+        .then(rep=>{
+          console.log(rep.data);
+        })
+      }
+    },
+    //清除登录状态
+    clearlocal(item){
+      if(item==1){
+        localStorage.removeItem('userid');
+        this.state=false;
+        util.success("退出成功！请重新登录！");
+        return
+      }else if(document.hidden==true&&(document.visibilityState=='hidden'||document.visibilityState=='prerender')){
+        console.log("asdadasdasdasds");
+        util.error("您的登录状态已过期，请重新登录！");
+        localStorage.removeItem('userid');
+        this.state=false;
+        return;
+      }
     }
   },
   mounted(){  
