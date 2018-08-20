@@ -20,14 +20,7 @@
           <div class="music_jindu_footer">
             总时长：{{this.lang_time}}      当前时间：{{this.dangqian_time}}
           </div> -->
-          <aplayer autoplay
-  :music="{
-    title: 'secret base~君がくれたもの~',
-    artist: 'Silent Siren',
-    src: 'https://moeplayer.b0.upaiyun.com/aplayer/secretbase.mp3',
-    pic: 'https://moeplayer.b0.upaiyun.com/aplayer/secretbase.jpg'
-  }"
-/>
+          <aplayer autoplay :music="music_object" :showlrc="true"/>
         </div>
         <div class="music_gongneng">
 
@@ -94,6 +87,13 @@ export default {
       title_show:true,
       music_search:'',
       music_list:[],
+      music_object:{
+        title:'',
+        artist:'',
+        src:'',
+        pic:'',
+        lrc:''
+      },
       music_url:'',
       jishiqi:1,
       img_title:'',
@@ -134,6 +134,11 @@ export default {
     setTimeout(function(){
       that.clearlocal();
     },10800000);
+    this.music_object.title='secret base~君がくれたもの~'
+    this.music_object.artist='Silent Siren'
+    this.music_object.src='https://moeplayer.b0.upaiyun.com/aplayer/secretbase.mp3'
+    this.music_object.pic='https://moeplayer.b0.upaiyun.com/aplayer/secretbase.jpg'
+    this.music_object.lrc='http://localhost:3000/lyric?id=33894312'
   },
   methods:{
     on_click_music(type){
