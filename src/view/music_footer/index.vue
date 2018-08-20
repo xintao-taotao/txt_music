@@ -29,6 +29,16 @@
       <div class="icon_music_list">
         <div class="music_list">
           <div class="music_body">
+            <div class="music_title">
+              <div class="music_show" v-if="title_show">
+                <p>歌曲列表</p>
+                <p @click="search"><img src="../../assets/images/index_02.png"></p>
+              </div>
+              <div class="music_search" v-else>
+                <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 80%"/>
+                <Button type="primary" shape="circle" icon="ios-search" style="widtd:20%" @click="on_search">搜索</Button>
+              </div>
+            </div>
             <ul>
               <li v-for="item in music_list" :key="item.id">
                 <div @dblclick="on_diange(item)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
@@ -44,7 +54,6 @@
     <div class="we" v-show="!state">
       <Button type="primary" @click="deLogin">登录</Button>
       <Button type="primary" @click="zhuangtai">刷新登录状态</Button>
-      
       监测您未登录，请登录您的网易云账号，以便获取您的歌单，播放歌曲
       <Form :model="formLeft" :label-width="80" :rules="ruleInline">
         <FormItem label="账号：" prop="username">
@@ -70,6 +79,8 @@ export default {
         username:'',
         userpassword:''
       },
+      title_show:true,
+      music_search:'',
       music_list:[],
       music_url:'',
       jishiqi:1,
@@ -151,6 +162,9 @@ export default {
         audio.play();
       }
     },
+    search(){
+      this.title_show=false;
+    },
     time_kaishi(){
       var audio=document.getElementById('audio');
       this.lang_time=audio.duration;
@@ -213,6 +227,12 @@ export default {
         this.state=false;
         return;
       }
+    },
+    on_search(){
+      axios.get('http://localhost:3000/search?keywords='+this.music_search+'')
+      .then(rep=>{
+        console.log(rep.data);
+      })
     }
   },
   mounted(){  
