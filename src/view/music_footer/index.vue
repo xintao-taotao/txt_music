@@ -4,28 +4,15 @@
       <p></p>
     </div>
     <Button type="primary" @click="clearlocal(1)">退出！</Button>
-    <div style="margin:auto;width:1300px;height:100%;" v-show="state">
+    <div style="margin:auto;width:1300px;height:100%;" v-if="state">
       <div class="music_content">
-        <audio id="audio" controls="controls" :src="music_url" autoplay v-show="false"></audio>
         <div class="musci_title_img">
           <img :src="img_title" :alt="img_alt" width="70px">
         </div>
         <div class="music_jindu">
-          <!-- <div class="music_jindu_title">
-            <Icon type="md-skip-backward" @click="on_click_music(2)" title="上一首" style="cursor:pointer;" size="24"/>
-            <Icon type="ios-square" v-if="music_state" size="24" style="cursor:pointer;" @click="on_bofang(1)" title="暂停"/>
-            <Icon type="md-play" v-else  size="24" style="cursor:pointer;" @click="on_bofang(2)" title="播放"/>
-            <Icon type="md-skip-forward" @click="on_click_music(1)" title="下一首" style="cursor:pointer;" size="24"/>
-          </div>
-          <div class="music_jindu_footer">
-            总时长：{{this.lang_time}}      当前时间：{{this.dangqian_time}}
-          </div> -->
-          <aplayer autoplay :music="music_object" :showlrc="true"/>
+          <aplayer autoplay :music="music_object" :showLrc="true"/>
         </div>
-        <div class="music_gongneng">
-
-        </div>
-        
+        <div class="music_gongneng"></div>
       </div>
       <div class="icon_music_list">
         <div class="music_list">
@@ -167,31 +154,17 @@ export default {
       }
     },
     on_bofang(item){
-      var audio=document.getElementById('audio');
-      if(item==1){
-        this.music_state=false;
-        var t = setInterval(function(){
-
-        },600);
-        audio.pause();
-      }else if(item==2){
-        this.music_state=true;
-        audio.play();
-      }
+      
+      
     },
     search(){
       this.title_show=false;
     },
     time_kaishi(){
-      var audio=document.getElementById('audio');
-      this.lang_time=audio.duration;
-      this.dangqian_time=audio.currentTime;
+      
     },
     if_time(){
-      var audio=document.getElementById('audio');
-      if(audio.readyState==4){
-        this.time_kaishi();
-      }
+      
     },
     fankui(type){
       this.lang_time=0;
@@ -251,10 +224,6 @@ export default {
         console.log(rep.data);
       })
     }
-  },
-  mounted(){  
-    var audio=document.getElementById('audio');
-    audio.onplay = function(){}
   },
   watch:{
     lang_time: function (newQuestion, oldQuestion) {
