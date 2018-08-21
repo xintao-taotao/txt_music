@@ -26,8 +26,9 @@
                 <p @click="title_show=!title_show"><img src="../../assets/images/index_02.png" width="20px;" style="vertical-align:middle;cursor:pointer;"></p>
               </div>
               <div class="music_search" v-show="!title_show">
-                <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 75%;float:left;"/>
-                <Button type="primary" shape="circle" icon="ios-search" style="width:20%;float:right;" @click="on_search">搜索</Button>
+                <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
+                <Button type="primary" shape="circle" icon="ios-search" style="width:20%;float:left;margin-left:2%;" @click="on_search">搜索</Button>
+                <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
               </div>
             </div>
             <ul v-show="title_show">
@@ -70,6 +71,7 @@
 import util from '../../mutu/mutu.js'
 import axios from 'axios'
 import Aplayer from 'vue-aplayer'
+Aplayer.disableVersionBadge = true
 export default {
   components: {
     Aplayer
@@ -117,6 +119,8 @@ export default {
   },
   created(){
     this.music_width=`${document.body.clientWidth}px`;
+    util.vue = this;
+    util.title(this.$t("projectName") + "-" + this.$t("login"));
     if(this.userid!=0||localStorage.getItem('userid')!=null){
       axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
@@ -137,6 +141,10 @@ export default {
         }
       })
     }
+    axios.get('http://127.0.0.1:9096/api/flink?filter[]=litpic')
+    .then(rep=>{
+      console.log(rep.data);
+    })
     let that=this;
     setTimeout(function(){
       that.clearlocal();

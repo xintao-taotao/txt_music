@@ -5,4 +5,5 @@ export default {
   'home': 'Home',
   'termsofuse': 'Termsofuse',
   'autoRenewed': 'Automatic Renewal Agreement',
+  'alert': 'Function is not yet open'
 }

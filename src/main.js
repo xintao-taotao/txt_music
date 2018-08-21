@@ -10,12 +10,15 @@ import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
 import VueI18n from 'vue-i18n';
 import Vuex from 'vuex'
+import VueLazyload from 'vue-lazyload'
 
 Vue.use(VueRouter);
 Vue.use(VueI18n);
 Vue.use(Vuex);
 Vue.use(iView);
-
+Vue.use(VueLazyload, {
+  lazyComponent: true
+})
 const navLang = navigator.language;
 
 const  localLang= (navLang === 'zh-CN' || navLang === 'en-US') ? navLang : false;
@@ -71,5 +74,8 @@ new Vue({
   el: '#app',
   router: router,
   store: store,
-  render: h => h(App)
+  render: h => h(App),
+  components: {
+    App
+  }
 });
