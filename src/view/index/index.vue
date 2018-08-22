@@ -29,10 +29,12 @@
           <Icon type="ios-construct" />
           综合设置
         </MenuItem>
+        <div class="changeLang">
+          <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
+        </div>
       </Menu>
     </affix>
     <banner></banner>
-    <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
     <musicfooter></musicfooter>
     <BackTop></BackTop>
   </div>
@@ -61,9 +63,7 @@ export default {
   },
   methods:{
     changeLang(lang) {
-      console.log(this);
       this.$store.commit("switchLang", lang);
-      console.log(util.title);
       util.title(
         this.$t("projectName") +
           "-" +

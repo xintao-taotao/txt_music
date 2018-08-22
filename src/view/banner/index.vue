@@ -26,7 +26,7 @@ export default {
           alt:'banner'
         }
       ],
-      autoplaySpeed: 3000,
+      autoplaySpeed: 6000,
     };
   }
 }

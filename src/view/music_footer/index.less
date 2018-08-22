@@ -8,8 +8,12 @@
   transition: all .6s;
   text-align: center;
 }
-.music_footer:hover{
+.music_footer:hover,.music_list:hover{
   right: 0;
+  display:inline-block;
+  .music_list{
+    display: inline-block;
+  }
 }
 .music_content{
   width: 1200px;
@@ -45,17 +49,17 @@
   right: 0;
   top: 64px;
   transition: all .6s;
-  display:none;
+  display: none;
   height: 700px;
   padding: 20px;
   width: 400px;
 }
 
-// @keyframes anima
-// {
-//   0%{opacity:0;top:84px}
-//   100%{opacity:1;top:64px;}
-// }
+@keyframes anima
+{
+  0%{opacity:0;top:84px}
+  100%{opacity:1;top:64px;}
+}
 .music_body::-webkit-scrollbar {
   width: 10px;
   height: 1px;
@@ -82,10 +86,6 @@
   background-color: blue;
   height: 100%;
   float: left;
-}
-.icon_music_list:hover .music_list,.music_list:hover{
-  animation: anima 1.5s;
-  display:inline-block;
 }
 .musci_title_img{
   float: left;
@@ -114,7 +114,7 @@
 }
 .music_jindu{
   width: 1000px;
-  margin: auto;
+  float: left;
   position: relative;
 }
 .music_show{

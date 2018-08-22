@@ -1,5 +1,5 @@
 export default {
-  'projectName': '深简数据',
+  'projectName': '唐鑫涛的个人网站',
   'login': '登录',
   'register': '注册',
   'home': '首页',
