@@ -1,6 +1,6 @@
 <template>
   <div class="music_footer" :style="{width:music_width}">
-    <div class="music_icon_left">
+    <!-- <div class="music_icon_left">
       <p></p>
     </div>
     <div style="margin:auto;width:1300px;height:100%;" v-if="state">
@@ -63,7 +63,8 @@
           <Input v-model="formLeft.userpassword" type="password" placeholder="请填写密码" clearable style="width: 300px" />
         </FormItem>
       </Form>
-    </div>
+    </div> -->
+    <a @click="on_music">跳转到音乐页面</a>
   </div>
 </template>
 
@@ -119,36 +120,36 @@ export default {
   },
   created(){
     this.music_width=`${document.body.clientWidth}px`;
-    util.vue = this;
-    util.title(this.$t("projectName") + "-" + this.$t("login"));
-    if(this.userid!=0||localStorage.getItem('userid')!=null){
-      axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
-      .then(rep=>{
-        this.state=true;
-      })
-      axios.get('http://localhost:3000/personalized/newsong')
-      .then(rep=>{
-        var data=rep.data.result;
-        for(var i=0;i<data.length;i++){
-          this.music_data.push({
-            name:data[i].name,
-            id:data[i].id,
-            singer:data[i].song.artists.length==1?data[i].song.artists[0].name:data[i].song.artists[0].name+"-"+data[i].song.artists[1].name
-          })
-          if(i==0){
-            this.on_diange(this.music_data[0].id)
-          }
-        }
-      })
-    }
-    axios.get('http://127.0.0.1:9096/api/flink?filter[]=litpic')
-    .then(rep=>{
-      console.log(rep.data);
-    })
-    let that=this;
-    setTimeout(function(){
-      that.clearlocal();
-    },10800000);
+    // util.vue = this;
+    // util.title(this.$t("projectName") + "-" + this.$t("login"));
+    // if(this.userid!=0||localStorage.getItem('userid')!=null){
+    //   axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
+    //   .then(rep=>{
+    //     this.state=true;
+    //   })
+    //   axios.get('http://localhost:3000/personalized/newsong')
+    //   .then(rep=>{
+    //     var data=rep.data.result;
+    //     for(var i=0;i<data.length;i++){
+    //       this.music_data.push({
+    //         name:data[i].name,
+    //         id:data[i].id,
+    //         singer:data[i].song.artists.length==1?data[i].song.artists[0].name:data[i].song.artists[0].name+"-"+data[i].song.artists[1].name
+    //       })
+    //       if(i==0){
+    //         this.on_diange(this.music_data[0].id)
+    //       }
+    //     }
+    //   })
+    // }
+    // axios.get('http://127.0.0.1:9096/api/flink?filter[]=litpic')
+    // .then(rep=>{
+    //   console.log(rep.data);
+    // })
+    // let that=this;
+    // setTimeout(function(){
+    //   that.clearlocal();
+    // },10800000);
   },
   methods:{
     if_time(){
@@ -191,6 +192,9 @@ export default {
       })
       this.jishiqi=0;
       this.jishiqi=this.jishiqi+parseInt(item)
+    },
+    on_music(){
+      this.$router.push({name: 'music'})
     },
     deLogin(){
       axios.get('http://localhost:3000/login/cellphone?phone='+this.formLeft.username+'&password='+this.formLeft.userpassword+'')
