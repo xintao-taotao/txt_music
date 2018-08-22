@@ -70,9 +70,6 @@
 
 <script>
 import util from '../../mutu/mutu.js'
-import axios from 'axios'
-import Aplayer from 'vue-aplayer'
-Aplayer.disableVersionBadge = true
 export default {
   components: {
     Aplayer

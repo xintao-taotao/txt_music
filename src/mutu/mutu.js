@@ -10,7 +10,6 @@ let util = {
 };
 
 util.title = function (title) {
-  console.log(title);
   window.document.title = title;
 };
 
