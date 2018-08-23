@@ -71,9 +71,6 @@
 <script>
 import util from '../../mutu/mutu.js'
 export default {
-  components: {
-    Aplayer
-  },
   data() {
     return {
       music_width:0,
@@ -120,11 +117,11 @@ export default {
     // util.vue = this;
     // util.title(this.$t("projectName") + "-" + this.$t("login"));
     // if(this.userid!=0||localStorage.getItem('userid')!=null){
-    //   axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
+    //   axios.get('http://xintao.ink:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
     //   .then(rep=>{
     //     this.state=true;
     //   })
-    //   axios.get('http://localhost:3000/personalized/newsong')
+    //   axios.get('http://xintao.ink:3000/personalized/newsong')
     //   .then(rep=>{
     //     var data=rep.data.result;
     //     for(var i=0;i<data.length;i++){
@@ -161,18 +158,18 @@ export default {
     on_diange(item){
       this.jiuxu=false;
       this.music_id=item;
-      axios.get('http://localhost:3000/music/url?id='+item+'')
+      axios.get('http://xintao.ink:3000/music/music/url?id='+item+'')
       .then(rep=>{
         var data=rep.data;
         if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
           this.music_object.src=data.data[0].url;
-          axios.get('http://localhost:3000/song/detail?ids='+item+'')
+          axios.get('http://xintao.ink:3000/song/detail?ids='+item+'')
           .then(rep=>{
             var data=rep.data.songs;
             this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
             this.music_object.title=data[0].name;
             this.music_object.pic=data[0].al.picUrl;
-            axios.get('http://localhost:3000/lyric?id='+item+'')
+            axios.get('http://xintao.ink:3000/lyric?id='+item+'')
             .then(rep=>{
               var data=rep.data;
               this.music_object.lrc="";
@@ -194,13 +191,13 @@ export default {
       this.$router.push({name: 'music'})
     },
     deLogin(){
-      axios.get('http://localhost:3000/login/cellphone?phone='+this.formLeft.username+'&password='+this.formLeft.userpassword+'')
+      axios.get('http://xintao.ink:3000/login/cellphone?phone='+this.formLeft.username+'&password='+this.formLeft.userpassword+'')
       .then(rep=>{
         let data=rep.data
         this.state=true;
         this.userid=data.account.id;
         localStorage.setItem('userid',this.userid);
-        axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
+        axios.get('http://xintao.ink:3000/user/playlist?uid='+this.userid+'')
         .then(rep=>{
           this.zhuangtai();
         })
@@ -208,7 +205,7 @@ export default {
     },
     zhuangtai(){
       if(localStorage.getItem('userid')!=""){
-        axios.get('http://localhost:3000/login/refresh')
+        axios.get('http://xintao.ink:3000/login/refresh')
         .then(rep=>{
           console.log(rep.data);
         })
@@ -230,7 +227,7 @@ export default {
     },
     on_search(){
       // .splice(1,1)
-      axios.get('http://localhost:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
+      axios.get('http://xintao.ink:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
       .then(rep=>{
         var data=rep.data.result.songs;
         console.log(data);

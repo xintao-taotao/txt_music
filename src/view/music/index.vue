@@ -25,8 +25,27 @@
       </div>
     </Sider>
     <Layout>
-      <Header>Header</Header>
-      <Content>Content</Content>
+      <Header>
+        <div class="music_search">
+          <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
+          <Button type="primary" shape="circle" icon="ios-search" style="width:20%;float:left;margin-left:2%;" @click="on_search">搜索</Button>
+          <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
+        </div>
+      </Header>
+      <Content>
+        <div class="on_list">
+          <ul v-show="onlist">
+            <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
+              <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                <div class="li_left_margin">{{item.name}}</div>
+                <div class="li_content_bigmargin">{{item.singer}}</div>
+              </div>
+            </li>
+          </ul>
+          <Spin fix v-show="!onlist"></Spin>
+        </div>
+        <aplayer autoplay="autoplay" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end" style=""/>
+      </Content>
     </Layout>
   </Layout>
 </template>
@@ -34,18 +53,34 @@
 <script>
 import util from '../../mutu/mutu.js'
 import axios from 'axios'
-import Aplayer from 'vue-aplayer'
-Aplayer.disableVersionBadge = true
+import aplayer from 'vue-aplayer'
+aplayer.disableVersionBadge = true
 export default {
+  components: {
+    aplayer
+  },
   data () {
     return {
       music_width:0,
+      music_search:'',
+      title_show:true,
       userid:0,
+      onlist:false,
+      jishiqi:1,
+      jiuxu:false,
       deLogin:false,
       formInline: {
         user: '',
         password: ''
       },
+      music_object:{
+        title:'',
+        artist:'',
+        src:'',
+        pic:'',
+        lrc:''
+      },
+      search_data:[],
       ruleInline: {
         user: [
           { required: true, message: '请填写您的手机号', trigger: 'blur' }
@@ -56,7 +91,8 @@ export default {
       },
       username:'',
       userbackgroundurl:'',
-      useravatarurl:''
+      useravatarurl:'',
+      page_index:30,
     };
   },
   created(){
@@ -64,7 +100,7 @@ export default {
     util.vue = this;
     util.title(this.$t("projectName") + "-" + this.$t("music_page"));
     if(this.userid!=0||localStorage.getItem('userid')!=null){
-      axios.get('http://localhost:3000/user/detail?uid='+localStorage.getItem('userid')+'')
+      axios.get('http://xintao.ink:3000/user/detail?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         this.deLogin=true;
         this.user_onxinxi(rep.data)
@@ -98,13 +134,13 @@ export default {
   },
   methods:{
     handleSubmit(){
-      axios.get('http://localhost:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
+      axios.get('http://xintao.ink:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
       .then(rep=>{
         let data=rep.data
         this.deLogin=true;
         this.userid=data.account.id;
         localStorage.setItem('userid',this.userid);
-        axios.get('http://localhost:3000/user/detail?uid='+this.userid+'')
+        axios.get('http://xintao.ink:3000/user/detail?uid='+this.userid+'')
         .then(rep=>{
           var data=rep.data;
           this.user_onxinxi(data)
@@ -128,6 +164,69 @@ export default {
       this.username=data.profile.nickname;
       this.useravatarurl=data.profile.avatarUrl;
       this.userbackgroundurl=data.profile.backgroundUrl;
+    },
+    on_search(){
+      this.onlist=false;
+      axios.get('http://xintao.ink:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
+      .then(rep=>{
+        var data=rep.data.result.songs;
+        console.log(rep.data);
+        this.search_data=[];
+        for(var i=0;i<data.length;i++){
+          this.search_data.push({
+            name:data[i].name,
+            id:data[i].id,
+            singer:data[i].artists.length==1?data[i].artists[0].name:data[i].artists[0].name+"-"+data[i].artists[1].name
+          });
+        }
+        this.onlist=true;
+      })
+    },
+    on_diange(item){
+      this.jiuxu=false;
+      this.music_id=item;
+      axios.get('http://xintao.ink:3000/music/url?id='+item+'')
+      .then(rep=>{
+        var data=rep.data;
+        if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
+          this.music_object.src=data.data[0].url;
+          axios.get('http://xintao.ink:3000/song/detail?ids='+item+'')
+          .then(rep=>{
+            var data=rep.data.songs;
+            this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
+            this.music_object.title=data[0].name;
+            this.music_object.pic=data[0].al.picUrl;
+            axios.get('http://xintao.ink:3000/lyric?id='+item+'')
+            .then(rep=>{
+              var data=rep.data;
+              this.music_object.lrc="";
+              this.music_object.lrc=data.lrc.lyric;
+              console.log(this.music_object);
+              this.jiuxu=true;
+            })
+          })
+        }else{
+          util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
+          this.on_diange(this.search_data[0].id);
+          this.jiuxu=true;
+          return;
+        }
+      })
+      this.jishiqi=0;
+      this.jishiqi=this.jishiqi+parseInt(item)
+    },
+    music_end(){
+      for(var a=1;a<this.search_data.length;a++){
+        if(this.search_data[a].id==this.music_id){
+          if(a+1<this.search_data.length){
+            this.on_diange(this.search_data[a+1].id)
+            return;
+          }else{
+            this.on_diange(this.search_data[0].id)
+            return;
+          }
+        }
+      }
     }
   }
 }

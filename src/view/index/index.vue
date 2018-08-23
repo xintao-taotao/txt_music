@@ -2,7 +2,7 @@
   <div class="page">
     <affix>
       <Menu mode="horizontal" theme="dark" active-name="1">
-        <MenuItem name="1">
+        <!-- <MenuItem name="1">
           <Icon type="ios-paper" />
           内容管理
         </MenuItem>
@@ -28,11 +28,12 @@
         <MenuItem name="4">
           <Icon type="ios-construct" />
           综合设置
-        </MenuItem>
+        </MenuItem> -->
+        导航
+        <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
       </Menu>
     </affix>
     <banner></banner>
-    <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
     <musicfooter></musicfooter>
     <BackTop></BackTop>
   </div>
@@ -57,7 +58,11 @@ export default {
     };
   },
   created(){
-    
+    util.title(
+      this.$t("projectName") +
+        "-" +
+        this.$t('home')
+    );
   },
   methods:{
     changeLang(lang) {
@@ -67,7 +72,7 @@ export default {
       util.title(
         this.$t("projectName") +
           "-" +
-          this.$t(this.breadItems[this.breadItems.length - 1].name)
+          this.$t('home')
       );
     }
   }

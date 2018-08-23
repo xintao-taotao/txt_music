@@ -1,5 +1,5 @@
 export default {
-  'projectName': 'DeepBrief',
+  'projectName': "Tang Xintao's personal website",
   'login': 'Sign in',
   'register': 'Sign up',
   'home': 'Home',
