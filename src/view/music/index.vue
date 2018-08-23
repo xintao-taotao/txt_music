@@ -100,7 +100,7 @@ export default {
     util.vue = this;
     util.title(this.$t("projectName") + "-" + this.$t("music_page"));
     if(this.userid!=0||localStorage.getItem('userid')!=null){
-      axios.get('http://xintao.ink:3000/user/detail?uid='+localStorage.getItem('userid')+'')
+      axios.get('http://193.112.105.136:3000/user/detail?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         this.deLogin=true;
         this.user_onxinxi(rep.data)
@@ -134,13 +134,13 @@ export default {
   },
   methods:{
     handleSubmit(){
-      axios.get('http://xintao.ink:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
+      axios.get('http://193.112.105.136:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
       .then(rep=>{
         let data=rep.data
         this.deLogin=true;
         this.userid=data.account.id;
         localStorage.setItem('userid',this.userid);
-        axios.get('http://xintao.ink:3000/user/detail?uid='+this.userid+'')
+        axios.get('http://193.112.105.136:3000/user/detail?uid='+this.userid+'')
         .then(rep=>{
           var data=rep.data;
           this.user_onxinxi(data)
@@ -167,7 +167,7 @@ export default {
     },
     on_search(){
       this.onlist=false;
-      axios.get('http://xintao.ink:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
+      axios.get('http://193.112.105.136:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
       .then(rep=>{
         var data=rep.data.result.songs;
         console.log(rep.data);
@@ -183,20 +183,22 @@ export default {
       })
     },
     on_diange(item){
+      console.log(item);
       this.jiuxu=false;
       this.music_id=item;
-      axios.get('http://xintao.ink:3000/music/url?id='+item+'')
+      axios.get('http://193.112.105.136:3000/music/url?id='+item+'')
       .then(rep=>{
         var data=rep.data;
-        if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
+        console.log(data);
+        if(data.data[0].url!=null){
           this.music_object.src=data.data[0].url;
-          axios.get('http://xintao.ink:3000/song/detail?ids='+item+'')
+          axios.get('http://193.112.105.136:3000/song/detail?ids='+item+'')
           .then(rep=>{
             var data=rep.data.songs;
             this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
             this.music_object.title=data[0].name;
             this.music_object.pic=data[0].al.picUrl;
-            axios.get('http://xintao.ink:3000/lyric?id='+item+'')
+            axios.get('http://193.112.105.136:3000/lyric?id='+item+'')
             .then(rep=>{
               var data=rep.data;
               this.music_object.lrc="";
@@ -207,13 +209,11 @@ export default {
           })
         }else{
           util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
-          this.on_diange(this.search_data[0].id);
-          this.jiuxu=true;
           return;
         }
       })
       this.jishiqi=0;
-      this.jishiqi=this.jishiqi+parseInt(item)
+      this.jishiqi=parseInt(item)
     },
     music_end(){
       for(var a=1;a<this.search_data.length;a++){
