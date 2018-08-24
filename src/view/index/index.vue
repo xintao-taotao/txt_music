@@ -3,11 +3,11 @@
     <affix>
       <Menu mode="horizontal" theme="dark" active-name="1">
         <MenuItem name="1">
-          <Icon type="ios-paper" />
+          <Icon type="ios-paper"></Icon>
           内容管理
         </MenuItem>
         <MenuItem name="2">
-          <Icon type="ios-people" />
+          <Icon type="ios-people"></Icon>
           用户管理
         </MenuItem>
         <Submenu name="3">

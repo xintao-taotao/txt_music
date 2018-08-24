@@ -1,6 +1,5 @@
 <template>
-  <div class="music_footer">
-    <a @click="on_music">网易云音乐在线听歌入口</a>
+  <div class="music_footer" :style="{width:music_width}">
     <!-- <div class="music_icon_left">
       <p></p>
     </div>
@@ -59,18 +58,13 @@
         </FormItem>
       </Form>
     </div> -->
+    <a @click="on_music">跳转到音乐页面</a>
   </div>
 </template>
 
 <script>
 import util from '../../mutu/mutu.js'
-import axios from 'axios'
-import Aplayer from 'vue-aplayer'
-Aplayer.disableVersionBadge = true
 export default {
-  components: {
-    Aplayer
-  },
   data() {
     return {
       music_width:0,
@@ -113,7 +107,7 @@ export default {
     };
   },
   created(){
-    // this.music_width=`${document.body.clientWidth}px`;
+    this.music_width=`${document.body.clientWidth}px`;
     // util.vue = this;
     // util.title(this.$t("projectName") + "-" + this.$t("login"));
     // if(this.userid!=0||localStorage.getItem('userid')!=null){
@@ -136,6 +130,10 @@ export default {
     //     }
     //   })
     // }
+    // axios.get('http://127.0.0.1:9096/api/flink?filter[]=litpic')
+    // .then(rep=>{
+    //   console.log(rep.data);
+    // })
     // let that=this;
     // setTimeout(function(){
     //   that.clearlocal();
@@ -185,6 +183,9 @@ export default {
       })
       this.jishiqi=0;
       this.jishiqi=this.jishiqi+parseInt(item)
+    },
+    on_music(){
+      this.$router.push({name: 'music'})
     },
     deLogin(){
       axios.get('http://localhost:3000/login/cellphone?phone='+this.formLeft.username+'&password='+this.formLeft.userpassword+'')

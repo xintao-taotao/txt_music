@@ -5,5 +5,6 @@ export default {
   'home': 'Home',
   'termsofuse': 'Termsofuse',
   'autoRenewed': 'Automatic Renewal Agreement',
-  'alert': 'Function is not yet open'
+  'alert': 'Function is not yet open',
+  'music_page': 'Music page'
 }
