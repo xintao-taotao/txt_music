@@ -9,6 +9,14 @@ export default {
   data () {
     return {
     };
+  },
+  created(){
+    util.vue = this;
+    util.title(
+      this.$t("projectName") +
+        "-" +
+        this.$t('')
+    );
   }
 }
 
