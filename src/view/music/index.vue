@@ -1,6 +1,6 @@
 <template>
-  <Layout class="music" :style="{height:music_width}">
-    <Sider hide-trigger class="music_left">
+  <div class="music" :style="{height:music_width}">
+    <div class="music_left">
       <div class="xinxi" v-if="deLogin" :style="{backgroundImage: 'url(' + userbackgroundurl + ')'}">
         <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
         <Button type="primary" @click="clearlocal(1)" class="tuichu">退出</Button>
@@ -23,62 +23,89 @@
           </FormItem>
         </Form>
       </div>
-    </Sider>
-    <Layout>
-      <Header style="background-color:#fff;">
-        <div class="music_search">
-          <Icon type="ios-arrow-dropleft" @click="back(1)" title="返回歌手列表" size="32"/>
-          <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
-          <Button type="primary" shape="circle" icon="ios-search" style="width:20%;float:left;margin-left:2%;" @click="on_search(music_search)">搜索</Button>
-          <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
-        </div>
-      </Header>
-      <Content>
-        <ul class="geshou_list" v-show="geshou_danye">
-          <li v-for="item in geshou" :key="item.id" @click="on_search(item.id)">
-            <img :src="item.url" :alt="item.name">
-            {{item.name}}
-          </li>
-          <div style="margin: 10px;overflow: hidden">
-            <div style="float: right;">
-              <Page :total="total" size="small" :page-size="pageSize" show-elevator show-sizer @on-change="pageChange" @on-page-size-change="pageSizeChange"></Page>
+    </div>
+    <div style="background-color:#fff;" class="music_title">
+      <div class="music_search">
+        <Icon type="ios-arrow-dropleft" @click="back(1)" title="返回歌手列表" size="32"/>
+        <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
+        <Button type="primary" shape="circle" icon="ios-search" style="float:left;margin-left:2%;" @click="on_search(music_search)">搜索</Button>
+        <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
+      </div>
+    </div>
+    <div style="display:flex;">
+      <div style="margin:auto;width:888px;">
+        <div class="content">
+          <ul class="geshou_list" v-show="geshou_danye">
+            <li v-for="item in geshou" :key="item.id" @click="on_search(item.id)">
+              <img :src="item.url" :alt="item.name">
+              {{item.name}}
+            </li>
+            <div style="overflow: hidden;width:100%;">
+              <div style="float: right;padding-right:10px;">
+                <Icon type="ios-arrow-back" size="32" title="上一页" style="cursor:pointer;" @click="pave_page(1)"/>
+                <Icon type="ios-arrow-forward" size="32" title="下一页" style="cursor:pointer;" @click="pave_page(2)"/>
+              </div>
             </div>
+          </ul>
+          <div class="on_list" v-show="onlist">
+            <ul>
+              <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
+                <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                  <div class="li_left_margin">{{item.name}}</div>
+                  <div class="li_content_bigmargin">{{item.singer}}</div>
+                </div>
+              </li>
+            </ul>
           </div>
-        </ul>
-        <div class="on_list" v-show="onlist">
-          <ul>
-            <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
-              <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
-                <div class="li_left_margin">{{item.name}}</div>
-                <div class="li_content_bigmargin">{{item.singer}}</div>
+          <!-- <div v-show="geshou_axinxi">
+            <div class="xinxi_title">
+              
+            </div>
+            <ul>
+              <li></li>
+            </ul>
+          </div> -->
+          <Spin fix v-show="geshou_on"></Spin>
+          <!-- <ul>
+            <li v-for="item in music_list" :key="item.id" @dblclick="diange(item.id)">
+              <img :src="item.album_img" :alt="item.album">
+              <span>
+                {{item.name}}
+              </span>
+              <div class="right_xinxi">
+                {{item.geshou}}
               </div>
             </li>
-          </ul>
+          </ul> -->
         </div>
-        <div v-show="geshou_axinxi">
-          <div class="xinxi_title">
-            
+      </div>
+    </div>
+    <Icon type="ios-arrow-dropup-circle" v-show="!aplayera" class="autoplay_a" @click="aplayera=!aplayera" size="16"/>
+    <div class="autoplay_class" v-show="aplayera">
+      <div class="autoplay_content">
+        <div class="music_details_on" @click="detailsa">
+          点击查看歌曲详情
+        </div>
+        <Icon type="md-close" @click="aplayera=!aplayera" class="on_aplayer" size="14"/>
+        <aplayer autoplay="autoplay" @loadedmetadata="music_zhunbei" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end"/>
+      </div>
+    </div>
+    <div class="music_details" v-show="this.details">
+      <Icon type="md-close-circle" class="close_details" size="32" @click="detailsa"/>
+      <div class="music_details_content">
+        <div class="details_title">
+          {{music_object}}
+          <div class="title_f-alpha">
+            <img :src="music_object.pic" :title="music_object.title" :alt="music_object.title" :class="f_alpha_img?'f-alpha_img_on':'.f-alpha_img'">
+            <span class="f-alpha"></span>
           </div>
-          <ul>
-            <li></li>
-          </ul>
         </div>
-        <Spin fix v-show="geshou_on"></Spin>
-        <!-- <ul>
-          <li v-for="item in music_list" :key="item.id" @dblclick="diange(item.id)">
-            <img :src="item.album_img" :alt="item.album">
-            <span>
-              {{item.name}}
-            </span>
-            <div class="right_xinxi">
-              {{item.geshou}}
-            </div>
-          </li>
-        </ul> -->
-        <aplayer autoplay="autoplay" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end" style=""/>
-      </Content>
-    </Layout>
-  </Layout>
+        <div class="details_pinglun">
+          
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -93,10 +120,12 @@ export default {
   data () {
     return {
       music_width:0,
+      aplayera:false,
+      f_alpha_img:false,
+      details:false,
+      page_index:0,
       music_search:'',
       geshou_on:false,
-      total: 1,
-      pageSize: 30,
       geshou_danye:true,
       title_show:true,
       userid:0,
@@ -130,7 +159,6 @@ export default {
       username:'',
       userbackgroundurl:'',
       useravatarurl:'',
-      page_index:30,
       geshou_axinxi:false,
       geshou_xinxi:{
         name:'',
@@ -154,7 +182,7 @@ export default {
     setTimeout(function(){
       that.clearlocal();
     },10800000);
-    axios.get('http://localhost:3000/top/artists?offset=3&limit=50')
+    axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=18')
     .then(rep=>{
       const data=rep.data;
       this.geshou=[];
@@ -189,6 +217,51 @@ export default {
     }
   },
   methods:{
+    music_zhunbei(){
+      console.log("音频准备好了！！！");
+      this.f_alpha_img=true;
+      this.aplayera=true;
+    },
+    detailsa(){
+      this.details=!this.details;
+      console.log(this.details);
+    },
+    pave_page(type){
+      if(this.page_index!=0&&type==1){
+        //上一页代码
+        this.page_index=this.page_index-18;
+        axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=18')
+        .then(rep=>{
+          const data=rep.data;
+          this.geshou=[];
+          for(var a=0;a<data.artists.length;a++){
+            this.geshou.push({
+              id:data.artists[a].id,
+              name:data.artists[a].name,
+              url:data.artists[a].img1v1Url
+            })
+          }
+        })
+      }else if(type==2){
+        //下一页代码
+        this.page_index=this.page_index+18;
+        axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=18')
+        .then(rep=>{
+          const data=rep.data;
+          this.geshou=[];
+          for(var a=0;a<data.artists.length;a++){
+            this.geshou.push({
+              id:data.artists[a].id,
+              name:data.artists[a].name,
+              url:data.artists[a].img1v1Url
+            })
+          }
+        })
+      }else if(this.page_index==0){
+        util.error("已经是第一页！");
+        return;
+      }
+    },
     handleSubmit(){
       axios.get('http://localhost:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
       .then(rep=>{
@@ -202,13 +275,6 @@ export default {
           this.user_onxinxi(data)
         })
       })
-    },
-    pageChange(page){
-      console.log(page);
-    },
-    pageSizeChange(pageSize){
-      this.pageSize=pageSize;
-      console.log(pageSize);
     },
     on_diange(item){
       this.jiuxu=false;
@@ -342,6 +408,7 @@ export default {
       this.jishiqi=this.jishiqi+parseInt(item)
     },
     music_end(){
+      this.f_alpha_img=false;
       for(var a=1;a<this.search_data.length;a++){
         if(this.search_data[a].id==this.music_id){
           if(a+1<this.search_data.length){

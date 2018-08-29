@@ -1,5 +1,8 @@
 .music_left{
   background-color: #fff;
+  float: left;
+  width: 200px;
+  height: 100%;
 }
 .deLogin{
   margin-top: 30px;
@@ -45,6 +48,9 @@
 .on_zhengzaibf{
   background-color: lightgray;
 }
+.geshou_list{
+  width: 888px;
+}
 .geshou_list li{
   width: 130px;
   height: 154px;
@@ -56,4 +62,116 @@
 .geshou_list li img{
   width: 130px;
   height: 130px;
+}
+.music_details{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+}
+.music_details_content{
+  width: 1200px;
+  margin: auto;
+}
+.details_title{
+  width: 100%;
+  text-align: center;
+}
+.close_details{
+  position: fixed;
+  right: 30px;
+  top: 30px;
+  cursor:pointer;
+}
+.autoplay_content{
+  width: 1200px;
+  position: fixed;
+  bottom:0px;
+}
+.autoplay_class:hover .music_details_on,.music_details_on:hover{
+  display: block;
+}
+.music_details_on{
+  display: none;
+  position: absolute;
+  left: -86px;
+  width: 90px;
+  height: 90px;
+  line-height: 90px;
+  top: 5px;
+}
+.f-alpha{
+  position: absolute;
+  display: block;
+  width: 206px;
+  height: 205px;
+  top: -4px;
+  left: -4px;
+  background: url('../../assets/images/coverall.png') no-repeat;
+}
+.f-alpha_img{
+  width: 132px;
+  height: 132px;
+  border-radius: 80%;
+  position: absolute;
+  top: 33px;
+  left: 33px;
+}
+.f-alpha_img_on{
+  width: 132px;
+  height: 132px;
+  border-radius: 80%;
+  position: absolute;
+  top: 33px;
+  left: 33px;
+  animation:change 24s linear infinite;
+}
+@-webkit-keyframes change{  
+  from{  
+      -webkit-transform:rotate(0deg);  
+  }  
+  to{  
+      -webkit-transform:rotate(360deg);  
+  }  
+}
+.title_f-alpha{
+  width:206px;
+  height: 206px;
+  position: relative;
+}
+.autoplay_class{
+  margin: auto;
+  width:1200px;
+  position: relative;
+}
+.music{
+  margin: auto;
+  text-align: center;
+}
+.music_title{
+  height: 50px;
+  line-height: 50px;
+  display: flex;
+}
+.music_search{
+  width: 100%;
+}
+.on_aplayer{
+  cursor:pointer;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: none;
+  z-index: 2;
+}
+.autoplay_class:hover .on_aplayer{
+  display: block;
+}
+.autoplay_a{
+  margin: auto;
+  position: fixed;
+  bottom: 0px;
+  cursor:pointer;
 }
