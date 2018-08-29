@@ -16,38 +16,32 @@
           </Spin>
         </div>
         <div class="music_gongneng"></div>
-      </div>
-      <div class="icon_music_list">
-        <div class="music_list">
-          <div class="music_body">
-            <div class="music_title">
-              <div class="music_show" v-show="title_show">
-                <p>歌曲列表</p>
-                <p @click="title_show=!title_show"><img src="../../assets/images/index_02.png" width="20px;" style="vertical-align:middle;cursor:pointer;"></p>
-              </div>
-              <div class="music_search" v-show="!title_show">
-                <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
-                <Button type="primary" shape="circle" icon="ios-search" style="width:20%;float:left;margin-left:2%;" @click="on_search">搜索</Button>
-                <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
-              </div>
-            </div>
-            <ul v-show="title_show">
-              <li v-for="item in music_data" :key="item.id" onselectstart ='return false'>
-                <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
-                  <div class="li_left_margin">{{item.name}}</div>
-                  <div class="li_content_bigmargin">{{item.singer}}</div>
-                </div>
-              </li>
-            </ul>
-            <ul class="search_list" v-show="!title_show">
-              <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
-                <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
-                  <div class="li_left_margin">{{item.name}}</div>
-                  <div class="li_content_bigmargin">{{item.singer}}</div>
-                </div>
-              </li>
-            </ul>
+        <div class="icon_music_list">
+          <div class="music_show" v-show="title_show">
+            <p>歌曲列表</p>
+            <p @click="title_show=!title_show"><img src="../../assets/images/index_02.png" width="20px;" style="vertical-align:middle;cursor:pointer;"></p>
           </div>
+          <div class="music_search" v-show="!title_show">
+            <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
+            <Button type="primary" shape="circle" icon="ios-search" style="width:20%;float:left;margin-left:2%;" @click="on_search">搜索</Button>
+            <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
+          </div>
+          <ul v-show="title_show" style="height:628px;">
+            <li v-for="item in music_data" :key="item.id" onselectstart ='return false'>
+              <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                <div class="li_left_margin">{{item.name}}</div>
+                <div class="li_content_bigmargin">{{item.singer}}</div>
+              </div>
+            </li>
+          </ul>
+          <ul class="search_list" v-show="!title_show" style="height:628px;">
+            <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
+              <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                <div class="li_left_margin">{{item.name}}</div>
+                <div class="li_content_bigmargin">{{item.singer}}</div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -149,6 +143,9 @@ export default {
     if_time(){
       
     },
+    on_music(){
+      this.$router.push({name:'music'});
+    },
     fankui(type){
       this.lang_time=0;
       this.dangqian_time=0;
@@ -230,7 +227,6 @@ export default {
       axios.get('http://xintao.ink:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
       .then(rep=>{
         var data=rep.data.result.songs;
-        console.log(data);
         this.search_data=[];
         for(var i=0;i<data.length;i++){
           this.search_data.push({
@@ -239,7 +235,6 @@ export default {
             singer:data[i].artists.length==1?data[i].artists[0].name:data[i].artists[0].name+"-"+data[i].artists[1].name
           });
         }
-        console.log(this.search_data);
       })
     },
     music_end(){

@@ -1,13 +1,13 @@
 <template>
   <div class="page">
     <affix>
-      <Menu mode="horizontal" theme="dark" active-name="1">
-        <!-- <MenuItem name="1">
+      <!-- <Menu mode="horizontal" theme="dark" active-name="1">
+        <MenuItem name="1">
           <Icon type="ios-paper" />
           内容管理
         </MenuItem>
         <MenuItem name="2">
-          <Icon type="ios-people" />
+          <Icon type="ios-people"></Icon>
           用户管理
         </MenuItem>
         <Submenu name="3">
@@ -28,10 +28,10 @@
         <MenuItem name="4">
           <Icon type="ios-construct" />
           综合设置
-        </MenuItem> -->
+        </MenuItem>
         导航
         <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
-      </Menu>
+      </Menu> -->
     </affix>
     <banner></banner>
     <musicfooter></musicfooter>
@@ -66,9 +66,7 @@ export default {
   },
   methods:{
     changeLang(lang) {
-      console.log(this);
       this.$store.commit("switchLang", lang);
-      console.log(util.title);
       util.title(
         this.$t("projectName") +
           "-" +
