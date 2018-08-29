@@ -39,6 +39,11 @@
             <img :src="item.url" :alt="item.name">
             {{item.name}}
           </li>
+          <div style="margin: 10px;overflow: hidden">
+            <div style="float: right;">
+              <Page :total="total" size="small" :page-size="pageSize" show-elevator show-sizer @on-change="pageChange" @on-page-size-change="pageSizeChange"></Page>
+            </div>
+          </div>
         </ul>
         <div class="on_list" v-show="onlist">
           <ul>
@@ -90,6 +95,8 @@ export default {
       music_width:0,
       music_search:'',
       geshou_on:false,
+      total: 1,
+      pageSize: 30,
       geshou_danye:true,
       title_show:true,
       userid:0,
@@ -147,9 +154,10 @@ export default {
     setTimeout(function(){
       that.clearlocal();
     },10800000);
-    axios.get('http://localhost:3000/top/artists?offset=0&limit=50')
+    axios.get('http://localhost:3000/top/artists?offset=3&limit=50')
     .then(rep=>{
       const data=rep.data;
+      this.geshou=[];
       for(var a=0;a<data.artists.length;a++){
         this.geshou.push({
           id:data.artists[a].id,
@@ -195,6 +203,13 @@ export default {
         })
       })
     },
+    pageChange(page){
+      console.log(page);
+    },
+    pageSizeChange(pageSize){
+      this.pageSize=pageSize;
+      console.log(pageSize);
+    },
     on_diange(item){
       this.jiuxu=false;
       this.music_id=item;
@@ -209,6 +224,11 @@ export default {
             this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
             this.music_object.title=data[0].name;
             this.music_object.pic=data[0].al.picUrl;
+            axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
+            .then(rep=>{
+              var data=rep.data;
+              console.log(data);
+            })
             axios.get('http://localhost:3000/lyric?id='+item+'')
             .then(rep=>{
               var data=rep.data;
@@ -249,22 +269,6 @@ export default {
       this.geshou_danye=false;
       this.geshou_on=true;
       this.onlist=false;
-<<<<<<< HEAD
-      axios.get('http://localhost:3000/search?keywords='+this.music_search+'?limit='+this.page_index)
-      .then(rep=>{
-        var data=rep.data.result.songs;
-        console.log(rep.data);
-        this.search_data=[];
-        for(var i=0;i<data.length;i++){
-          this.search_data.push({
-            name:data[i].name,
-            id:data[i].id,
-            singer:data[i].artists.length==1?data[i].artists[0].name:data[i].artists[0].name+"-"+data[i].artists[1].name
-          });
-        }
-        this.onlist=true;
-      })
-=======
       if(typeof type=='number'){
         axios.get('http://localhost:3000/artists?id='+type)
         .then(rep=>{
@@ -304,50 +308,6 @@ export default {
           this.onlist=true;
         })
       }
->>>>>>> 914c1ec07764beb43ba4f3ecd1804e5aeddc03e2
-    },
-    on_diange(item){
-      this.jiuxu=false;
-      this.music_id=item;
-      axios.get('http://localhost:3000/music/url?id='+item+'')
-      .then(rep=>{
-        var data=rep.data;
-        if(data.data[0].url!=null&&data.data[0].url!=""&&data.data[0].url!=undefined){
-          this.music_object.src=data.data[0].url;
-          axios.get('http://localhost:3000/song/detail?ids='+item+'')
-          .then(rep=>{
-            var data=rep.data.songs;
-            this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
-            this.music_object.title=data[0].name;
-            this.music_object.pic=data[0].al.picUrl;
-            axios.get('http://localhost:3000/lyric?id='+item+'')
-            .then(rep=>{
-              var data=rep.data;
-              this.music_object.lrc="";
-              this.music_object.lrc=data.lrc.lyric;
-              this.jiuxu=true;
-            })
-          })
-        }else{
-          util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
-          return;
-        }
-      })
-      this.jishiqi=0;
-      this.jishiqi=parseInt(item)
-    },
-    music_end(){
-      for(var a=1;a<this.search_data.length;a++){
-        if(this.search_data[a].id==this.music_id){
-          if(a+1<this.search_data.length){
-            this.on_diange(this.search_data[a+1].id)
-            return;
-          }else{
-            this.on_diange(this.search_data[0].id)
-            return;
-          }
-        }
-      }
     },
     diange(item){
       this.jiuxu=false;
@@ -382,13 +342,13 @@ export default {
       this.jishiqi=this.jishiqi+parseInt(item)
     },
     music_end(){
-      for(var a=1;a<this.music_list.length;a++){
-        if(this.music_list[a].id==this.music_id){
-          if(a+1<this.music_list.length){
-            this.diange(this.music_list[a+1].id)
+      for(var a=1;a<this.search_data.length;a++){
+        if(this.search_data[a].id==this.music_id){
+          if(a+1<this.search_data.length){
+            this.on_diange(this.search_data[a+1].id)
             return;
           }else{
-            this.diange(this.music_list[0].id)
+            this.on_diange(this.search_data[0].id)
             return;
           }
         }
