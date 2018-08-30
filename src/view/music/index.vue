@@ -333,7 +333,59 @@ export default {
             this.music_object.pic=data[0].al.picUrl;
             axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
             .then(rep=>{
-              
+              var data=rep.data;
+              this.zongshu=0;
+              this.zongshu=data.total;
+              this.music_xiangqing=[];
+              // data.comments.forEach(item=>{
+              //   this.music_xiangqing.push({
+              //     userimg:item.user.avatarUrl,
+              //     username:item.user.nickname,
+              //     content:item.content,
+              //     huifu:{
+              //       username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+              //       userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
+              //       userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+              //     }
+              //   })
+              // })
+              console.log(this.music_xiangqing);
+              // data.hotComments.forEach(item=>{
+                
+              //   this.music_xiangre=[];
+              //   this.music_xiangre.push({
+              //     userimg:item.user.avatarUrl,
+              //     username:item.user.nickname,
+              //     content:item.content,
+              //     huifu:{
+              //       username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+              //       userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
+              //       userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+              //     }
+              //   })
+              //   console.log(this.music_xiangre);
+              // })
+              // // console.log(this.music_xiangre);
+              for(var a=0;a<data.hotComments.length;a++){
+                console.log('00000000',data.hotComments[a]);
+                var add=[];
+                add.push(data.hotComments[a])
+                console.log(add);
+                this.music_xiangre=[];
+                console.log(data.hotComments[a].beReplied)
+                console.log(data.hotComments[a].beReplied[0]==undefined?'':data.hotComments[a].beReplied[0]);
+                this.music_xiangre.push({
+                  userimg:data.hotComments[a].user.avatarUrl,
+                  username:data.hotComments[a].user.nickname,
+                  content:data.hotComments[a].content,
+                  huifu:{
+                    username:data.hotComments[a].beReplied[0]==undefined?'':data.hotComments[a].beReplied[0].user.nickname,
+                    userneirong:data.hotComments[a].beReplied[0]==undefined?'':data.hotComments[a].beReplied[0].content,
+                    userimg:data.hotComments[a].beReplied[0]==undefined?'':data.hotComments[a].beReplied[0].user.avatarUrl
+                  }
+                })
+              }
+              console.log(this.music_xiangre);
             })
             axios.get('http://localhost:3000/lyric?id='+item+'')
             .then(rep=>{
