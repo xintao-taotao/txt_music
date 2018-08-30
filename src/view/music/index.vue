@@ -94,19 +94,52 @@
       <Icon type="md-close-circle" class="close_details" size="32" @click="detailsa"/>
       <div class="music_details_content">
         <div class="details_title">
-          {{music_object}}
           <div class="title_f-alpha">
             <img :src="music_object.pic" :title="music_object.title" :alt="music_object.title" :class="f_alpha_img?'f-alpha_img_on':'.f-alpha_img'">
             <span class="f-alpha"></span>
           </div>
         </div>
         <div class="details_pinglun">
-          <ul v-for="(item,index) in music_xiangqing" :key="item.index">
-            <li v-if="item.huifu.username!=''&&item.huifu.userneirong!=''&&item.huifu.userimg!=''">
-              我是有回复的
+          <h3 class="u-hd4">热门评论</h3>
+          <ul>
+            <li class="pingli" v-for="(item,index) in music_xiangre" :key="item.index">
+              <div class="pinglun">
+                <img :src="item.userimg" :alt="item.username">
+                <div class="pinglun_content">
+                  <span>{{item.username}}：</span>
+                  <p>{{item.content}}</p>
+                  <div class="que f-brk f-pr s-fc3" v-if="item.huifu.username!=''&&item.huifu.userneirong!=''&&item.huifu.userimg!=''">
+                    <span class="darr">
+                      <i class="bd">◆</i>
+                      <i class="bg">◆</i>
+                    </span>
+                    <span class="s-fc7">{{item.huifu.username}}</span>：
+                    {{item.huifu.userneirong}}
+                  </div>
+                </div>
+              </div>
             </li>
-            <li v-else>
-              我是没有的
+          </ul>
+          <br>
+          <br>
+          <h3 class="u-hd4">最新评论({{zongshu}})</h3>
+          <ul>
+            <li class="pingli" v-for="(item,index) in music_xiangqing" :key="item.index">
+              <div class="pinglun">
+                <img :src="item.userimg" :alt="item.username">
+                <div class="pinglun_content">
+                  <span>{{item.username}}：</span>
+                  <p>{{item.content}}</p>
+                  <div class="que f-brk f-pr s-fc3" v-if="item.huifu.username!=''&&item.huifu.userneirong!=''&&item.huifu.userimg!=''">
+                    <span class="darr">
+                      <i class="bd">◆</i>
+                      <i class="bg">◆</i>
+                    </span>
+                    <span class="s-fc7">{{item.huifu.username}}</span>：
+                    {{item.huifu.userneirong}}
+                  </div>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
@@ -142,6 +175,7 @@ export default {
       deLogin:false,
       music_list:[],
       geshou:[],
+      zongshu:0,
       music_id:0,
       music_object:{
         title:'',
@@ -172,7 +206,8 @@ export default {
         url:'',
         miaoshu:'',
       },
-      music_xiangqing:[]
+      music_xiangqing:[],
+      music_xiangre:[]
     };
   },
   created(){
@@ -226,13 +261,11 @@ export default {
   },
   methods:{
     music_zhunbei(){
-      console.log("音频准备好了！！！");
       this.f_alpha_img=true;
       this.aplayera=true;
     },
     detailsa(){
       this.details=!this.details;
-      console.log(this.details);
     },
     pave_page(type){
       if(this.page_index!=0&&type==1){
@@ -301,10 +334,10 @@ export default {
             axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
             .then(rep=>{
               var data=rep.data;
-              console.log(data.hotComments);
+              this.zongshu=0;
+              this.zongshu=data.total;
               this.music_xiangqing=[];
               data.comments.forEach(item=>{
-                console.log(item);
                 this.music_xiangqing.push({
                   userimg:item.user.avatarUrl,
                   username:item.user.nickname,
@@ -316,7 +349,18 @@ export default {
                   }
                 })
               })
-              console.log(this.music_xiangqing);
+              data.hotComments.forEach(item=>{
+                this.music_xiangre.push({
+                  userimg:item.user.avatarUrl,
+                  username:item.user.nickname,
+                  content:item.content,
+                  huifu:{
+                    username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
+                    userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+                  }
+                })
+              })
             })
             axios.get('http://localhost:3000/lyric?id='+item+'')
             .then(rep=>{

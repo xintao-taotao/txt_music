@@ -70,10 +70,27 @@
   width: 100%;
   height: 100%;
   background-color: #eee;
+  overflow-y:scroll;
+}
+.music_details::-webkit-scrollbar {
+  width: 10px;
+  height: 1px;
+}
+.music_details::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #535353;
+}
+.music_details::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
 }
 .music_details_content{
   width: 1200px;
   margin: auto;
+  background-color: #fff;
+  padding: 0px 20px;
 }
 .details_title{
   width: 100%;
@@ -118,6 +135,7 @@
   position: absolute;
   top: 33px;
   left: 33px;
+  overflow: hidden;
 }
 .f-alpha_img_on{
   width: 132px;
@@ -127,6 +145,7 @@
   top: 33px;
   left: 33px;
   animation:change 24s linear infinite;
+  overflow: hidden;
 }
 @-webkit-keyframes change{  
   from{  
@@ -174,4 +193,80 @@
   position: fixed;
   bottom: 0px;
   cursor:pointer;
+}
+.pinglun{
+  width: 100%;
+  text-align: center;
+}
+.pinglun img{
+  float: left;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+.pinglun span{
+  float: left;
+  color: #0c73c2;
+}
+.pingli{
+  display: inline-block;
+  width: 100%;
+  padding: 15px 0px;
+  border-top: 1px dotted #ccc;
+}
+.pinglun_content{
+  padding-left: 60px;
+  padding-right: 10px;
+}
+.pinglun_content p{
+  text-indent: 4px;
+  text-align: left;
+  line-height: 20px;
+}
+.s-fc3, a.s-fc3:hover {
+  color: #666;
+}
+.f-pr {
+  position: relative;
+  zoom: 1;
+}
+.f-brk, .cmmts .cnt.f-brk {
+  word-break: break-word;
+}
+.que .darr {
+  position: absolute;
+  top: -7px;
+  left: 20px;
+  font-size: 12px;
+  line-height: 14px;
+}
+.que {
+  padding: 8px 19px;
+  margin-top: 10px;
+  line-height: 20px;
+  background: #f4f4f4;
+  border: 1px solid #dedede;
+  text-align: left;
+}
+.s-fc7, a.s-fc7:hover {
+  color: #0c73c2;
+}
+.darr i {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.darr .bd {
+  color: #dedede;
+}
+.darr .bg {
+  top: 1px;
+  color: #f4f4f4;
+}
+.u-hd4 {
+  position: relative;
+  top: 1px;
+  height: 20px;
+  border-bottom: 1px solid #cfcfcf;
+  text-align: left;
 }
