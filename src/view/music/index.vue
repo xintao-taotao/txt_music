@@ -102,7 +102,7 @@
         <div class="details_pinglun">
           <h3 class="u-hd4">热门评论</h3>
           <ul>
-            <li class="pingli" v-for="(item,index) in music_xiangre" :key="item.index">
+            <li class="pingli" v-for="(item,index) in music_xiangre" :key="index">
               <div class="pinglun">
                 <img :src="item.userimg" :alt="item.username">
                 <div class="pinglun_content">
@@ -124,7 +124,7 @@
           <br>
           <h3 class="u-hd4">最新评论({{zongshu}})</h3>
           <ul>
-            <li class="pingli" v-for="(item,index) in music_xiangqing" :key="item.index">
+            <li class="pingli" v-for="(item,index) in music_xiangqing" :key="index">
               <div class="pinglun">
                 <img :src="item.userimg" :alt="item.username">
                 <div class="pinglun_content">
@@ -333,34 +333,7 @@ export default {
             this.music_object.pic=data[0].al.picUrl;
             axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
             .then(rep=>{
-              var data=rep.data;
-              this.zongshu=0;
-              this.zongshu=data.total;
-              this.music_xiangqing=[];
-              data.comments.forEach(item=>{
-                this.music_xiangqing.push({
-                  userimg:item.user.avatarUrl,
-                  username:item.user.nickname,
-                  content:item.content,
-                  huifu:{
-                    username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
-                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
-                    userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
-                  }
-                })
-              })
-              data.hotComments.forEach(item=>{
-                this.music_xiangre.push({
-                  userimg:item.user.avatarUrl,
-                  username:item.user.nickname,
-                  content:item.content,
-                  huifu:{
-                    username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
-                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
-                    userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
-                  }
-                })
-              })
+              
             })
             axios.get('http://localhost:3000/lyric?id='+item+'')
             .then(rep=>{
