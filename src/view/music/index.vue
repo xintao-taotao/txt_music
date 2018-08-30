@@ -101,7 +101,14 @@
           </div>
         </div>
         <div class="details_pinglun">
-          
+          <ul v-for="(item,index) in music_xiangqing" :key="item.index">
+            <li v-if="item.huifu.username!=''&&item.huifu.userneirong!=''&&item.huifu.userimg!=''">
+              我是有回复的
+            </li>
+            <li v-else>
+              我是没有的
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -164,7 +171,8 @@ export default {
         name:'',
         url:'',
         miaoshu:'',
-      }
+      },
+      music_xiangqing:[]
     };
   },
   created(){
@@ -293,7 +301,22 @@ export default {
             axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
             .then(rep=>{
               var data=rep.data;
-              console.log(data);
+              console.log(data.hotComments);
+              this.music_xiangqing=[];
+              data.comments.forEach(item=>{
+                console.log(item);
+                this.music_xiangqing.push({
+                  userimg:item.user.avatarUrl,
+                  username:item.user.nickname,
+                  content:item.content,
+                  huifu:{
+                    username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
+                    userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+                  }
+                })
+              })
+              console.log(this.music_xiangqing);
             })
             axios.get('http://localhost:3000/lyric?id='+item+'')
             .then(rep=>{
