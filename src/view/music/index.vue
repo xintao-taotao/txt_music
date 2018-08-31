@@ -107,14 +107,14 @@
                 <img :src="item.userimg" :alt="item.username">
                 <div class="pinglun_content">
                   <span>{{item.username}}：</span>
-                  <p>{{item.content}}</p>
+                  <p v-html="item.content"></p>
                   <div class="que f-brk f-pr s-fc3" v-if="item.huifu.username!=''&&item.huifu.userneirong!=''&&item.huifu.userimg!=''">
                     <span class="darr">
                       <i class="bd">◆</i>
                       <i class="bg">◆</i>
                     </span>
                     <span class="s-fc7">{{item.huifu.username}}</span>：
-                    {{item.huifu.userneirong}}
+                    <i v-html="item.huifu.userneirong"></i>
                   </div>
                 </div>
               </div>
@@ -129,14 +129,14 @@
                 <img :src="item.userimg" :alt="item.username">
                 <div class="pinglun_content">
                   <span>{{item.username}}：</span>
-                  <p>{{item.content}}</p>
+                  <p v-html="item.content"></p>
                   <div class="que f-brk f-pr s-fc3" v-if="item.huifu.username!=''&&item.huifu.userneirong!=''&&item.huifu.userimg!=''">
                     <span class="darr">
                       <i class="bd">◆</i>
                       <i class="bg">◆</i>
                     </span>
                     <span class="s-fc7">{{item.huifu.username}}</span>：
-                    {{item.huifu.userneirong}}
+                    <i v-html="item.huifu.userneirong"></i>
                   </div>
                 </div>
               </div>
@@ -219,6 +219,15 @@ export default {
       .then(rep=>{
         this.deLogin=true;
         this.user_onxinxi(rep.data)
+      })
+      axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
+      .then(rep=>{
+        var data=rep.data.playlist[0].id;
+        axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+        .then(rep=>{
+          var data=rep.data.playlist.tracks;
+          console.log(data);
+        })
       })
     }
     let that=this;
@@ -316,6 +325,15 @@ export default {
           this.user_onxinxi(data)
         })
       })
+      axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
+      .then(rep=>{
+        var data=rep.data.playlist[0].id;
+        axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+        .then(rep=>{
+          var data=rep.data.playlist.tracks;
+          console.log(data);
+        })
+      })
     },
     on_diange(item){
       this.jiuxu=false;
@@ -341,10 +359,10 @@ export default {
                 this.music_xiangqing.push({
                   userimg:item.user.avatarUrl,
                   username:item.user.nickname,
-                  content:item.content,
+                  content:item.content.replace(/\n/g, "<br/>"),
                   huifu:{
                     username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
-                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
+                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content.replace(/\n/g, "<br/>"),
                     userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
                   }
                 })
@@ -354,10 +372,10 @@ export default {
                 this.music_xiangre.push({
                   userimg:item.user.avatarUrl,
                   username:item.user.nickname,
-                  content:item.content,
+                  content:item.content.replace(/\n/g, "<br/>"),
                   huifu:{
                     username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
-                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content,
+                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content.replace(/\n/g, "<br/>"),
                     userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
                   }
                 })
