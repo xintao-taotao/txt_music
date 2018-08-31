@@ -5,6 +5,13 @@
         <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
         <Button type="primary" @click="clearlocal(1)" class="tuichu">退出</Button>
         <h5>{{username}}</h5>
+        <ul>
+          <li v-for="item in gedan" :key="item.id" @dblclick="on_diange(item.id)">
+            {{item.name}}
+            <br/>
+            {{item.singer}}
+          </li>
+        </ul>
       </div>
       <div class="deLogin" v-else>
         <Form :model="formInline" :rules="ruleInline">
@@ -177,6 +184,7 @@ export default {
       geshou:[],
       zongshu:0,
       music_id:0,
+      gedan:[],
       music_object:{
         title:'',
         artist:'',
@@ -226,7 +234,14 @@ export default {
         axios.get('http://localhost:3000/playlist/detail?id='+data+'')
         .then(rep=>{
           var data=rep.data.playlist.tracks;
-          console.log(data);
+          this.gedan=[];
+          data.forEach(item=>{
+            this.gedan.push({
+              id:item.id,
+              name:item.name,
+              singer:item.ar.length==1?item.ar[0].name:item.ar[0].name+"-"+item.ar[1].name,
+            });
+          })
         })
       })
     }
