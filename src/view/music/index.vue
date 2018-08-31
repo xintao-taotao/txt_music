@@ -5,9 +5,9 @@
         <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
         <Button type="primary" @click="clearlocal(1)" class="tuichu">退出</Button>
         <h5>{{username}}</h5>
-        <h3 class="u-hd4">以下是您喜爱的歌</h3>
-        <ul>
-          <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id)">
+        <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">以下是您喜爱的歌</h3>
+        <ul class="xiaidege" :style="{height:music_height}">
+          <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id,'gedan')">
             <div style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
               <div class="li_left_margin">{{item.name}}</div>
               <div class="li_content_bigmargin">{{item.singer}}</div>
@@ -15,7 +15,7 @@
           </li>
         </ul>
       </div>
-      <div class="deLogin" v-else>
+      <div class="deLogin" v-else :style="{height:music_width}">
         <Form :model="formInline" :rules="ruleInline">
           <FormItem prop="user">
             <Input type="text" v-model="formInline.user" placeholder="手机号">
@@ -34,14 +34,13 @@
       </div>
     </div>
     <div style="background-color:#fff;" class="music_title">
-      <div class="music_search">
-        <Icon type="ios-arrow-dropleft" @click="back(1)" title="返回歌手列表" size="32"/>
-        <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;float:left;"/>
-        <Button type="primary" shape="circle" icon="ios-search" style="float:left;margin-left:2%;" @click="on_search(music_search)">搜索</Button>
-        <Icon type="md-close-circle" @click="title_show=!title_show" style="cursor:pointer;float:right;" size="32" title="关闭搜索列表" />
+      <div class="music_search" style="position: relative;">
+        <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" title="返回歌手列表" v-show="onlist" size="32"/>
+        <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;"/>
+        <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">搜索</Button>
       </div>
     </div>
-    <div style="display:flex;">
+    <div style="display:flex;padding-top:20px;">
       <div style="margin:auto;width:888px;">
         <div class="content">
           <ul class="geshou_list" v-show="geshou_danye">
@@ -56,36 +55,17 @@
               </div>
             </div>
           </ul>
-          <div class="on_list" v-show="onlist">
+          <div class="on_list" v-show="onlist" :style="{height:on_list}">
             <ul>
               <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
-                <div @dblclick="on_diange(item.id)" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                <div @dblclick="on_diange(item.id,'search_data')" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
                   <div class="li_left_margin">{{item.name}}</div>
                   <div class="li_content_bigmargin">{{item.singer}}</div>
                 </div>
               </li>
             </ul>
           </div>
-          <!-- <div v-show="geshou_axinxi">
-            <div class="xinxi_title">
-              
-            </div>
-            <ul>
-              <li></li>
-            </ul>
-          </div> -->
           <Spin fix v-show="geshou_on"></Spin>
-          <!-- <ul>
-            <li v-for="item in music_list" :key="item.id" @dblclick="diange(item.id)">
-              <img :src="item.album_img" :alt="item.album">
-              <span>
-                {{item.name}}
-              </span>
-              <div class="right_xinxi">
-                {{item.geshou}}
-              </div>
-            </li>
-          </ul> -->
         </div>
       </div>
     </div>
@@ -96,7 +76,7 @@
           点击查看歌曲详情
         </div>
         <Icon type="md-close" @click="aplayera=!aplayera" class="on_aplayer" size="14"/>
-        <aplayer autoplay="autoplay" @loadedmetadata="music_zhunbei" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end"/>
+        <aplayer autoplay="autoplay" @playing="admin" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end"/>
       </div>
     </div>
     <div class="music_details" v-show="this.details">
@@ -104,7 +84,7 @@
       <div class="music_details_content">
         <div class="details_title">
           <div class="title_f-alpha">
-            <img :src="music_object.pic" style="position: absolute;top: 33px;left: 33px;overflow: hidden;" :title="music_object.title" :alt="music_object.title" :class="f_alpha_img?'f-alpha_img_on':'.f-alpha_img'" width="132px" height="132px">
+            <img :src="music_object.pic" style="position: absolute;top: 33px;left: 33px;overflow: hidden;" :title="music_object.title" :alt="music_object.title" :class="f_alpha_img?'f-alpha_img_on':'f-alpha_img'" width="132px" height="132px">
             <span class="f-alpha"></span>
           </div>
         </div>
@@ -169,14 +149,16 @@ export default {
   data () {
     return {
       music_width:0,
+      dangqianbofang:'',
+      music_height:0,
       aplayera:false,
       f_alpha_img:false,
       details:false,
       page_index:0,
+      on_list:0,
       music_search:'',
       geshou_on:false,
       geshou_danye:true,
-      title_show:true,
       userid:0,
       onlist:false,
       jishiqi:1,
@@ -222,6 +204,8 @@ export default {
   },
   created(){
     this.music_width = `${document.documentElement.clientHeight}px`;
+    this.music_height= `${document.documentElement.clientHeight-121}px`;
+    this.on_list= `${document.documentElement.clientHeight-195}px`
     util.vue = this;
     util.title(this.$t("projectName") + "-" + this.$t("music_page"));
     if(this.userid!=0||localStorage.getItem('userid')!=null){
@@ -286,8 +270,8 @@ export default {
     }
   },
   methods:{
-    music_zhunbei(){
-      this.f_alpha_img=true;
+    admin(){
+      this.f_alpha_img=!this.f_alpha_img;
       this.aplayera=true;
     },
     detailsa(){
@@ -359,67 +343,138 @@ export default {
         })
       })
     },
-    on_diange(item){
+    on_diange(item,data){
+      this.dangqianbofang=data;
       this.jiuxu=false;
       this.music_id=item;
-      axios.get('http://localhost:3000/music/url?id='+item+'')
-      .then(rep=>{
-        var data=rep.data;
-        if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
-          this.music_object.src=data.data[0].url;
-          axios.get('http://localhost:3000/song/detail?ids='+item+'')
-          .then(rep=>{
-            var data=rep.data.songs;
-            this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
-            this.music_object.title=data[0].name;
-            this.music_object.pic=data[0].al.picUrl;
-            axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
+      if(data=='gedan'){
+        axios.get('http://localhost:3000/music/url?id='+item+'')
+        .then(rep=>{
+          var data=rep.data;
+          if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
+            this.music_object.src=data.data[0].url;
+            axios.get('http://localhost:3000/song/detail?ids='+item+'')
             .then(rep=>{
-              var data=rep.data;
-              this.zongshu=0;
-              this.zongshu=data.total;
-              this.music_xiangqing=[];
-              data.comments.forEach(item=>{
-                this.music_xiangqing.push({
-                  userimg:item.user.avatarUrl,
-                  username:item.user.nickname,
-                  content:item.content.replace(/\n/g, "<br/>"),
-                  huifu:{
-                    username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
-                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content.replace(/\n/g, "<br/>"),
-                    userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
-                  }
+              var data=rep.data.songs;
+              this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
+              this.music_object.title=data[0].name;
+              this.music_object.pic=data[0].al.picUrl;
+              axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
+              .then(rep=>{
+                var data=rep.data;
+                this.zongshu=0;
+                this.zongshu=data.total;
+                this.music_xiangqing=[];
+                data.comments.forEach(item=>{
+                  this.music_xiangqing.push({
+                    userimg:item.user.avatarUrl,
+                    username:item.user.nickname,
+                    content:item.content.replace(/\n/g, "<br/>"),
+                    huifu:{
+                      username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+                      userneirong:item.beReplied.length==0?'':(item.beReplied[0].content==null?'该评论已删除！':item.beReplied[0].content.replace(/\n/g, "<br/>")),
+                      userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+                    }
+                  })
+                })
+                this.music_xiangre=[];
+                data.hotComments.forEach(item=>{
+                  this.music_xiangre.push({
+                    userimg:item.user.avatarUrl,
+                    username:item.user.nickname,
+                    content:item.content.replace(/\n/g, "<br/>"),
+                    huifu:{
+                      username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+                      userneirong:item.beReplied.length==0?'':(item.beReplied[0].content==null?'该评论已删除！':item.beReplied[0].content.replace(/\n/g, "<br/>")),
+                      userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+                    }
+                  })
                 })
               })
-              this.music_xiangre=[];
-              data.hotComments.forEach(item=>{
-                this.music_xiangre.push({
-                  userimg:item.user.avatarUrl,
-                  username:item.user.nickname,
-                  content:item.content.replace(/\n/g, "<br/>"),
-                  huifu:{
-                    username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
-                    userneirong:item.beReplied.length==0?'':item.beReplied[0].content.replace(/\n/g, "<br/>"),
-                    userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
-                  }
-                })
+              axios.get('http://localhost:3000/lyric?id='+item+'')
+              .then(rep=>{
+                var data=rep.data;
+                this.music_object.lrc="";
+                if(data.lrc==undefined){
+                  this.music_object.lrc='[00:00.400]此音乐为纯音乐';
+                }else{
+                  this.music_object.lrc=data.lrc.lyric;
+                }
+                this.jiuxu=true;
               })
             })
-            axios.get('http://localhost:3000/lyric?id='+item+'')
+          }else{
+            util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
+            this.on_diange(this.gedan[0].id,'gedan');
+            this.jiuxu=true;
+            return;
+          }
+        })
+      }else{
+        axios.get('http://localhost:3000/music/url?id='+item+'')
+        .then(rep=>{
+          var data=rep.data;
+          if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
+            this.music_object.src=data.data[0].url;
+            axios.get('http://localhost:3000/song/detail?ids='+item+'')
             .then(rep=>{
-              var data=rep.data;
-              this.music_object.lrc="";
-              this.music_object.lrc=data.lrc.lyric;
-              this.jiuxu=true;
+              var data=rep.data.songs;
+              this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
+              this.music_object.title=data[0].name;
+              this.music_object.pic=data[0].al.picUrl;
+              axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
+              .then(rep=>{
+                var data=rep.data;
+                this.zongshu=0;
+                this.zongshu=data.total;
+                this.music_xiangqing=[];
+                data.comments.forEach(item=>{
+                  this.music_xiangqing.push({
+                    userimg:item.user.avatarUrl,
+                    username:item.user.nickname,
+                    content:item.content.replace(/\n/g, "<br/>"),
+                    huifu:{
+                      username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+                      userneirong:item.beReplied.length==0?'':(item.beReplied[0].content==null?'该评论已删除！':item.beReplied[0].content.replace(/\n/g, "<br/>")),
+                      userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+                    }
+                  })
+                })
+                this.music_xiangre=[];
+                data.hotComments.forEach(item=>{
+                  this.music_xiangre.push({
+                    userimg:item.user.avatarUrl,
+                    username:item.user.nickname,
+                    content:item.content.replace(/\n/g, "<br/>"),
+                    huifu:{
+                      username:item.beReplied.length==0?'':item.beReplied[0].user.nickname,
+                      userneirong:item.beReplied.length==0?'':(item.beReplied[0].content==null?'该评论已删除！':item.beReplied[0].content.replace(/\n/g, "<br/>")),
+                      userimg:item.beReplied.length==0?'':item.beReplied[0].user.avatarUrl
+                    }
+                  })
+                })
+              })
+              axios.get('http://localhost:3000/lyric?id='+item+'')
+              .then(rep=>{
+                var data=rep.data;
+                this.music_object.lrc="";
+                if(data.lrc==undefined){
+                  this.music_object.lrc='[00:00.400]此音乐为纯音乐';
+                }else{
+                  this.music_object.lrc=data.lrc.lyric;
+                }
+                this.jiuxu=true;
+              })
             })
-          })
-        }else{
-          util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
-          this.on_diange(this.search_data[0].id);
-          this.jiuxu=true;
-          return;
-        }
-      })
+          }else{
+            util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
+            console.log("asdasdads");
+            this.on_diange(this.search_data[0].id,'search_data');
+            this.jiuxu=true;
+            return;
+          }
+        })
+      }
       this.jishiqi=0;
       this.jishiqi=this.jishiqi+parseInt(item)
     },
@@ -485,48 +540,30 @@ export default {
         })
       }
     },
-    diange(item){
-      this.jiuxu=false;
-      this.music_id=item;
-      axios.get('http://localhost:3000/music/url?id='+item+'')
-      .then(rep=>{
-        var data=rep.data;
-        if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
-          this.music_object.src=data.data[0].url;
-          axios.get('http://localhost:3000/song/detail?ids='+item+'')
-          .then(rep=>{
-            var data=rep.data.songs;
-            this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
-            this.music_object.title=data[0].name;
-            this.music_object.pic=data[0].al.picUrl;
-            axios.get('http://localhost:3000/lyric?id='+item+'')
-            .then(rep=>{
-              var data=rep.data;
-              this.music_object.lrc="";
-              this.music_object.lrc=data.lrc.lyric;
-              this.jiuxu=true;
-            })
-          })
-        }else{
-          util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
-          this.diange(this.music_list[0].id);
-          this.jiuxu=true;
-          return;
-        }
-      })
-      this.jishiqi=0;
-      this.jishiqi=this.jishiqi+parseInt(item)
-    },
     music_end(){
       this.f_alpha_img=false;
-      for(var a=1;a<this.search_data.length;a++){
-        if(this.search_data[a].id==this.music_id){
-          if(a+1<this.search_data.length){
-            this.on_diange(this.search_data[a+1].id)
-            return;
-          }else{
-            this.on_diange(this.search_data[0].id)
-            return;
+      if(this.dangqianbofang=='gedan'){
+        for(var a=0;a<this.gedan.length;a++){
+          if(this.gedan[a].id==this.music_id){
+            if(a+1<this.gedan.length){
+              this.on_diange(this.gedan[a+1].id,'gedan');
+              return;
+            }else{
+              this.on_diange(this.gedan[0].id,'gedan');
+              return;
+            }
+          }
+        }
+      }else{
+        for(var a=0;a<this.search_data.length;a++){
+          if(this.search_data[a].id==this.music_id){
+            if(a+1<this.search_data.length){
+              this.on_diange(this.search_data[a+1].id,'search_data');
+              return;
+            }else{
+              this.on_diange(this.search_data[0].id,'search_data');
+              return;
+            }
           }
         }
       }

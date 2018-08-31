@@ -1,7 +1,7 @@
 .music_left{
   background-color: #fff;
   float: left;
-  width: 200px;
+  width: 250px;
   height: 100%;
 }
 .deLogin{
@@ -27,6 +27,22 @@
 }
 .on_list ul{
   padding: 0px;
+  height: 100%;
+  overflow-y:scroll;
+}
+.on_list ul::-webkit-scrollbar {
+  width: 10px;
+  height: 1px;
+}
+.on_list ul::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #535353;
+}
+.on_list ul::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
 }
 .on_list ul li{
   list-style:none;
@@ -39,6 +55,13 @@
   height: 28px;
   width: 80%;
   text-align: left;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.li_content_bigmargin{
   overflow : hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -142,10 +165,10 @@
 }
 @-webkit-keyframes change{  
   from{  
-      -webkit-transform:rotate(0deg);  
+    -webkit-transform:rotate(0deg);  
   }  
   to{  
-      -webkit-transform:rotate(360deg);  
+    -webkit-transform:rotate(360deg);  
   }  
 }
 .title_f-alpha{
@@ -168,7 +191,9 @@
   display: flex;
 }
 .music_search{
-  width: 100%;
+  width: 1200px;
+  margin: auto;
+  line-height: 50px;
 }
 .on_aplayer{
   cursor:pointer;
@@ -260,9 +285,34 @@
   color: #f4f4f4;
 }
 .u-hd4 {
-  position: relative;
-  top: 1px;
   height: 20px;
   border-bottom: 1px solid #cfcfcf;
   text-align: left;
+  padding-bottom: 22px;
+}
+.xiaidege{
+  overflow-y:scroll;
+}
+.xiaidege::-webkit-scrollbar {
+  width: 10px;
+  height: 1px;
+}
+.xiaidege::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #535353;
+}
+.xiaidege::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
+}
+.xiaidege li{
+  height: 28px;
+  line-height: 28px;
+  list-style: none;
+  color: #fff;
+}
+.xiaidege .on_zhengzaibf{
+  color: #000;
 }
