@@ -5,11 +5,13 @@
         <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
         <Button type="primary" @click="clearlocal(1)" class="tuichu">退出</Button>
         <h5>{{username}}</h5>
+        <h3 class="u-hd4">以下是您喜爱的歌</h3>
         <ul>
-          <li v-for="item in gedan" :key="item.id" @dblclick="on_diange(item.id)">
-            {{item.name}}
-            <br/>
-            {{item.singer}}
+          <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id)">
+            <div style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+              <div class="li_left_margin">{{item.name}}</div>
+              <div class="li_content_bigmargin">{{item.singer}}</div>
+            </div>
           </li>
         </ul>
       </div>
@@ -102,7 +104,7 @@
       <div class="music_details_content">
         <div class="details_title">
           <div class="title_f-alpha">
-            <img :src="music_object.pic" :title="music_object.title" :alt="music_object.title" :class="f_alpha_img?'f-alpha_img_on':'.f-alpha_img'">
+            <img :src="music_object.pic" style="position: absolute;top: 33px;left: 33px;overflow: hidden;" :title="music_object.title" :alt="music_object.title" :class="f_alpha_img?'f-alpha_img_on':'.f-alpha_img'" width="132px" height="132px">
             <span class="f-alpha"></span>
           </div>
         </div>
@@ -331,22 +333,29 @@ export default {
       axios.get('http://localhost:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
       .then(rep=>{
         let data=rep.data
-        this.deLogin=true;
         this.userid=data.account.id;
         localStorage.setItem('userid',this.userid);
         axios.get('http://localhost:3000/user/detail?uid='+this.userid+'')
         .then(rep=>{
           var data=rep.data;
-          this.user_onxinxi(data)
-        })
-      })
-      axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
-      .then(rep=>{
-        var data=rep.data.playlist[0].id;
-        axios.get('http://localhost:3000/playlist/detail?id='+data+'')
-        .then(rep=>{
-          var data=rep.data.playlist.tracks;
-          console.log(data);
+          axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
+          .then(rep=>{
+            var data=rep.data.playlist[0].id;
+            axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+            .then(rep=>{
+              var data=rep.data.playlist.tracks;
+              this.gedan=[];
+              data.forEach(item=>{
+                this.gedan.push({
+                  id:item.id,
+                  name:item.name,
+                  singer:item.ar.length==1?item.ar[0].name:item.ar[0].name+"-"+item.ar[1].name,
+                });
+              })
+            })
+          })
+          this.user_onxinxi(data);
+          this.deLogin=true;
         })
       })
     },
