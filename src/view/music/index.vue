@@ -1,11 +1,14 @@
 <template>
   <div class="music" :style="{height:music_width}">
+    <div style="text-align:right;">
+      <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
+    </div>
     <div class="music_left">
       <div class="xinxi" v-if="deLogin" :style="{backgroundImage: 'url(' + userbackgroundurl + ')'}">
         <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
-        <Button type="primary" @click="clearlocal(1)" class="tuichu">退出</Button>
+        <Button type="primary" @click="clearlocal(1)" class="tuichu">{{$t('drop_out')}}</Button>
         <h5>{{username}}</h5>
-        <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">以下是您喜爱的歌</h3>
+        <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">{{$t('xiai_music')}}</h3>
         <ul class="xiaidege" :style="{height:music_height}">
           <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id,'gedan')">
             <div style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
@@ -18,26 +21,26 @@
       <div class="deLogin" v-else :style="{height:music_width}">
         <Form :model="formInline" :rules="ruleInline">
           <FormItem prop="user">
-            <Input type="text" v-model="formInline.user" placeholder="手机号">
+            <Input type="text" v-model="formInline.user" :placeholder="$t('phone_haoma')">
               <Icon type="ios-person-outline" slot="prepend"></Icon>
             </Input>
           </FormItem>
           <FormItem prop="password">
-            <Input type="password" v-model="formInline.password" placeholder="密码">
+            <Input type="password" v-model="formInline.password" :placeholder="$t('password')">
               <Icon type="ios-lock-outline" slot="prepend"></Icon>
             </Input>
           </FormItem>
           <FormItem style="text-align:center;">
-            <Button type="primary" @click="handleSubmit">登录</Button>
+            <Button type="primary" @click="handleSubmit">{{$t('denglu')}}</Button>
           </FormItem>
         </Form>
       </div>
     </div>
     <div style="background-color:#fff;" class="music_title">
       <div class="music_search" style="position: relative;">
-        <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" title="返回歌手列表" v-show="onlist" size="32"/>
-        <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;"/>
-        <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">搜索</Button>
+        <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" :title="$t('back_musiclist')" v-show="onlist" size="32"/>
+        <Input v-model="music_search" :placeholder="$t('search_content')" style="width: 68%;"/>
+        <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">{{$t('search_on')}}</Button>
       </div>
     </div>
     <div style="display:flex;padding-top:20px;">
@@ -270,6 +273,15 @@ export default {
     }
   },
   methods:{
+    changeLang(lang) {
+      this.$store.commit("switchLang", lang);
+      util.title(
+        this.$t("projectName") +
+          "-" +
+          this.$t('home')
+      );
+      window.location.reload();
+    },
     admin(){
       this.f_alpha_img=!this.f_alpha_img;
       this.aplayera=true;
@@ -468,7 +480,6 @@ export default {
             })
           }else{
             util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
-            console.log("asdasdads");
             this.on_diange(this.search_data[0].id,'search_data');
             this.jiuxu=true;
             return;

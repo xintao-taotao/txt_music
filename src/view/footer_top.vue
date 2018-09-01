@@ -1,5 +1,4 @@
 <template>
-
   <Affix :offset-bottom="80">
     <span class="demo-affix">Fix at the bottom 20px</span>
   </Affix>

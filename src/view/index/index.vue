@@ -1,6 +1,9 @@
 <template>
   <div class="page">
     <affix>
+      <div style="text-align:right;">
+        <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
+      </div>
       <!-- <Menu mode="horizontal" theme="dark" active-name="1">
         <MenuItem name="1">
           <Icon type="ios-paper" />
@@ -30,7 +33,6 @@
           综合设置
         </MenuItem>
         导航
-        <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
       </Menu> -->
     </affix>
     <banner></banner>
@@ -72,6 +74,7 @@ export default {
           "-" +
           this.$t('home')
       );
+      window.location.reload();
     }
   }
 }

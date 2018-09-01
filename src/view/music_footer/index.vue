@@ -58,7 +58,7 @@
         </FormItem>
       </Form>
     </div> -->
-    <a @click="on_music">跳转到音乐页面</a>
+    <a @click="on_music">{{$t('url_music')}}</a>
   </div>
 </template>
 
