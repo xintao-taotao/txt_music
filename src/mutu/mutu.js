@@ -2,6 +2,7 @@ import axios from 'axios';
 import swal from "sweetalert";
 import Locales from "../language/locale"
 import env from '../config/env'
+import Cookies from "js-cookie"
 import func from './func'
 
 const lang = Locales[window.localStorage.lang || 'zh-CN'];
@@ -55,6 +56,18 @@ util.info = function (arg, callback) {
   alertMsg(arg, 'info', callback);
 }
 
+util.setToken = function(token) {
+  //, { expires: 1 / 48 }
+  Cookies.set('token', encodeURIComponent(token));
+  localStorage.setItem('token', encodeURIComponent(token));
+}
+util.getToken = function() {
+  return Cookies.get('token') ? Cookies.get('token') : undefined;
+}
+util.removeToken = function() {
+  Cookies.remove('token');
+  localStorage.removeItem('token');
+}
 
 util.confirm = function (msg, ok, cancel) {
   swal({
