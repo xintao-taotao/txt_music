@@ -212,16 +212,16 @@ export default {
     util.vue = this;
     util.title(this.$t("projectName") + "-" + this.$t("music_page"));
     if(this.userid!=0||localStorage.getItem('userid')!=null){
-      axios.get('http://localhost:3000/user/detail?uid='+localStorage.getItem('userid')+'')
+      axios.get('http://music.tangxintao.cn:3000/user/detail?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         this.deLogin=true;
         console.log(document.cookie)
         this.user_onxinxi(rep.data)
       })
-      axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
+      axios.get('http://music.tangxintao.cn:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         var data=rep.data.playlist[0].id;
-        axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+        axios.get('http://music.tangxintao.cn:3000/playlist/detail?id='+data+'')
         .then(rep=>{
           var data=rep.data.playlist.tracks;
           this.gedan=[];
@@ -239,7 +239,7 @@ export default {
     setTimeout(function(){
       that.clearlocal();
     },10800000);
-    axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=18')
+    axios.get('http://music.tangxintao.cn:3000/top/artists?offset='+this.page_index+'&limit=18')
     .then(rep=>{
       const data=rep.data;
       this.geshou=[];
@@ -294,7 +294,7 @@ export default {
       if(this.page_index!=0&&type==1){
         //上一页代码
         this.page_index=this.page_index-18;
-        axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=18')
+        axios.get('http://music.tangxintao.cn:3000/top/artists?offset='+this.page_index+'&limit=18')
         .then(rep=>{
           const data=rep.data;
           this.geshou=[];
@@ -309,7 +309,7 @@ export default {
       }else if(type==2){
         //下一页代码
         this.page_index=this.page_index+18;
-        axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=18')
+        axios.get('http://music.tangxintao.cn:3000/top/artists?offset='+this.page_index+'&limit=18')
         .then(rep=>{
           const data=rep.data;
           this.geshou=[];
@@ -327,18 +327,18 @@ export default {
       }
     },
     handleSubmit(){
-      axios.get('http://localhost:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
+      axios.get('http://music.tangxintao.cn:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password+'')
       .then(rep=>{
         let data=rep.data
         this.userid=data.account.id;
         localStorage.setItem('userid',this.userid);
-        axios.get('http://localhost:3000/user/detail?uid='+this.userid+'')
+        axios.get('http://music.tangxintao.cn:3000/user/detail?uid='+this.userid+'')
         .then(rep=>{
           var data=rep.data;
-          axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
+          axios.get('http://music.tangxintao.cn:3000/user/playlist?uid='+this.userid+'')
           .then(rep=>{
             var data=rep.data.playlist[0].id;
-            axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+            axios.get('http://music.tangxintao.cn:3000/playlist/detail?id='+data+'')
             .then(rep=>{
               var data=rep.data.playlist.tracks;
               this.gedan=[];
@@ -361,18 +361,18 @@ export default {
       this.jiuxu=false;
       this.music_id=item;
       if(data=='gedan'){
-        axios.get('http://localhost:3000/music/url?id='+item+'')
+        axios.get('http://music.tangxintao.cn:3000/music/url?id='+item+'')
         .then(rep=>{
           var data=rep.data;
           if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
             this.music_object.src=data.data[0].url;
-            axios.get('http://localhost:3000/song/detail?ids='+item+'')
+            axios.get('http://music.tangxintao.cn:3000/song/detail?ids='+item+'')
             .then(rep=>{
               var data=rep.data.songs;
               this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
               this.music_object.title=data[0].name;
               this.music_object.pic=data[0].al.picUrl;
-              axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
+              axios.get('http://music.tangxintao.cn:3000/comment/music?id='+item+'&limit=20')
               .then(rep=>{
                 var data=rep.data;
                 this.zongshu=0;
@@ -404,7 +404,7 @@ export default {
                   })
                 })
               })
-              axios.get('http://localhost:3000/lyric?id='+item+'')
+              axios.get('http://music.tangxintao.cn:3000/lyric?id='+item+'')
               .then(rep=>{
                 var data=rep.data;
                 this.music_object.lrc="";
@@ -424,18 +424,18 @@ export default {
           }
         })
       }else{
-        axios.get('http://localhost:3000/music/url?id='+item+'')
+        axios.get('http://music.tangxintao.cn:3000/music/url?id='+item+'')
         .then(rep=>{
           var data=rep.data;
           if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
             this.music_object.src=data.data[0].url;
-            axios.get('http://localhost:3000/song/detail?ids='+item+'')
+            axios.get('http://music.tangxintao.cn:3000/song/detail?ids='+item+'')
             .then(rep=>{
               var data=rep.data.songs;
               this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
               this.music_object.title=data[0].name;
               this.music_object.pic=data[0].al.picUrl;
-              axios.get('http://localhost:3000/comment/music?id='+item+'&limit=20')
+              axios.get('http://music.tangxintao.cn:3000/comment/music?id='+item+'&limit=20')
               .then(rep=>{
                 var data=rep.data;
                 this.zongshu=0;
@@ -467,7 +467,7 @@ export default {
                   })
                 })
               })
-              axios.get('http://localhost:3000/lyric?id='+item+'')
+              axios.get('http://music.tangxintao.cn:3000/lyric?id='+item+'')
               .then(rep=>{
                 var data=rep.data;
                 this.music_object.lrc="";
@@ -513,7 +513,7 @@ export default {
       this.geshou_on=true;
       this.onlist=false;
       if(typeof type=='number'){
-        axios.get('http://localhost:3000/artists?id='+type)
+        axios.get('http://music.tangxintao.cn:3000/artists?id='+type)
         .then(rep=>{
           var data=rep.data;
           this.geshou_xinxi.name="";
@@ -536,7 +536,7 @@ export default {
         })
       }else{
         this.onlist=false;
-        axios.get('http://localhost:3000/search?keywords='+type+'?limit='+this.page_index)
+        axios.get('http://music.tangxintao.cn:3000/search?keywords='+type+'?limit='+this.page_index)
         .then(rep=>{
           var data=rep.data.result.songs;
           this.search_data=[];
