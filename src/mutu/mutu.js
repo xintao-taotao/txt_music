@@ -14,6 +14,18 @@ util.title = function (title) {
   window.document.title = title;
 };
 
+util.setToken = function(token) {
+  //, { expires: 1 / 48 }
+  Cookies.set('token', encodeURIComponent(token));
+  localStorage.setItem('token', encodeURIComponent(token));
+}
+util.getToken = function() {
+  return Cookies.get('token') ? Cookies.get('token') : undefined;
+}
+util.removeToken = function() {
+  Cookies.remove('token');
+  localStorage.removeItem('token');
+}
 
 const ajaxUrl = env === 'development' ?
   'http://localhost:8081' :
