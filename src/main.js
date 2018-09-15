@@ -13,6 +13,7 @@ import Vuex from 'vuex'
 import VueLazyload from 'vue-lazyload'
 
 Vue.use(VueRouter);
+Vue.use(BootstrapVue);
 Vue.use(VueI18n);
 Vue.use(Vuex);
 Vue.use(iView);
