@@ -1,7 +1,6 @@
 .music_left{
   background-color: #fff;
   float: left;
-  width: 250px;
   height: 100%;
 }
 .deLogin{
@@ -54,6 +53,7 @@
   float: left;
   height: 28px;
   width: 80%;
+  font-size: .7rem;
   text-align: left;
   overflow : hidden;
   text-overflow: ellipsis;
@@ -65,6 +65,7 @@
   overflow : hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
+  font-size: .7rem;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
@@ -74,17 +75,19 @@
 .geshou_list{
   width: 888px;
 }
-.geshou_list li{
-  width: 130px;
+.geshou_li{
   height: 154px;
-  float: left;
   margin-right: 18px;
   list-style: none;
-  margin-bottom: 30px;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  font-size: .7rem;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
-.geshou_list li img{
-  width: 130px;
-  height: 130px;
+.geshou_li img{
+  width: 100%;
+  height: 100%;
 }
 .music_details{
   position: fixed;
@@ -127,7 +130,6 @@
   cursor:pointer;
 }
 .autoplay_content{
-  width: 1200px;
   position: fixed;
   bottom:0px;
 }
@@ -142,6 +144,7 @@
   height: 90px;
   line-height: 90px;
   top: 5px;
+  background-color: red;
 }
 .f-alpha{
   position: absolute;
@@ -178,7 +181,6 @@
 }
 .autoplay_class{
   margin: auto;
-  width:1200px;
   position: relative;
 }
 .music{
@@ -211,10 +213,14 @@
   position: fixed;
   bottom: 0px;
   cursor:pointer;
+  left: 50%;
 }
 .pinglun{
   width: 100%;
   text-align: center;
+  height: 100%;
+  display: inline-block;
+  padding: 15px 0px;
 }
 .pinglun img{
   float: left;
@@ -222,14 +228,13 @@
   height: 50px;
   margin-right: 10px;
 }
-.pinglun span{
+.pinglun_content>span{
   float: left;
   color: #0c73c2;
 }
 .pingli{
   display: inline-block;
   width: 100%;
-  padding: 15px 0px;
   border-top: 1px dotted #ccc;
 }
 .pinglun_content{
@@ -289,6 +294,7 @@
   border-bottom: 1px solid #cfcfcf;
   text-align: left;
   padding-bottom: 22px;
+  font-size: .8rem;
 }
 .xiaidege{
   overflow-y:scroll;
@@ -313,6 +319,182 @@
   list-style: none;
   color: #fff;
 }
+.xiaidege li>div{
+  height: 28px;
+}
 .xiaidege .on_zhengzaibf{
   color: #000;
+}
+.content_right{
+  
+}
+.left{
+  width: 100%;
+  float: left;
+}
+.right{
+  width: 86%;
+  float: left;
+}
+.m-quk-1 .corr {
+  right: 5px;
+}
+
+.m-quk .corr {
+  position: absolute;
+  top: -8px;
+  right: 15px;
+}
+.u-arr-1 {
+  width: 14px;
+}
+.u-arr {
+  width: 13px;
+  height: 14px;
+  overflow: hidden;
+}
+.u-arr-1 .arrline {
+  color: #d9d9d9;
+}
+.u-arr .arrline {
+  color: #cdcdcd;
+}
+.u-arr .arrline, .u-arr .arrclr, .u-arr .arriner {
+  display: block;
+  font-family: "SimSun";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: normal;
+  height: 10px;
+  line-height: normal;
+}
+.m-quk-1 {
+  margin-bottom: 15px;
+}
+.m-quk {
+  margin-left: 60px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+.f-pr {
+  position: relative;
+  zoom: 1;
+}
+.u-arr-1 .arrclr {
+  margin: -9px 0 0;
+  _margin-top: -16px;
+  color: #f8f8f8;
+}
+
+.u-arr .arrclr {
+  margin: -8px 0 0 0px;
+  _margin-top: -17px;
+  color: #fff;
+}
+.u-arr .arrline, .u-arr .arrclr, .u-arr .arriner {
+  display: block;
+  font-family: "SimSun";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: normal;
+  height: 10px;
+  line-height: normal;
+}
+.m-quk .iner {
+  padding: 15px;
+  background: #f8f8f8;
+  border: 1px solid #fcfcfc;
+  border-radius: 2px;
+}
+.f-pr {
+  position: relative;
+  zoom: 1;
+}
+div.holder-parent {
+  position: relative;
+  zoom: 1;
+}
+.m-cmmtipt .btns {
+  clear: both;
+  padding-top: 10px;
+}
+
+.f-pr {
+  position: relative;
+  zoom: 1;
+}
+.sep {
+  margin: 0 8px;
+  color: #ccc;
+}
+.dlt{
+  display: none;
+}
+.dlt_block{
+  display: none;
+}
+.pinglun_content:hover .dlt_block{
+  display: inline;
+}
+.dianzan{
+  display: inline-block;
+  width: 100%;
+  margin-top: 15px;
+  text-align: right;
+}
+.dianzan a{
+  color: #666;
+}
+.area{
+  width: 100%;
+}
+.u-icn, .u-title-1 .out .icon {
+  background: url('../../assets/images/icon.png') no-repeat 0 9999px;
+}
+.u-icn, .u-icn2, .u-icn3 {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.u-icn-41 {
+  width: 18px;
+  height: 18px;
+  background-position: -60px -490px;
+}
+.u-icn-36 {
+  width: 18px;
+  height: 18px;
+  background-position: -40px -490px;
+}
+.m-cmmtipt .btns .icn {
+  float: left;
+  margin: 0px 10px 0 0;
+  cursor: pointer;
+}
+.m-cmmtipt .btns .btn {
+  float: right;
+}
+.m-cmmtipt .btns .zs {
+  float: right;
+  margin-right: 10px;
+  line-height: 25px;
+}
+.f-cb:after {
+  clear: both;
+  content: '.';
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+.u-btn{
+  display: inline-block;
+  background: url('../../assets/images/button.png') no-repeat 0 9999px;
+}
+.u-btn-1 {
+  width: 46px;
+  height: 25px;
+  background-position: -84px -64px;
+  color: #fff;
+  text-align: center;
+  line-height: 25px;
 }
