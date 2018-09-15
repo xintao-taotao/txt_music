@@ -13,7 +13,6 @@ import Vuex from 'vuex'
 import VueLazyload from 'vue-lazyload'
 
 Vue.use(VueRouter);
-Vue.use(BootstrapVue);
 Vue.use(VueI18n);
 Vue.use(Vuex);
 Vue.use(iView);
@@ -60,7 +59,6 @@ const store = new Vuex.Store({
       state.lang = lang;
       Vue.config.lang = lang;
       localStorage.setItem("lang", lang);
-      console.log('chufa');
     },
     setPermissions(state, permissions) {
 

@@ -1,8 +1,5 @@
 <template>
   <div class="music" :style="{height:music_width}">
-    <b-container fluid class='bv-example-row'>
-      <b-row>
-        <b-col>
           <div class="left">
             <div class="music_left">
               <div class="xinxi" v-if="deLogin" :style="{backgroundImage: 'url(' + userbackgroundurl + ')'}">
@@ -38,8 +35,6 @@
               </div>
             </div>
           </div>
-        </b-col>
-        <b-col>
           <div class="right">
             <div style="text-align:right;">
               <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
@@ -55,12 +50,10 @@
               <div style="margin:auto;width:888px;">
                 <div class="content">
                   <ul class="geshou_list" v-show="geshou_danye">
-                    <b-row align-h='around'>
-                      <b-col cols='2' v-for="item in geshou" :key="item.id" @click="on_search(item.id)" class="geshou_li">
+                      <div cols='2' v-for="item in geshou" :key="item.id" @click="on_search(item.id)" class="geshou_li">
                         <img :src="item.url" :alt="item.name">
                         {{item.name}}
-                      </b-col>
-                    </b-row>
+                      </div>
                     <div style="overflow: hidden;width:100%;">
                       <div style="float: right;padding-right:10px;">
                         <Icon type="ios-arrow-back" size="32" title="上一页" style="cursor:pointer;" @click="pave_page(1)"/>
@@ -83,18 +76,9 @@
               </div>
             </div>
           </div>
-        </b-col>
-      </b-row>
-    </b-container>
-    
     
     <Icon type="ios-arrow-dropup-circle" v-show="!aplayera" class="autoplay_a" @click="aplayera=!aplayera" size="16"/>
-    <b-container class='bv-example-row bv-example-row-flex-cols'>
-      <b-row style="width:100%;">
-        <b-col align-self='center'>
           <div class="autoplay_class" v-show="aplayera">
-            <b-row>
-              <b-col cols ='12' sm='12'>
                 <div class="autoplay_content">
                   <div class="music_details_on" @click="detailsa">
                     点击查看歌曲详情
@@ -102,13 +86,7 @@
                   <Icon type="md-close" @click="aplayera=!aplayera" class="on_aplayer" size="14"/>
                   <aplayer autoplay="autoplay" @playing="admin" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end"/>
                 </div>
-              </b-col> 
-            </b-row>
           </div>
-        </b-col>
-      </b-row>
-    </b-container>
-    
     <div class="music_details" v-show="this.details">
       <Icon type="md-close-circle" class="close_details" size="32" @click="detailsa"/>
       <div class="music_details_content">
@@ -226,16 +204,8 @@
             <Icon type="ios-arrow-dropright-circle" title="下一页" @click="music_pinglun('pinglun','xia')" size="26" style="margin:0px 3px;cursor: pointer;"/>
           </div>
         </div>
-        
       </div>
     </div>
-    <b-container fluid class = 'bv-example-row'> 
-    <b-row > 
-        <b-col > 1 of 3 </b-col > 
-        <b-col > 2 of 3 </b-col > 
-        <b-col > 3 of 3 </b-col > 
-    </b-row> 
-</b-container>
   </div>
 </template>
 
@@ -315,17 +285,16 @@ export default {
     util.vue = this;
     util.title(this.$t("projectName") + "-" + this.$t("music_page"));
     if(this.userid!=0||localStorage.getItem('userid')!=null){
-      axios.get('http://localhost:3000/user/detail?uid='+localStorage.getItem('userid')+'')
+      util.ajax.get('/user/detail?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         this.deLogin=true;
-        console.log(document.cookie)
         this.user_onxinxi(rep.data)
       })
       this.userid=localStorage.getItem('userid');
-      axios.get('http://localhost:3000/user/playlist?uid='+localStorage.getItem('userid')+'')
+      util.ajax.get('/user/playlist?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         var data=rep.data.playlist[0].id;
-        axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+        util.ajax.get('/playlist/detail?id='+data+'')
         .then(rep=>{
           var data=rep.data.playlist.tracks;
           this.gedan=[];
@@ -343,7 +312,7 @@ export default {
     setTimeout(function(){
       that.clearlocal();
     },10800000);
-    axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=20')
+    util.ajax.get('/top/artists?offset='+this.page_index+'&limit=20')
     .then(rep=>{
       const data=rep.data;
       this.geshou=[];
@@ -382,9 +351,9 @@ export default {
       // /comment/like?id=186016&cid=4956438&t=1&type=0
     },
     deleteping(id,commentId){
-      axios({
+      util.ajax({
         method:'get',
-        url:'http://localhost:3000/comment?action=0&type=0&id='+id+'&commentId='+commentId,
+        url:'/comment?action=0&type=0&id='+id+'&commentId='+commentId,
         xhrFields: {
           withCredentials: true
         },
@@ -428,7 +397,7 @@ export default {
       if(this.page_index!=0&&type==1){
         //上一页代码
         this.page_index=this.page_index-20;
-        axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=20')
+        util.ajax.get('/top/artists?offset='+this.page_index+'&limit=20')
         .then(rep=>{
           const data=rep.data;
           this.geshou=[];
@@ -443,7 +412,7 @@ export default {
       }else if(type==2){
         //下一页代码
         this.page_index=this.page_index+20;
-        axios.get('http://localhost:3000/top/artists?offset='+this.page_index+'&limit=20')
+        util.ajax.get('/top/artists?offset='+this.page_index+'&limit=20')
         .then(rep=>{
           const data=rep.data;
           this.geshou=[];
@@ -461,24 +430,22 @@ export default {
       }
     },
     handleSubmit(){
-      axios({
+      util.ajax({
         method:'get',
-        url:'http://localhost:3000/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password,
+        url:'/login/cellphone?phone='+this.formInline.user+'&password='+this.formInline.password,
         xhrFields:{ withCredentials: true}
       })
       .then(rep=>{
-        console.log(rep.data);
-        console.log(document.cookie);
         let data=rep.data
         this.userid=data.account.id;
         localStorage.setItem('userid',this.userid);
-        axios.get('http://localhost:3000/user/detail?uid='+this.userid+'')
+        util.ajax.get('/user/detail?uid='+this.userid+'')
         .then(rep=>{
           var data=rep.data;
-          axios.get('http://localhost:3000/user/playlist?uid='+this.userid+'')
+          util.ajax.get('/user/playlist?uid='+this.userid+'')
           .then(rep=>{
             var data=rep.data.playlist[0].id;
-            axios.get('http://localhost:3000/playlist/detail?id='+data+'')
+            util.ajax.get('/playlist/detail?id='+data+'')
             .then(rep=>{
               var data=rep.data.playlist.tracks;
               this.gedan=[];
@@ -497,7 +464,7 @@ export default {
       })
     },
     huifu(id,content){
-      axios.get('http://localhost:3000/comment?action=1&type=0&id='+id+'&content='+content)
+      util.ajax.get('/comment?action=1&type=0&id='+id+'&content='+content)
       .then(rep=>{
         var data=rep.data.playlist.tracks;
         this.gedan=[];
@@ -524,19 +491,19 @@ export default {
         this.huifu_inpout=false;
       }
       if(data=='gedan'){
-        axios.get('http://localhost:3000/music/url?id='+item+'')
+        util.ajax.get('/music/url?id='+item+'')
         .then(rep=>{
           var data=rep.data;
           if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
             this.music_object.src=data.data[0].url;
-            axios.get('http://localhost:3000/song/detail?ids='+item+'')
+            util.ajax.get('/song/detail?ids='+item+'')
             .then(rep=>{
               var data=rep.data.songs;
               this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
               this.music_object.title=data[0].name;
               this.music_object.pic=data[0].al.picUrl;
               this.music_pinglun();
-              axios.get('http://localhost:3000/lyric?id='+item+'')
+              util.ajax.get('/lyric?id='+item+'')
               .then(rep=>{
                 var data=rep.data;
                 this.music_object.lrc="";
@@ -556,19 +523,19 @@ export default {
           }
         })
       }else{
-        axios.get('http://localhost:3000/music/url?id='+item+'')
+        util.ajax.get('/music/url?id='+item+'')
         .then(rep=>{
           var data=rep.data;
           if(data.data[0].url!=""&&data.data[0].url!=null&&data.data[0].url!=undefined){
             this.music_object.src=data.data[0].url;
-            axios.get('http://localhost:3000/song/detail?ids='+item+'')
+            util.ajax.get('/song/detail?ids='+item+'')
             .then(rep=>{
               var data=rep.data.songs;
               this.music_object.artist=data[0].ar.length==1?this.music_object.artist=data[0].ar[0].name:data[0].ar[0].name+"-"+data[0].ar[1].name
               this.music_object.title=data[0].name;
               this.music_object.pic=data[0].al.picUrl;
               this.music_pinglun();
-              axios.get('http://localhost:3000/lyric?id='+item+'')
+              util.ajax.get('/lyric?id='+item+'')
               .then(rep=>{
                 var data=rep.data;
                 this.music_object.lrc="";
@@ -599,7 +566,7 @@ export default {
             return;
           }else{
             this.music_pinglun_index=this.music_pinglun_index-20;
-            axios.get('http://localhost:3000/comment/music?id='+this.music_id+'&offset='+this.music_pinglun_index+'&limit=20')
+            util.ajax.get('/comment/music?id='+this.music_id+'&offset='+this.music_pinglun_index+'&limit=20')
             .then(rep=>{
               var data=rep.data;
               this.zongshu=0;
@@ -642,7 +609,7 @@ export default {
           }
         }else{
           this.music_pinglun_index=this.music_pinglun_index+20;
-          axios.get('http://localhost:3000/comment/music?id='+this.music_id+'&offset='+this.music_pinglun_index+'&limit=20')
+          util.ajax.get('/comment/music?id='+this.music_id+'&offset='+this.music_pinglun_index+'&limit=20')
           .then(rep=>{
             var data=rep.data;
             this.zongshu=0;
@@ -684,7 +651,7 @@ export default {
           })
         }
       }else{
-        axios.get('http://localhost:3000/comment/music?id='+this.music_id+'&offset=0&limit=20')
+        util.ajax.get('/comment/music?id='+this.music_id+'&offset=0&limit=20')
         .then(rep=>{
           var data=rep.data;
           this.zongshu=0;
@@ -747,7 +714,7 @@ export default {
       this.geshou_on=true;
       this.onlist=false;
       if(typeof type=='number'){
-        axios.get('http://localhost:3000/artists?id='+type)
+        util.ajax.get('/artists?id='+type)
         .then(rep=>{
           var data=rep.data;
           this.geshou_xinxi.name="";
@@ -770,7 +737,7 @@ export default {
         })
       }else{
         this.onlist=false;
-        axios.get('http://localhost:3000/search?keywords='+type+'?limit='+this.page_index)
+        util.ajax.get('/search?keywords='+type+'?limit='+this.page_index)
         .then(rep=>{
           var data=rep.data.result.songs;
           this.search_data=[];

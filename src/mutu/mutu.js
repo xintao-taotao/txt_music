@@ -9,11 +9,9 @@ const lang = Locales[window.localStorage.lang || 'zh-CN'];
 let util = {
   vue: ''
 };
-
 util.title = function (title) {
   window.document.title = title;
 };
-
 util.setToken = function(token) {
   //, { expires: 1 / 48 }
   Cookies.set('token', encodeURIComponent(token));
@@ -27,11 +25,7 @@ util.removeToken = function() {
   localStorage.removeItem('token');
 }
 
-const ajaxUrl = env === 'development' ?
-  'http://localhost:8081' :
-  env === 'production' ?
-    'http://test.deepbrief.net' :
-    'https://debug.url.com';
+const ajaxUrl= 'http://localhost:3000';
     
 util.baseURL = ajaxUrl;
 util.ajax = axios.create({
