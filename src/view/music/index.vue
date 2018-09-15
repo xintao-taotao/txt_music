@@ -318,6 +318,7 @@ export default {
       axios.get('http://localhost:3000/user/detail?uid='+localStorage.getItem('userid')+'')
       .then(rep=>{
         this.deLogin=true;
+        console.log(document.cookie)
         this.user_onxinxi(rep.data)
       })
       this.userid=localStorage.getItem('userid');
