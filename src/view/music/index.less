@@ -30,16 +30,16 @@
   height: 100%;
   overflow-y:scroll;
 }
-.on_list ul::-webkit-scrollbar {
+.on_list ul::-webkit-scrollbar,.music_details::-webkit-scrollbar{
   width: 10px;
   height: 1px;
 }
-.on_list ul::-webkit-scrollbar-thumb {
+.on_list ul::-webkit-scrollbar-thumb,.music_details::-webkit-scrollbar-thumb{
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
   background: #535353;
 }
-.on_list ul::-webkit-scrollbar-track {
+.on_list ul::-webkit-scrollbar-track,.music_details::-webkit-scrollbar-track{
   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
   border-radius: 10px;
   background: #EDEDED;
@@ -97,20 +97,6 @@
   background-color: #eee;
   overflow-y:scroll;
   z-index: 2;
-}
-.music_details::-webkit-scrollbar {
-  width: 10px;
-  height: 1px;
-}
-.music_details::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  background: #535353;
-}
-.music_details::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  border-radius: 10px;
-  background: #EDEDED;
 }
 .music_details_content{
   width: 1200px;
