@@ -1,24 +1,13 @@
-import Vue from 'vue/dist/vue.common';
 import App from './App';
 import Routers from './router/index';
-import VueRouter from 'vue-router';
-import iView from 'iview';
 import 'iview/dist/styles/iview.css';
-import mutu from './mutu/mutu';
 import Locales from './language/locale';
 import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
-import VueI18n from 'vue-i18n';
-import Vuex from 'vuex'
-import VueLazyload from 'vue-lazyload'
 
 Vue.use(VueRouter);
 Vue.use(VueI18n);
 Vue.use(Vuex);
-Vue.use(iView);
-Vue.use(VueLazyload, {
-  lazyComponent: true
-})
 const navLang = navigator.language;
 
 const  localLang= (navLang === 'zh-CN' || navLang === 'en-US') ? navLang : false;
@@ -38,11 +27,6 @@ const RouterConfig = {
   routes: Routers
 };
 const router = new VueRouter(RouterConfig);
-
-router.afterEach(() => {
-  iView.LoadingBar.finish();
-  window.scrollTo(0, 0);
-});
 /* eslint-disable no-new */
 
 

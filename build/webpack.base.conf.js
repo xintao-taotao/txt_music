@@ -11,6 +11,13 @@ function resolve (dir) {
 
 
 module.exports = {
+  externals: {
+    'vue': 'Vue',
+    'vue-router': 'VueRouter',
+    'axios': 'Axios',
+    'vue-i18n': 'VueI18n',
+    'vuex': 'vuex'
+  },
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import swal from "sweetalert";
 import Locales from "../language/locale"
 import env from '../config/env'
@@ -24,9 +23,8 @@ util.removeToken = function() {
   Cookies.remove('token');
   localStorage.removeItem('token');
 }
+const ajaxUrl= 'http://39.107.227.52:3000';
 
-const ajaxUrl= 'http://localhost:3000';
-    
 util.baseURL = ajaxUrl;
 util.ajax = axios.create({
   baseURL: ajaxUrl,

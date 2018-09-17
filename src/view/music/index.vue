@@ -1,92 +1,91 @@
 <template>
   <div class="music" :style="{height:music_width}">
-          <div class="left">
-            <div class="music_left">
-              <div class="xinxi" v-if="deLogin" :style="{backgroundImage: 'url(' + userbackgroundurl + ')'}">
-                <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
-                <Button type="primary" @click="clearlocal(1)" class="tuichu">{{$t('drop_out')}}</Button>
-                <h5>{{username}}</h5>
-                <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">{{$t('xiai_music')}}</h3>
-                <ul class="xiaidege" :style="{height:music_height}">
-                  <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id,'gedan')">
-                    <div style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
-                      <div class="li_left_margin">{{item.name}}</div>
-                      <div class="li_content_bigmargin">{{item.singer}}</div>
-                    </div>
-                  </li>
-                </ul>
+    <div class="left">
+      <div class="music_left">
+        <div class="xinxi" v-if="deLogin" :style="{backgroundImage: 'url(' + userbackgroundurl + ')'}">
+          <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
+          <Button type="primary" @click="clearlocal(1)" class="tuichu">{{$t('drop_out')}}</Button>
+          <h5>{{username}}</h5>
+          <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">{{$t('xiai_music')}}</h3>
+          <ul class="xiaidege" :style="{height:music_height}">
+            <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id,'gedan')">
+              <div style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                <div class="li_left_margin">{{item.name}}</div>
+                <div class="li_content_bigmargin">{{item.singer}}</div>
               </div>
-              <div class="deLogin" v-else :style="{height:music_width}">
-                <Form :model="formInline" :rules="ruleInline">
-                  <FormItem prop="user">
-                    <Input type="text" v-model="formInline.user" :placeholder="$t('phone_haoma')">
-                      <Icon type="ios-person-outline" slot="prepend"></Icon>
-                    </Input>
-                  </FormItem>
-                  <FormItem prop="password">
-                    <Input type="password" v-model="formInline.password" :placeholder="$t('password')">
-                      <Icon type="ios-lock-outline" slot="prepend"></Icon>
-                    </Input>
-                  </FormItem>
-                  <FormItem style="text-align:center;">
-                    <Button type="primary" @click="handleSubmit">{{$t('denglu')}}</Button>
-                  </FormItem>
-                </Form>
+            </li>
+          </ul>
+        </div>
+        <div class="deLogin" v-else :style="{height:music_width}">
+          <Form :model="formInline" :rules="ruleInline">
+            <FormItem prop="user">
+              <Input type="text" v-model="formInline.user" :placeholder="$t('phone_haoma')">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <FormItem prop="password">
+              <Input type="password" v-model="formInline.password" :placeholder="$t('password')">
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <FormItem style="text-align:center;">
+              <Button type="primary" @click="handleSubmit">{{$t('denglu')}}</Button>
+            </FormItem>
+          </Form>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div style="text-align:right;">
+        <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
+      </div>
+      <div style="background-color:#fff;" class="music_title">
+        <div class="music_search" style="position: relative;">
+          <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" :title="$t('back_musiclist')" v-show="onlist" size="32" />
+          <Input v-model="music_search" :placeholder="$t('search_content')" style="width: 68%;"/>
+          <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">{{$t('search_on')}}</Button>
+        </div>
+      </div>
+      <div style="padding-top:20px;">
+        <div style="margin:auto;width:888px;">
+          <div class="content">
+            <ul class="geshou_list" v-show="geshou_danye">
+              <div cols='2' v-for="item in geshou" :key="item.id" @click="on_search(item.id)" class="geshou_li">
+                <img :src="item.url" :alt="item.name">
+                {{item.name}}
               </div>
-            </div>
-          </div>
-          <div class="right">
-            <div style="text-align:right;">
-              <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
-            </div>
-            <div style="background-color:#fff;" class="music_title">
-              <div class="music_search" style="position: relative;">
-                <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" :title="$t('back_musiclist')" v-show="onlist" size="32"/>
-                <Input v-model="music_search" :placeholder="$t('search_content')" style="width: 68%;"/>
-                <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">{{$t('search_on')}}</Button>
-              </div>
-            </div>
-            <div style="padding-top:20px;">
-              <div style="margin:auto;width:888px;">
-                <div class="content">
-                  <ul class="geshou_list" v-show="geshou_danye">
-                      <div cols='2' v-for="item in geshou" :key="item.id" @click="on_search(item.id)" class="geshou_li">
-                        <img :src="item.url" :alt="item.name">
-                        {{item.name}}
-                      </div>
-                    <div style="overflow: hidden;width:100%;">
-                      <div style="float: right;padding-right:10px;">
-                        <Icon type="ios-arrow-back" size="32" title="上一页" style="cursor:pointer;" @click="pave_page(1)"/>
-                        <Icon type="ios-arrow-forward" size="32" title="下一页" style="cursor:pointer;" @click="pave_page(2)"/>
-                      </div>
-                    </div>
-                  </ul>
-                  <div class="on_list" v-show="onlist" :style="{height:on_list}">
-                    <ul>
-                      <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
-                        <div @dblclick="on_diange(item.id,'search_data')" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
-                          <div class="li_left_margin">{{item.name}}</div>
-                          <div class="li_content_bigmargin">{{item.singer}}</div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  <Spin fix v-show="geshou_on"></Spin>
+              <div style="overflow: hidden;width:100%;">
+                <div style="float: right;padding-right:10px;">
+                  <Icon type="ios-arrow-back" size="32" title="上一页" style="cursor:pointer;" @click="pave_page(1)"/>
+                  <Icon type="ios-arrow-forward" size="32" title="下一页" style="cursor:pointer;" @click="pave_page(2)"/>
                 </div>
               </div>
-            </div>
-          </div>
-    
-    <Icon type="ios-arrow-dropup-circle" v-show="!aplayera" class="autoplay_a" @click="aplayera=!aplayera" size="16"/>
-          <div class="autoplay_class" v-show="aplayera">
-                <div class="autoplay_content">
-                  <div class="music_details_on" @click="detailsa">
-                    点击查看歌曲详情
+            </ul>
+            <div class="on_list" v-show="onlist" :style="{height:on_list}">
+              <ul>
+                <li v-for="item in search_data" :key="item.id" onselectstart ='return false'>
+                  <div @dblclick="on_diange(item.id,'search_data')" style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
+                    <div class="li_left_margin">{{item.name}}</div>
+                    <div class="li_content_bigmargin">{{item.singer}}</div>
                   </div>
-                  <Icon type="md-close" @click="aplayera=!aplayera" class="on_aplayer" size="14"/>
-                  <aplayer autoplay="autoplay" @playing="admin" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end"/>
-                </div>
+                </li>
+              </ul>
+            </div>
+            <Spin fix v-show="geshou_on"></Spin>
           </div>
+        </div>
+      </div>
+    </div>
+    <Icon type="ios-arrow-dropup-circle" v-show="!aplayera" class="autoplay_a" @click="aplayera=!aplayera" size="16" />
+    <div class="autoplay_class" v-show="aplayera">
+      <div class="autoplay_content">
+        <div class="music_details_on" @click="detailsa">
+          点击查看歌曲详情
+        </div>
+        <Icon type="md-close" @click="aplayera=!aplayera" class="on_aplayer" size="14" />
+        <aplayer autoplay="autoplay" @playing="admin" :music="music_object" :showLrc="true" v-if="jiuxu" @ended="music_end"/>
+      </div>
+    </div>
     <div class="music_details" v-show="this.details">
       <Icon type="md-close-circle" class="close_details" size="32" @click="detailsa"/>
       <div class="music_details_content">
@@ -210,13 +209,21 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import { Button, Table , Icon ,Spin ,Input ,Form ,FormItem} from 'iview';
 import util from "../../mutu/mutu.js";
-import axios from "axios";
 import aplayer from "vue-aplayer";
 aplayer.disableVersionBadge = true;
 export default {
   components: {
-    aplayer
+    aplayer,
+    Button,
+    Table,
+    Icon,
+    Spin,
+    Input,
+    Form,
+    FormItem
   },
   data() {
     return {
@@ -274,7 +281,7 @@ export default {
       music_xiangre: [],
       huifu_button: false,
       //计算是否是第一次播放歌曲提示不能点击回复
-      huifu_inpout: true,
+      // huifu_inpout: true,
       music_pinglun_index: 0
     };
   },
@@ -496,15 +503,17 @@ export default {
       this.dangqianbofang = data;
       this.jiuxu = false;
       this.music_id = item;
-      if (this.huifu_inpout) {
-        //全局提示，等待删除中
-        this.$Notice.open({
-          title: "警告",
-          desc: "点击回复会有bug，等待修复中。谢谢！",
-          duration: 0
-        });
-        this.huifu_inpout = false;
-      }
+      // const _this=this;
+      // if (this.huifu_inpout) {
+      //   //全局提示，等待删除中
+      //   console.log(this.$Notice);
+      //   this.$Notice.open({
+      //     title: "警告",
+      //     desc: "点击回复会有bug，等待修复中。谢谢！",
+      //     duration: 0
+      //   });
+      //   this.huifu_inpout = false;
+      // }
       if (data == "gedan") {
         util.ajax.get("/music/url?id=" + item + "").then(rep => {
           var data = rep.data;
