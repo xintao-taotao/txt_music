@@ -1,5 +1,5 @@
 export default {
-  'projectName': '唐鑫涛的个人网站',
+  'projectName': '音乐网站-仿网易云',
   'login': '登录',
   'register': '注册',
   'home': '首页',

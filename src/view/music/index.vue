@@ -214,15 +214,15 @@ import { Button, Table , Icon ,Spin ,Input ,Form ,FormItem} from 'iview';
 import util from "../../mutu/mutu.js";
 import aplayer from "vue-aplayer";
 aplayer.disableVersionBadge = true;
+Vue.component('Table', Table);
+Vue.component('Button', Button);
+Vue.component('Input', Input);
+Vue.component('Form', Form);
 export default {
   components: {
     aplayer,
-    Button,
-    Table,
     Icon,
     Spin,
-    Input,
-    Form,
     FormItem
   },
   data() {

@@ -1,5 +1,5 @@
 export default {
-  'projectName': "Tang Xintao's personal website",
+  'projectName': "Music website - imitation net easy cloud",
   'login': 'Sign in',
   'register': 'Sign up',
   'home': 'Home',

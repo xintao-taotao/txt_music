@@ -1,6 +1,5 @@
 import App from './App';
 import Routers from './router/index';
-import 'iview/dist/styles/iview.css';
 import Locales from './language/locale';
 import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
