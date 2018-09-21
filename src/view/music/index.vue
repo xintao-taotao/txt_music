@@ -359,6 +359,18 @@ export default {
     }
   },
   methods: {
+    fbpl(){
+      util.ajax({
+        method:'post',
+        url:util.baseURL+'/comment?action=1&type=0&id='+this.music_id+'&content=test',
+        xhrFields: {
+          withCredentials: true
+        }
+      })
+      .then(rep=>{
+        console.log(rep);
+      })
+    },
     dianzan() {
       // /comment/like?id=186016&cid=4956438&t=1&type=0
     },

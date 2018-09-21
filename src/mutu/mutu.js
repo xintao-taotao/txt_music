@@ -23,7 +23,7 @@ util.removeToken = function() {
   Cookies.remove('token');
   localStorage.removeItem('token');
 }
-const ajaxUrl= 'http://39.107.227.52:3000';
+const ajaxUrl= 'http://localhost:3000';
 
 util.baseURL = ajaxUrl;
 util.ajax = axios.create({
@@ -31,7 +31,8 @@ util.ajax = axios.create({
   timeout: 90000,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  withCredentials:true
 });
 
 util.ajax.interceptors.request.use((config) => {
