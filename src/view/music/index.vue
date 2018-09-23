@@ -95,6 +95,27 @@
             <span class="f-alpha"></span>
           </div>
         </div>
+        <div class="iptarea">
+          <div class="head">
+            <img :src="useravatarurl">
+          </div>
+          <div class="j-flag"><div>
+            <div class="m-cmmtipt f-cb f-pr">
+              <div class="holder-parent f-pr" style="display: block;">
+                <Input v-model="plneirong" id="text" type="textarea" :rows="3" placeholder="评论" />
+              </div>
+              <div class="btns f-cb f-pr">
+                <a href="javascript:void(0)" class="btn u-btn u-btn-1 j-flag" @click="fbpl()">评论</a>
+                <span class="zs s-fc4 j-flag">140</span>
+              </div>
+              <div class="corr u-arr">
+                <em class="arrline">◆</em>
+                <span class="arrclr">◆</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
         <div class="details_pinglun">
           <h3 class="u-hd4">热门评论</h3>
           <ul>
@@ -114,14 +135,14 @@
                   </div>
                   <div class="dianzan">
                     <span :class="userid==item.id?'dlt_block':'dlt'">
-                      <a @click="deleteping()" class="s-fc3">删除</a>
+                      <a class="s-fc3">删除</a>
                       <span class="sep">|</span>
                     </span>
                     <a @click="dianzan">
                       <i class="zan u-icn2 u-icn2-13"></i>({{item.likedCount}})
                     </a>
                     <span class="sep">|</span>
-                    <a @click="huifu_button=!huifu_button">回复</a>
+                    <a>回复</a>
                   </div>
                 </div>
               </div>
@@ -133,7 +154,7 @@
                   </div>
                   <div class="m-cmmtipt m-cmmtipt-1 f-cb f-pr">
                     <div class="u-txtwrap holder-parent f-pr j-wrap" style="display: block;">
-                      <textarea class="u-txt area j-flag" placeholder="" id="auto-id-xoryT3ITpJMuOiuO" style="overflow: hidden;resize:none;"></textarea>
+                      <Input class="u-txt area j-flag" type="textarea" placeholder="评论" />
                     </div>
                     <div class="btns f-cb f-pr">
                       <i class="icn u-icn u-icn-36 j-flag" id="auto-id-p2bXGigwoJQGAqQX"></i>
@@ -147,7 +168,7 @@
           </ul>
           <br>
           <br>
-          <h3 class="u-hd4">最新评论({{zongshu}})</h3>
+          <h3 class="u-hd4">最新评论({{zongshu}})<span style="float:right;cursor: pointer;" @click="music_pinglun()">查看最新评论</span></h3>
           <ul>
             <li class="pingli" v-for="(item,index) in music_xiangqing" :key="index">
               <div class="pinglun">
@@ -165,14 +186,14 @@
                   </div>
                   <div class="dianzan">
                     <span :class="userid==item.id?'dlt_block':'dlt'">
-                      <a @click="deleteping(music_id,item.commentId)" class="s-fc3">删除</a>
+                      <a class="s-fc3">删除</a>
                       <span class="sep">|</span>
                     </span>
                     <a @click="dianzan">
                       <i class="zan u-icn2 u-icn2-13"></i>({{item.likedCount}})
                     </a>
                     <span class="sep">|</span>
-                    <a @click="huifu_button=!huifu_button">回复</a>
+                    <a >回复</a>
                   </div>
                 </div>
               </div>
@@ -209,15 +230,16 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import { Button, Table , Icon ,Spin ,Input ,Form ,FormItem} from 'iview';
+import Vue from "vue";
+import { Button, Table, Icon, Spin, Input, Form, FormItem } from "iview";
 import util from "../../mutu/mutu.js";
 import aplayer from "vue-aplayer";
 aplayer.disableVersionBadge = true;
-Vue.component('Table', Table);
-Vue.component('Button', Button);
-Vue.component('Input', Input);
-Vue.component('Form', Form);
+import axios from "Axios";
+Vue.component("Table", Table);
+Vue.component("Button", Button);
+Vue.component("Input", Input);
+Vue.component("Form", Form);
 export default {
   components: {
     aplayer,
@@ -228,6 +250,7 @@ export default {
   data() {
     return {
       music_width: 0,
+      plneirong: "",
       dangqianbofang: "",
       music_height: 0,
       aplayera: false,
@@ -359,17 +382,26 @@ export default {
     }
   },
   methods: {
-    fbpl(){
-      util.ajax({
-        method:'post',
-        url:util.baseURL+'/comment?action=1&type=0&id='+this.music_id+'&content=test',
-        xhrFields: {
-          withCredentials: true
-        }
-      })
-      .then(rep=>{
-        console.log(rep);
-      })
+    fbpl() {
+      util.ajax
+        .get(
+          "/comment?action=1&type=0&id=" +
+            this.music_id +
+            "&content=" +
+            this.plneirong
+        )
+        .then(rep => {
+          console.log(rep);
+          if(rep.data.code===200){
+            this.plneirong="";
+            util.success("评论成功！");
+            this.music_pinglun();
+            return;
+          }else{
+            util.error(rep.data.msg);
+            return;
+          }
+        });
     },
     dianzan() {
       // /comment/like?id=186016&cid=4956438&t=1&type=0
@@ -385,7 +417,6 @@ export default {
         })
         .then(rep => {
           var data = rep.data;
-          console.log(data);
         });
     },
     gecipl() {
@@ -542,7 +573,10 @@ export default {
                   ? (this.music_object.artist = data[0].ar[0].name)
                   : data[0].ar[0].name + "-" + data[0].ar[1].name;
               this.music_object.title = data[0].name;
-              this.music_object.pic = data[0].al.picUrl;
+              this.music_object.pic =
+                data[0].al.picUrl == undefined
+                  ? require("../../assets/images/wutu.png")
+                  : data[0].al.picUrl;
               this.music_pinglun();
               util.ajax.get("/lyric?id=" + item + "").then(rep => {
                 var data = rep.data;
@@ -578,7 +612,10 @@ export default {
                   ? (this.music_object.artist = data[0].ar[0].name)
                   : data[0].ar[0].name + "-" + data[0].ar[1].name;
               this.music_object.title = data[0].name;
-              this.music_object.pic = data[0].al.picUrl;
+              this.music_object.pic =
+                data[0].al.picUrl == undefined
+                  ? require("../../assets/images/wutu.png")
+                  : data[0].al.picUrl;
               this.music_pinglun();
               util.ajax.get("/lyric?id=" + item + "").then(rep => {
                 var data = rep.data;
@@ -928,6 +965,19 @@ export default {
   }
 };
 </script>
-<style lang='less' scoped>
+<style lang='less'>
+#text textarea{
+  outline:none !important;
+  resize:none !important;
+  border: 1px solid #cdcdcd !important;
+}
+#text textarea:hover{
+  outline:none !important;
+  resize:none !important;
+  border: 1px solid #cdcdcd !important;
+}
+#text textarea:focus{
+  border: 1px solid #cdcdcd !important;
+}
 @import url("./index.less");
 </style>
