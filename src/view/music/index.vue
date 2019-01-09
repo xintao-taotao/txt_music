@@ -4,11 +4,11 @@
       <div class="music_left">
         <div class="xinxi" v-if="deLogin" :style="{backgroundImage: 'url(' + userbackgroundurl + ')'}">
           <img :src="useravatarurl" :alt="username" style="width:60px;" class="user_title_img">
-          <Button type="primary" @click="clearlocal(1)" class="tuichu">{{$t('drop_out')}}</Button>
+          <Button type="primary" @click="clearlocal(1)" class="tuichu">退出</Button>
           <h5>{{username}}</h5>
-          <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">{{$t('xiai_music')}}</h3>
+          <h3 class="u-hd4" style="color: #fff;text-indent: 18px;padding-bottom: 22px;">以下是您喜爱的歌</h3>
           <ul class="xiaidege" :style="{height:music_height}">
-            <li v-for="item in gedan" :key="item.id" onselectstart ='return false'  @dblclick="on_diange(item.id,'gedan')">
+            <li v-for="item in gedan" :key="item.id" onselectstart ='return false' @dblclick="on_diange(item.id,'gedan')">
               <div style="cursor:pointer;" :class="jishiqi==item.id?'on_zhengzaibf':''">
                 <div class="li_left_margin">{{item.name}}</div>
                 <div class="li_content_bigmargin">{{item.singer}}</div>
@@ -19,31 +19,28 @@
         <div class="deLogin" v-else :style="{height:music_width}">
           <Form :model="formInline" :rules="ruleInline">
             <FormItem prop="user">
-              <Input type="text" v-model="formInline.user" :placeholder="$t('phone_haoma')">
+              <Input type="text" v-model="formInline.user" placeholder="手机号">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
             <FormItem prop="password">
-              <Input type="password" v-model="formInline.password" :placeholder="$t('password')">
+              <Input type="password" v-model="formInline.password" placeholder="密码">
                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
             <FormItem style="text-align:center;">
-              <Button type="primary" @click="handleSubmit">{{$t('denglu')}}</Button>
+              <Button type="primary" @click="handleSubmit">登录</Button>
             </FormItem>
           </Form>
         </div>
       </div>
     </div>
     <div class="right">
-      <div style="text-align:right;">
-        <a href='javascript:void(0)' @click='changeLang("zh-CN")'>中文</a> | <a href='javascript:void(0)' @click='changeLang("en-US")'>English</a>
-      </div>
       <div style="background-color:#fff;" class="music_title">
         <div class="music_search" style="position: relative;">
-          <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" :title="$t('back_musiclist')" v-show="onlist" size="32" />
-          <Input v-model="music_search" :placeholder="$t('search_content')" style="width: 68%;"/>
-          <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">{{$t('search_on')}}</Button>
+          <Icon type="ios-arrow-dropleft" style="position: absolute;right: 96px;top: 10px;" @click="back(1)" title="返回歌手列表" v-show="onlist" size="32"/>
+          <Input v-model="music_search" placeholder="请输入您要搜索的音乐 / 专辑 / 歌手 / 歌单 / 用户" style="width: 68%;"/>
+          <Button type="primary" shape="circle" icon="ios-search" style="margin-left:2%;" @click="on_search(music_search)">搜索</Button>
         </div>
       </div>
       <div style="padding-top:20px;">
@@ -76,7 +73,7 @@
         </div>
       </div>
     </div>
-    <Icon type="ios-arrow-dropup-circle" v-show="!aplayera" class="autoplay_a" @click="aplayera=!aplayera" size="16" />
+    <Icon type="ios-arrow-dropup-circle" v-show="!aplayera" class="autoplay_a" @click="aplayera=!aplayera" size="16"/>
     <div class="autoplay_class" v-show="aplayera">
       <div class="autoplay_content">
         <div class="music_details_on" @click="detailsa">
@@ -193,7 +190,7 @@
                       <i class="zan u-icn2 u-icn2-13"></i>({{item.likedCount}})
                     </a>
                     <span class="sep">|</span>
-                    <a >回复</a>
+                    <a>回复</a>
                   </div>
                 </div>
               </div>
@@ -313,7 +310,7 @@ export default {
     this.music_height = `${document.documentElement.clientHeight - 106}px`;
     this.on_list = `${document.documentElement.clientHeight - 195}px`;
     util.vue = this;
-    util.title(this.$t("projectName") + "-" + this.$t("music_page"));
+    util.title("音乐网站-仿网易云 - 音乐页面");
     if (this.userid != 0 || localStorage.getItem("userid") != null) {
       util.ajax
         .get("/user/detail?uid=" + localStorage.getItem("userid") + "")
@@ -558,7 +555,7 @@ export default {
       //   this.huifu_inpout = false;
       // }
       if (data == "gedan") {
-        util.ajax.get("/music/url?id=" + item + "").then(rep => {
+        util.ajax.get("/song/url?id=" + item + "").then(rep => {
           var data = rep.data;
           if (
             data.data[0].url != "" &&
@@ -590,14 +587,34 @@ export default {
               });
             });
           } else {
-            util.error("对不起！您点播的歌曲暂无权限和资料，请换歌！");
-            this.on_diange(this.gedan[0].id, "gedan");
-            this.jiuxu = true;
-            return;
+            this.music_object.src = "http://music.163.com/song/media/outer/url?id="+item+".mp3";
+            util.ajax.get("/song/detail?ids=" + item + "").then(rep => {
+              var data = rep.data.songs;
+              this.music_object.artist =
+                data[0].ar.length == 1
+                  ? (this.music_object.artist = data[0].ar[0].name)
+                  : data[0].ar[0].name + "-" + data[0].ar[1].name;
+              this.music_object.title = data[0].name;
+              this.music_object.pic =
+                data[0].al.picUrl == undefined
+                  ? require("../../assets/images/wutu.png")
+                  : data[0].al.picUrl;
+              this.music_pinglun();
+              util.ajax.get("/lyric?id=" + item + "").then(rep => {
+                var data = rep.data;
+                this.music_object.lrc = "";
+                if (data.lrc == undefined) {
+                  this.music_object.lrc = "[00:00.400]此音乐为纯音乐";
+                } else {
+                  this.music_object.lrc = data.lrc.lyric;
+                }
+                this.jiuxu = true;
+              });
+            });
           }
         });
       } else {
-        util.ajax.get("/music/url?id=" + item + "").then(rep => {
+        util.ajax.get("/song/url?id=" + item + "").then(rep => {
           var data = rep.data;
           if (
             data.data[0].url != "" &&

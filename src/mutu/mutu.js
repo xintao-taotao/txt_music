@@ -1,10 +1,6 @@
 import swal from "sweetalert";
-import Locales from "../language/locale"
-import env from '../config/env'
 import Cookies from "js-cookie"
-import func from './func'
 
-const lang = Locales[window.localStorage.lang || 'zh-CN'];
 let util = {
   vue: ''
 };
@@ -33,16 +29,6 @@ util.ajax = axios.create({
     'Content-Type': 'application/json'
   },
   withCredentials:true
-});
-
-util.ajax.interceptors.request.use((config) => {
-  let params = !config.params ? {} : config.params;
-  params['lan'] = !localStorage.getItem('lang') || localStorage.getItem('lang') === 'zh-CN' ? 'zh' : 'en';
-  config.params = params;
-  return config;
-}, (error) => {
-  util.error(lang['networkError']);
-  return Promise.reject(error);
 });
 
 util.success = function (arg, callback) {
@@ -79,9 +65,9 @@ util.confirm = function (msg, ok, cancel) {
     icon: 'warning',
     text: msg,
     buttons: {
-      cancel: Locales[window.localStorage.lang || 'zh-CN']['btn_cancel'],
+      cancel: "取消",
       ok: {
-        text: Locales[window.localStorage.lang || 'zh-CN']['btn_ok'],
+        text: "确定",
         value: 'ok'
       }
     },
