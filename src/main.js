@@ -1,6 +1,8 @@
 import App from './App';
 import Routers from './router/index';
+import Tcomponents from './view/components/components'
 
+Vue.use(Tcomponents);
 Vue.use(VueRouter);
 Vue.use(VueI18n);
 Vue.use(Vuex);
