@@ -1,6 +1,7 @@
 import App from './App';
 import Routers from './router/index';
 import Tcomponents from './view/components/components'
+import "./assets/css/bootstrap.css"
 
 Vue.use(Tcomponents);
 Vue.use(VueRouter);
