@@ -1,10 +1,21 @@
-###  **这是一个用VUE构建的音乐项目** 
+# txt_music
 
-现在项目正在开发阶段
+> A Vue.js project
 
-npm install 
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
 npm run dev
 
-需要运行此项目需要配合api运行。
+# build for production with minification
+npm run build
 
+# build for production and view the bundle analyzer report
+npm run build --report
+```
 
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

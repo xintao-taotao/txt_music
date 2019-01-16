@@ -1,41 +1,23 @@
-import App from './App';
-import Routers from './router/index';
-import Tcomponents from './view/components/components'
-import "./assets/css/bootstrap.css"
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import App from './App'
+import VueRouter from 'vue-router';
+import components from '../src/components/components'
+import router from './router'
 
-Vue.use(Tcomponents);
-Vue.use(VueRouter);
-Vue.use(VueI18n);
-Vue.use(Vuex);
 Vue.config.productionTip = false
+Vue.use(VueRouter);
+Vue.use(components);
 
 const RouterConfig = {
   mode: 'hash',
-  routes: Routers
+  routes: router
 };
-const router = new VueRouter(RouterConfig);
+const routers = new VueRouter(RouterConfig);
 /* eslint-disable no-new */
-
-
-const store = new Vuex.Store({
-  state: {
-    lang: '',
-    menuList: ''
-  },
-  getters: {
-
-  },
-  actions: {
-
-  }
-});
-
 new Vue({
   el: '#app',
-  router: router,
-  store: store,
-  render: h => h(App),
-  components: {
-    App
-  }
-});
+  router: routers,
+  render: h => h(App)
+})
