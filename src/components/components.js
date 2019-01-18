@@ -1,7 +1,7 @@
 import songList from './songlist';
-import Tinput from './input'
+import Tbutton from './button'
 
 export default (Vue)=>{
     Vue.component('songList', songList);
-    Vue.component('Tinput', Tinput);
+    Vue.component('Tbutton', Tbutton);
 }

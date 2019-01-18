@@ -4,11 +4,15 @@ import VueRouter from 'vue-router';
 import components from '../src/components/components'
 import router from './router'
 import './css/reset.less'
+import './css/animate.css';
+import './css/element.css'
 import store from './store/store';
+import ElementUI from 'element-ui';
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
 Vue.use(components);
+Vue.use(ElementUI);
 
 const RouterConfig = {
   mode: 'hash',
@@ -23,9 +27,10 @@ routers.beforeEach((to, from, next) => {
     next();
   }
 });
-new Vue({
+let vue = new Vue({
   el: '#app',
   store,
   router: routers,
   render: h => h(App)
 })
+export default vue;

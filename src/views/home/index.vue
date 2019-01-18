@@ -24,7 +24,6 @@ export default {
     };
   },
   created(){
-    console.log("asdasd");
     getrecommend().then(({data,status})=>{
       if(status==200){
         data.list.forEach(item=>{
