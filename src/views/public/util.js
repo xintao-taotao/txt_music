@@ -24,3 +24,8 @@ export const goPageByPath = (pageName, query, newWindow = false) => {
     }
   }
 };
+
+//设置网站title
+export const setTitle = (title) => {
+  window.document.title = title;
+};

@@ -4,6 +4,7 @@ const routers = [{
 }, {
   path: '/home',
   name: 'home',
+  title:'首页',
   component: (resolve) => require(['./views/main/index.vue'], resolve),
   // children: [{
   //     path: '/home',
@@ -16,6 +17,7 @@ const routers = [{
 }, {
   path: '/login',
   name: 'login',
+  title:'登录',
   component: (resolve) => require(['./views/login/login.vue'], resolve)
 }]
 
