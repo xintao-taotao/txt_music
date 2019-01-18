@@ -5,6 +5,7 @@ import App from './App'
 import VueRouter from 'vue-router';
 import components from '../src/components/components'
 import router from './router'
+import './css/reset.less'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
