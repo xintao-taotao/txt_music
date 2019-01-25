@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {getrecommend} from '../../api/songlist'
+import {getrecommend} from 'api/songlist'
 export default {
   name:'home',
   data () {

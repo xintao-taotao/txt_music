@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {login_phone, login_email} from '../../api/login'
+import {login_phone, login_email} from 'api/login'
 import {goPageByPath} from '../public/util'
 export default {
   data () {

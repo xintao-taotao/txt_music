@@ -6,9 +6,9 @@ import router from './router'
 import './css/reset.less'
 import './css/animate.css';
 import './css/element.css'
-import store from './store/store';
 import ElementUI from 'element-ui';
 import {setTitle} from './views/public/util'
+import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
@@ -20,19 +20,19 @@ const RouterConfig = {
   routes: router
 };
 const routers = new VueRouter(RouterConfig);
-routers.beforeEach((to, from, next) => {
-  routers.options.routes.forEach(item=>{
-    if(window.location.hash==='#'+item.path){
-      setTitle(item.title);
-    }
-  })
-  let cookie = window.localStorage.getItem('cookie');
-  if (to.name != 'login' && !cookie) {
-    next({name:'login'})
-  }else{
-    next();
-  }
-});
+// routers.beforeEach((to, from, next) => {
+//   routers.options.routes.forEach(item=>{
+//     if(window.location.hash==='#'+item.path){
+//       setTitle(item.title);
+//     }
+//   })
+//   let cookie = window.localStorage.getItem('cookie');
+//   if (to.name != 'login' && !cookie) {
+//     next({name:'login'})
+//   }else{
+//     next();
+//   }
+// });
 let vue = new Vue({
   el: '#app',
   store,
