@@ -1,0 +1,90 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+footer,
+nav,
+li,
+ol,
+ul,
+image,
+button,
+input,
+a,
+i,
+iframe,
+audio,
+video,
+table,
+td,
+tr,
+hr,
+br,
+body,
+html,
+span,
+strong,
+svg,
+div,
+dl,
+dt,
+dd,
+form,
+section,
+article,
+textarea,
+head {
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  font-style: normal;
+  list-style: none;
+  text-decoration: none;
+  outline: none;
+  background: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  min-width: 320px;
+  margin: auto;
+  font-size: 62.5%;
+  /* 想要的px除以十就是rem的值 */
+}
+
+html,body{
+  height: 100%;
+}
+
+img {
+  display: block;
+}
+
+.clear {
+  clear: both;
+}
+
+.scroll_div {
+  overflow-y: scroll;
+}
+
+.scroll_div::-webkit-scrollbar-track-piece {
+  background-color: #f8f8f8;
+}
+
+.scroll_div::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.scroll_div::-webkit-scrollbar-thumb {
+  background-color: #dddddd;
+  background-clip: padding-box;
+  min-height: 28px;
+}
+.scroll_div::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb;
+}
