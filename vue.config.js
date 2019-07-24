@@ -10,8 +10,8 @@ module.exports = {
   chainWebpack: (config) => {
     //修改文件引入自定义路径
     config.resolve.alias
-      .set('@', resolve('src/views'))
-      .set('utils', resolve('src/utils'))
+      .set('@', resolve('./src/views'))
+      .set('utils', resolve('./src/utils'))
       .set('api', resolve('./src/api'))
   },
   devServer: {

@@ -50,3 +50,13 @@ export const getToken = () => {
 export const title = (title) => {
   document.title = title;
 }
+
+//判断是否是合格手机号
+export const isphone = (pone) => {
+  var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+  if (!myreg.test(pone)) {
+    return false;
+  } else {
+    return true;
+  }
+}
