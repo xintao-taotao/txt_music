@@ -5,9 +5,11 @@ import store from './store';
 import TXTComponents from '../src/views/Components/Components'
 import VueRouter from 'vue-router';
 import routers from './router.js';
+import Talert from '../src/views/Components/alert/index.js'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
+Vue.use(Talert);
 //自制组件注册
 Vue.use(TXTComponents);
 

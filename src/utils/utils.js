@@ -70,3 +70,14 @@ export const isemail = (email) => {
     return true;
   }
 }
+
+//字符串转json对象
+export const toJson = (str) => {
+  try {
+      let obj = JSON.parse(str)
+      if (typeof obj == "object") {
+          return obj;
+      }
+  } catch (e) {}
+  return false;
+};

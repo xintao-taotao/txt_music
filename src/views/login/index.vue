@@ -8,7 +8,11 @@
         <div class="login">
           <div class="login_ctn">
             <transition-group name="slide-phone">
-              <div class="login_phone" v-show="loginstatus" key="1">
+              <div
+                class="login_phone"
+                v-show="loginstatus && registered == false && forget == false"
+                key="1"
+              >
                 <h5>登录</h5>
                 <p>请使用您本人的手机密码登录</p>
                 <div class="login_from">
@@ -18,11 +22,7 @@
                     @input="iptuserphone(userloginphone)"
                     placeholder="请输入您的手机号"
                   ></Tinput>
-                  <Tinput
-                    v-model="loginphonepwd"
-                    type="password"
-                    placeholder="请输入您的密码"
-                  ></Tinput>
+                  <Tinput v-model="loginphonepwd" type="password" placeholder="请输入您的密码"></Tinput>
                   <div class="login_a">
                     <button @click="loginstatus = false">邮箱登录</button>
                     <a @click="forget = true">忘记密码？</a>
@@ -35,7 +35,11 @@
               </div>
             </transition-group>
             <transition-group name="slide-email" key="2">
-              <div class="login_email" v-show="!loginstatus" key="2">
+              <div
+                class="login_email"
+                v-show="!loginstatus && registered == false && forget == false"
+                key="2"
+              >
                 <h5>登录</h5>
                 <p>请使用您本人的邮箱密码登录</p>
                 <div class="login_from">
@@ -45,11 +49,7 @@
                     @input="iptuseremail(userloginemail)"
                     placeholder="请输入您的邮箱"
                   ></Tinput>
-                  <Tinput
-                    v-model="loginemailpwd"
-                    type="password"
-                    placeholder="请输入您的密码"
-                  ></Tinput>
+                  <Tinput v-model="loginemailpwd" type="password" placeholder="请输入您的密码"></Tinput>
                   <div class="login_a">
                     <button @click="loginstatus = true">手机号登录</button>
                     <a @click="forget = true">忘记密码？</a>
@@ -72,16 +72,12 @@
                     @input="iptuserphone(userphone)"
                     placeholder="请输入您的手机号"
                   ></Tinput>
-                  <Tinput
-                    v-model="userpwd"
-                    type="password"
-                    placeholder="请输入您的密码"
-                  ></Tinput>
+                  <Tinput v-model="userpwd" type="password" placeholder="请输入您的密码"></Tinput>
                   <div class="login_a">
-                    <button @click="loginstatus = true">手机号登录</button>
-                    <button @click="loginstatus = false">邮箱登录</button>
+                    <button @click="checktab()">手机号登录</button>
+                    <button @click="checkyou()">邮箱登录</button>
                   </div>
-                  <button class="login_btn" @click="login()">登录</button>
+                  <button class="login_btn" @click="login()">{{registered ? '注册' : '找回密码'}}</button>
                   <p class="no_login">
                     <a @click="checktab()">已有账号？去登陆</a>
                   </p>
@@ -97,16 +93,17 @@
 
 <script>
 import { isphone, isemail } from "utils/utils";
-import { phonelogin } from 'api/user'
+import { phonelogin, loginstatus } from "api/user";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
-      userloginphone: '',
-      loginphonepwd: '',
-      userloginemail: '',
-      loginemailpwd: '',
-      userphone: '',
-      userpwd: '',
+      userloginphone: "",
+      loginphonepwd: "",
+      userloginemail: "",
+      loginemailpwd: "",
+      userphone: "",
+      userpwd: "",
       forget: false,
       loginstatus: true,
       registered: false
@@ -121,16 +118,24 @@ export default {
     },
     checktab() {
       this.registered = false;
+      this.forget = false;
       this.loginstatus = true;
     },
+    checkyou() {
+      this.registered = false;
+      this.forget = false;
+      this.loginstatus = false;
+    },
     login() {
-      phonelogin({
-        phone: '18974661429',
-        countrycode: '+86',
-        password: 'xintao792883583'
-      }).then((res)=>{
+      phonelogin("18974661429", "xintao792883583").then(res => {
         console.log(res);
-      })
+        console.log(document.cookie);
+      });
+      setTimeout(() => {
+        loginstatus().then(res => {
+          console.log(res);
+        });
+      }, 5000);
     },
     iptuseremail() {
       if (!this.userphone) {
