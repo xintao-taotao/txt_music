@@ -60,3 +60,13 @@ export const isphone = (pone) => {
     return true;
   }
 }
+
+//判断是否是合格的邮箱
+export const isemail = (email) => {
+  let emails = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/;
+  if(!emails.test(email)){
+    return false;
+  } else {
+    return true;
+  }
+}

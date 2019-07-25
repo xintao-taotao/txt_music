@@ -63,13 +63,8 @@ export default {
     value(newVal) {
       this.myValue = newVal;
     },
-    myValue(newVal) {
-      if (!this.timer) {
-        this.timer = setTimeout(() => {
-          this.timer = null;
-          this.$emit("input", newVal);
-        }, 200);
-      }
+    myValue(newVal){
+      this.$emit("input", newVal);
     },
     disabled(newval) {
       if (newVal) {
