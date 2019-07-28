@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "development") {
   ROOT = "/api";
 } else {
   //生产环境下的地址
-  ROOT = URL;
+  ROOT = 'http://music.tangxintao.cn:3000';
 }
 // export default { ROOT, URL };
 exports.URL = URL;

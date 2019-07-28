@@ -27,7 +27,7 @@
                     <button @click="loginstatus = false">邮箱登录</button>
                     <a @click="forget = true">忘记密码？</a>
                   </div>
-                  <button class="login_btn" @click="login()">登录</button>
+                  <button class="login_btn" @click="phonelogin()">登录</button>
                   <p class="no_login">
                     <a @click="registered = true">没有账号？去注册</a>
                   </p>
@@ -54,7 +54,7 @@
                     <button @click="loginstatus = true">手机号登录</button>
                     <a @click="forget = true">忘记密码？</a>
                   </div>
-                  <button class="login_btn" @click="login()">登录</button>
+                  <button class="login_btn" @click="emaillogin()">登录</button>
                   <p class="no_login">
                     <a @click="registered = true">没有账号？去注册</a>
                   </p>
@@ -92,8 +92,8 @@
 </template>
 
 <script>
-import { isphone, isemail } from "utils/utils";
-import { phonelogin, loginstatus } from "api/user";
+import { isphone, isemail, setToken } from "utils/utils";
+import { phonelogin, loginstatus, userdata, emaillogin } from "api/user";
 import { setTimeout } from "timers";
 export default {
   data() {
@@ -126,6 +126,15 @@ export default {
       this.forget = false;
       this.loginstatus = false;
     },
+    emaillogin() {
+      if (this.userloginemail) {
+        emaillogin(this.userloginemail, this.loginemailpwd).then(res => {
+          console.log(res);
+        });
+      } else {
+        console.log("请填写邮箱");
+      }
+    },
     login() {
       phonelogin("18974661429", "xintao792883583").then(res => {
         console.log(res);
@@ -137,11 +146,28 @@ export default {
         });
       }, 5000);
     },
-    iptuseremail() {
-      if (!this.userphone) {
+    phonelogin() {
+      if (this.userloginphone) {
+        phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
+          let data = res.data;
+          let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+          console.log(binding);
+          setToken(binding.access_token);
+          setTimeout(() => {
+            userdata().then(res => {
+              console.log(res);
+            });
+          }, 3000);
+        });
+      } else {
+        console.log("请填写手机号");
+      }
+    },
+    iptuseremail(item) {
+      if (item) {
         // 弹出请填写邮箱的提示
         console.log("弹出请填写邮箱的提示");
-        if (!isemail(this.userphone)) {
+        if (!isemail(item)) {
           // 弹出请输入正确格式的邮箱的提示
           console.log("弹出请输入正确格式的邮箱的提示");
         }

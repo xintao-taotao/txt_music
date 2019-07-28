@@ -31,9 +31,14 @@ export const rmCookie = (key) => {
   Cookies.remove(key)
 };
 
+//添加cookie
+export const setCookie = (key, value) => {
+  Cookies.set(key, value)
+};
+
 //存储token
 export const setToken = (token) => {
-  setCookie('token', token);
+  setCookie('token', encodeURIComponent(token));
 };
 
 //删除token
@@ -64,7 +69,7 @@ export const isphone = (pone) => {
 //判断是否是合格的邮箱
 export const isemail = (email) => {
   let emails = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/;
-  if(!emails.test(email)){
+  if (!emails.test(email)) {
     return false;
   } else {
     return true;
@@ -74,10 +79,10 @@ export const isemail = (email) => {
 //字符串转json对象
 export const toJson = (str) => {
   try {
-      let obj = JSON.parse(str)
-      if (typeof obj == "object") {
-          return obj;
-      }
+    let obj = JSON.parse(str)
+    if (typeof obj == "object") {
+      return obj;
+    }
   } catch (e) {}
   return false;
 };

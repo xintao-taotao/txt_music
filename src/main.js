@@ -5,7 +5,9 @@ import store from './store';
 import TXTComponents from '../src/views/Components/Components'
 import VueRouter from 'vue-router';
 import routers from './router.js';
-import Talert from '../src/views/Components/alert/index.js'
+import Talert from './views/Components/modal/index.js'
+import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
