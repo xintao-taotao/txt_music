@@ -7,7 +7,7 @@
       <div class="div_left">
         <div class="login">
           <div class="login_ctn">
-            <transition-group name="slide-phone">
+            <transition-group name="slide-phone" tag="ul">
               <div
                 class="login_phone"
                 v-show="loginstatus && registered == false && forget == false"
@@ -16,13 +16,20 @@
                 <h5>登录</h5>
                 <p>请使用您本人的手机密码登录</p>
                 <div class="login_from">
-                  <Tinput
-                    v-model="userloginphone"
-                    type="number"
-                    @input="iptuserphone(userloginphone)"
-                    placeholder="请输入您的手机号"
-                  ></Tinput>
-                  <Tinput v-model="loginphonepwd" type="password" placeholder="请输入您的密码"></Tinput>
+                  <div class="error_input">
+                    <transition-group name="error">
+                      <p class="error_fonts" v-show="phonestatus" key="4">请输入正确格式的手机号</p>
+                    </transition-group>
+                    <Tinput
+                      v-model="userloginphone"
+                      type="number"
+                      @input="iptuserphone(userloginphone)"
+                      placeholder="请输入您的手机号"
+                    ></Tinput>
+                  </div>
+                  <p>
+                    <Tinput v-model="loginphonepwd" type="password" placeholder="请输入您的密码"></Tinput>
+                  </p>
                   <div class="login_a">
                     <button @click="loginstatus = false">邮箱登录</button>
                     <a @click="forget = true">忘记密码？</a>
@@ -34,7 +41,7 @@
                 </div>
               </div>
             </transition-group>
-            <transition-group name="slide-email" key="2">
+            <transition-group name="slide-email" key="2" tag="ul">
               <div
                 class="login_email"
                 v-show="!loginstatus && registered == false && forget == false"
@@ -61,17 +68,12 @@
                 </div>
               </div>
             </transition-group>
-            <transition-group name="slide-registered" key="3">
+            <transition-group name="slide-registered" key="3" tag="ul">
               <div class="login_registered" v-show="registered || forget" key="3">
                 <h5>{{registered ? '注册' : (forget ? '找回密码' : '注册')}}</h5>
                 <p>{{registered ? '请使用手机号注册' : (forget ? '请输入您的手机号，以及验证码(暂不支持邮箱修改密码！)' : '请使用手机号注册')}}</p>
                 <div class="login_from">
-                  <Tinput
-                    v-model="userphone"
-                    type="number"
-                    @input="iptuserphone(userphone)"
-                    placeholder="请输入您的手机号"
-                  ></Tinput>
+                  <Tinput v-model="userphone" type="number" placeholder="请输入您的手机号"></Tinput>
                   <Tinput v-model="userpwd" type="password" placeholder="请输入您的密码"></Tinput>
                   <div class="login_a">
                     <button @click="checktab()">手机号登录</button>
@@ -92,9 +94,10 @@
 </template>
 
 <script>
-import { isphone, isemail, setToken } from "utils/utils";
+import { isemail, setToken } from "utils/utils";
 import { phonelogin, loginstatus, userdata, emaillogin } from "api/user";
 import { setTimeout } from "timers";
+import { isphone } from "utils/utils";
 export default {
   data() {
     return {
@@ -106,20 +109,23 @@ export default {
       userpwd: "",
       forget: false,
       loginstatus: true,
-      registered: false
+      registered: false,
+      phonestatus: false
     };
   },
   methods: {
-    iptuserphone(values) {
-      if (!isphone(values)) {
-        // 弹出请输入正确格式的手机号的提示
-        console.log("弹出请输入正确格式的手机号的提示");
-      }
-    },
     checktab() {
       this.registered = false;
       this.forget = false;
       this.loginstatus = true;
+    },
+    iptuserphone(newVal) {
+      if (!isphone(newVal)) {
+        // 弹出请输入正确格式的手机号的提示
+        this.phonestatus = true;
+      } else {
+        this.phonestatus = false;
+      }
     },
     checkyou() {
       this.registered = false;

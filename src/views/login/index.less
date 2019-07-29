@@ -36,6 +36,12 @@
 .div_right>img {
   position: relative;
   z-index: 2;
+  width: 100%;
+}
+
+.div_right {
+  flex: 0 1 48%;
+  max-width: 48%;
 }
 
 .login {
@@ -97,10 +103,9 @@
   position: relative;
   height: 100%;
   width: 332px;
-  overflow: hidden;
 }
 
-.login_ctn /deep/ span {
+.login_ctn/deep/ul {
   position: absolute;
   left: 0px;
   top: 50%;
@@ -126,6 +131,10 @@
 
 .div_left {
   height: 100%;
+  flex: 0 1 50%;
+  display: flex;
+  justify-content: flex-end;
+  max-width: 50%;
 }
 
 .slide-phone-enter-active {
@@ -137,10 +146,7 @@
 }
 
 .slide-phone-enter,
-.slide-phone-leave-to
-
-/* .slide-fade-leave-active for below version 2.1.8 */
-  {
+.slide-phone-leave-to {
   transform: translateX(332px);
   opacity: 0;
 }
@@ -154,10 +160,7 @@
 }
 
 .slide-registered-enter,
-.slide-registered-leave-to
-
-/* .slide-fade-leave-active for below version 2.1.8 */
-  {
+.slide-registered-leave-to {
   transform: translateX(332px);
   opacity: 0;
 }
@@ -189,4 +192,19 @@
 .div_left {
   position: relative;
   z-index: 2;
+  overflow: hidden;
+}
+
+.error_input {
+  display: flex;
+  position: relative;
+}
+
+.error_input>span {
+  position: absolute;
+  left: -16rem;
+  font-size: 1.6rem;
+  top: calc(50% - .5rem);
+  transform: translateY(-50%);
+  color: #de1330;
 }

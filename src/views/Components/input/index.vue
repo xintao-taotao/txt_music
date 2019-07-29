@@ -7,6 +7,7 @@
       :style="style()"
       v-on:input="myValue = $event.target.value"
       :placeholder="placeholder"
+      :maxlength="maxlength"
       :disabled="disabled"
     />
   </div>
@@ -18,6 +19,9 @@ export default {
     type: {
       type: String,
       default: "text"
+    },
+    maxlength: {
+      type: String
     },
     value: {
       type: String
@@ -63,7 +67,7 @@ export default {
     value(newVal) {
       this.myValue = newVal;
     },
-    myValue(newVal){
+    myValue(newVal) {
       this.$emit("input", newVal);
     },
     disabled(newval) {

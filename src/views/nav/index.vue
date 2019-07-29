@@ -1,19 +1,15 @@
 <template>
-  <div class="home">
-    <leftnav></leftnav>
+  <div class="nav">
+    asdasd
   </div>
 </template>
 
 <script>
-import leftnav from '../nav/index'
 export default {
   data () {
     return {
     };
   },
-  components:{
-    leftnav
-  }
 }
 
 </script>

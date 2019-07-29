@@ -106,3 +106,20 @@ img {
   font-family: SourceHanSansSC;
   src: url('../src/fonts/SourceHanSansSC-Regular.otf');
 }
+
+.error-enter-active {
+  transition: all .5s ease;
+}
+
+.error-leave-active {
+  transition: all .5s ease;
+  transform: translateX(0px);
+  opacity: 1;
+  color: rgb(0, 0, 0);
+}
+
+.error-enter,
+.error-leave-to {
+  transform: translateX(190px);
+  opacity: 0;
+}
