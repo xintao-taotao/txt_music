@@ -1,3 +1,4 @@
+@import "../utils";
 .div {
   background: url('../../images/login_bgimg.jpg') no-repeat center center;
   height: 100%;
@@ -6,10 +7,7 @@
 }
 
 .div_content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  .updowncentent();
   height: 87%;
   background: #fff;
   width: calc(100% - 15.2rem);

@@ -62,8 +62,6 @@ input::-webkit-inner-spin-button {
 html {
   min-width: 320px;
   margin: auto;
-  font-size: 62.5%;
-  /* 想要的px除以十就是rem的值 */
 }
 
 html,
