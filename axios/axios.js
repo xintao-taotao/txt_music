@@ -1,5 +1,6 @@
 import axios from 'axios'
 import _this from '../src/main'
+import Talert from '../src/views/Components/talert/index.vue'
 import {
   toJson
 } from '../src/utils/utils'
@@ -50,7 +51,7 @@ class HttpRequest {
     }, err => {
       if (err.request.status == 202) {
         //正确请求但是结果在处理中，请稍后请求
-        _this.$modal.Alert("正确请求但是结果在处理中，请稍后请求",'asdasdasdsa','prompt');
+        
       } else if (err.request.status == 301) {
         //地址已被转移！
         _this.$modal.Alert('地址已被转移！','asdasdasdsa','prompt');

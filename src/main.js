@@ -1,19 +1,21 @@
 import Vue from 'vue';
 import '../config/reset.css';
 import App from './App.vue';
+import CreateAPI from 'vue-create-api';
+Vue.use(CreateAPI);
+import Talert from './views/Components/talert';
+Vue.createAPI(Talert, true);
+//自制组件注册
+import TXTComponents from '../src/views/Components/Components';
+Vue.use(TXTComponents);
+import { getToken } from 'utils/utils'
 import store from './store';
-import TXTComponents from '../src/views/Components/Components'
 import VueRouter from 'vue-router';
 import routers from './router.js';
-import Talert from './views/Components/modal/index.js'
 import axios from 'axios';
 axios.defaults.withCredentials = true;
-
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.use(VueRouter);
-Vue.use(Talert);
-//自制组件注册
-Vue.use(TXTComponents);
 
 const RouterConfig = {
   mode: 'hash',
@@ -26,8 +28,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title
   }
-  let userstate = document.cookie;
-  if (to.name != 'login' && userstate.indexOf('token') == -1) {
+  if (to.name != 'login' && getToken() == undefined) {
     next({
       name: 'login'
     });

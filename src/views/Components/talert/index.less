@@ -1,27 +1,22 @@
 .wind-alert-dialog {
-  top: 50%;
-  width: 35rem;
-  left: 50%;
   opacity: 1;
-  position: fixed;
   font-size: 14px;
   text-align: center;
-  font-family: "Microsoft Yahei";
   background: #ffffff;
   border-radius: 8px;
   z-index: 999999999;
   box-sizing: content-box;
-  transform: translate(-50%, -50%);
 }
 
 .wind-alert-bg {
-  top: 0;
-  left: 0;
   width: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   height: 100%;
   opacity: 0.3;
   display: block;
-  position: fixed;
   z-index: 999999998;
   background-color: #000000;
 }
@@ -36,11 +31,11 @@
   border-bottom: 1px solid #ededed;
 }
 
-.wind-alert-btn>div{
+.wind-alert-btn>div {
   display: flex;
 }
 
-.info{
+.info {
   color: #0582cd;
   font-size: 15px;
   line-height: 40px;
@@ -48,7 +43,7 @@
   flex: 0 1 50%;
 }
 
-.error{
+.error {
   color: red;
   font-size: 15px;
   line-height: 40px;
@@ -57,15 +52,18 @@
 }
 
 .animate-scale {
-  animation-name: scale;
-  animation-duration: 0.375s;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-@keyframes scale {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
+.alert-enter-active .animate-scale{
+  transition: all 3s;
+  top: 50%;
+}
+
+.alert-enter, .alert-leave-to{
+  top: 0px;
+  transition: all .3s;
 }

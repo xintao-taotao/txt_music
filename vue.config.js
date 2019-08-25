@@ -1,6 +1,6 @@
-
 const path = require('path');
 const BaseUrl = require("./config/config");
+
 function resolve(dir) {
   return path.join(__dirname, dir)
 }

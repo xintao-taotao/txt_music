@@ -1,3 +1,5 @@
+@import '../../css/login.less';
+
 .div {
   background: url('../../images/login_bgimg.jpg') no-repeat center center;
   height: 100%;
@@ -18,8 +20,14 @@
   box-sizing: border-box;
   padding: 6.4rem 17.5rem 6.4rem 7rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+}
+
+@media screen and (max-width: 1200px){
+  .div_right{
+      background: #000;
+  }
 }
 
 .div_right::after {
@@ -42,6 +50,7 @@
 .div_right {
   flex: 0 1 48%;
   max-width: 48%;
+  .transition();
 }
 
 .login {

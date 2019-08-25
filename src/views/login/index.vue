@@ -94,10 +94,11 @@
 </template>
 
 <script>
-import { isemail, setToken } from "utils/utils";
+import { isemail, setToken, goPageByPath } from "utils/utils";
 import { phonelogin, loginstatus, userdata, emaillogin } from "api/user";
 import { setTimeout } from "timers";
 import { isphone } from "utils/utils";
+import Talert from "../Components/talert/index";
 export default {
   data() {
     return {
@@ -111,6 +112,11 @@ export default {
       loginstatus: true,
       registered: false,
       phonestatus: false
+    };
+  },
+  mounted() {
+    window.onresize = () => {
+      let width = document.documentElement.clientWidth;
     };
   },
   methods: {
@@ -142,31 +148,32 @@ export default {
       }
     },
     login() {
-      phonelogin("18974661429", "xintao792883583").then(res => {
-        console.log(res);
-        console.log(document.cookie);
-      });
-      setTimeout(() => {
-        loginstatus().then(res => {
-          console.log(res);
-        });
-      }, 5000);
+      // phonelogin("18974661429", "xintao792883583").then(res => {
+      //   console.log(res);
+      //   console.log(document.cookie);
+      // });
+      // setTimeout(() => {
+      //   loginstatus().then(res => {
+      //     console.log(res);
+      //   });
+      // }, 5000);
     },
     phonelogin() {
       if (this.userloginphone) {
         phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
           let data = res.data;
           let binding = JSON.parse(data.bindings[1].tokenJsonStr);
-          console.log(binding);
           setToken(binding.access_token);
-          setTimeout(() => {
-            userdata().then(res => {
-              console.log(res);
-            });
-          }, 3000);
+          goPageByPath('/');
         });
       } else {
-        console.log("请填写手机号");
+        // Talert.$create({
+        //   $props: {
+        //     title: "Hello",
+        //     text: "I am from pure JS"
+        //   }
+        // }).show();
+        console.log('填写手机号！');
       }
     },
     iptuseremail(item) {
