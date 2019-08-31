@@ -13,6 +13,13 @@ import store from './store';
 import VueRouter from 'vue-router';
 import routers from './router.js';
 import axios from 'axios';
+import VueLazyload from 'vue-lazyload'
+Vue.use(VueLazyload
+//   {
+//   error: '',
+//   loading: ''
+// }
+);
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = false;
 Vue.use(VueRouter);

@@ -26,7 +26,7 @@
           <div>
             <ul class="songerlist_ul">
             <li v-for="(item,index) in songerlist" :key="index">
-              <img :src="item.picUrl" />
+              <img v-lazy="item.picUrl" />
               <p>{{item.name}}</p>
             </li>
           </ul>
