@@ -5,6 +5,16 @@
         <i>最受欢迎的</i>
         <p>艺术家</p>
       </div>
+      <scroll :scrollX="true" style="width:400px;overflow-x: auto;">
+        <div>
+          <ul style="white-space: nowrap;display: inline-block;">
+            <li v-for="(item,index) in hotsongerlist" :key="index" style="display: inline-block;width: 100px;height: 80px;margin-left: 10px;background-color: lightcoral;">
+              <img v-lazy="item.picUrl" width="100"/>
+              <p>{{item.name}}</p>
+            </li>
+          </ul>
+        </div>
+      </scroll>
       <div class="header-right">
         <transition name="search">
           <div class="search">
@@ -25,11 +35,11 @@
         <div class="songer_div">
           <div>
             <ul class="songerlist_ul">
-            <li v-for="(item,index) in songerlist" :key="index">
-              <img v-lazy="item.picUrl" />
-              <p>{{item.name}}</p>
-            </li>
-          </ul>
+              <li v-for="(item,index) in songerlist" :key="index">
+                <img v-lazy="item.picUrl" />
+                <p>{{item.name}}</p>
+              </li>
+            </ul>
           </div>
         </div>
       </scroll>
@@ -38,7 +48,7 @@
 </template>
 
 <script>
-import { songerlist } from "api/songs";
+import { songerlist, hotsonger } from "api/songs";
 import scrollAlphabet from "../Components/scroll-alphabet";
 import scroll from "../Components/scroll/index";
 import {} from "utils/utils";
@@ -48,7 +58,8 @@ export default {
       search: "",
       searchinput: false,
       searchfont: false,
-      songerlist: []
+      songerlist: [],
+      hotsongerlist: []
     };
   },
   methods: {
@@ -65,33 +76,37 @@ export default {
       }
     },
     selectdata() {
-      songerlist().then(res => {
-        if (res.data.code === 200) {
-          let data = res.data.artists;
-          if (data.length > 0) {
-            data.forEach(item => {
-              this.songerlist.push({
-                accountId: item.accountId,
-                albumSize: item.albumSize,
-                alias: item.alias,
-                briefDesc: item.briefDesc,
-                followed: item.followed,
-                id: item.id,
-                img1v1Id: item.img1v1Id,
-                img1v1Id_str: item.img1v1Id_str,
-                img1v1Url: item.img1v1Url,
-                musicSize: item.musicSize,
-                name: item.name,
-                picId: item.picId,
-                picId_str: item.picId_str,
-                picUrl: item.picUrl,
-                topicPerson: item.topicPerson,
-                trans: item.trans
-              });
-            });
-          }
-        }
+      hotsonger(0, 10).then(res => {
+        console.log(res);
+        this.hotsongerlist = res.data.artists;
       });
+      // songerlist().then(res => {
+      //   if (res.data.code === 200) {
+      //     let data = res.data.artists;
+      //     if (data.length > 0) {
+      //       data.forEach(item => {
+      //         this.songerlist.push({
+      //           accountId: item.accountId,
+      //           albumSize: item.albumSize,
+      //           alias: item.alias,
+      //           briefDesc: item.briefDesc,
+      //           followed: item.followed,
+      //           id: item.id,
+      //           img1v1Id: item.img1v1Id,
+      //           img1v1Id_str: item.img1v1Id_str,
+      //           img1v1Url: item.img1v1Url,
+      //           musicSize: item.musicSize,
+      //           name: item.name,
+      //           picId: item.picId,
+      //           picId_str: item.picId_str,
+      //           picUrl: item.picUrl,
+      //           topicPerson: item.topicPerson,
+      //           trans: item.trans
+      //         });
+      //       });
+      //     }
+      //   }
+      // });
     },
     songername(item) {}
   },

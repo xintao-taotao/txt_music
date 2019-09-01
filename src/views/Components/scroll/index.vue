@@ -12,6 +12,22 @@ export default {
       type: Array,
       default: () => []
     },
+    scrollX: {
+      type: Boolean,
+      default: false
+    },
+    startY: {
+      type: Number,
+      default: 0
+    },
+    startX: {
+      type: Number,
+      default: 0
+    },
+    scrollY: {
+      type: Boolean,
+      default: true
+    },
     probeType: {
       type: Number,
       default: 1
@@ -35,6 +51,10 @@ export default {
     bounceTime: {
       type: Number,
       default: 800
+    },
+    mouseWheel: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -50,13 +70,19 @@ export default {
       if (!this.$refs.myscroll) {
         return;
       }
+      console.log(this.scrollX);
       this.scroll = new BScroll(this.$refs.myscroll, {
         probeType: this.probeType,
         click: this.click,
         dblclick: this.dblclick,
         freeScroll: this.freeScroll,
         bounce: this.bounce,
-        bounceTime: this.bounceTime
+        bounceTime: this.bounceTime,
+        mouseWheel: this.mouseWheel,
+        scrollX: this.scrollX,
+        scrollY: this.scrollY,
+        startY: this.startY,
+        startX: this.startX
       });
     },
     enable() {

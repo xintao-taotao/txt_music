@@ -1,6 +1,6 @@
 <template>
   <div class="scroll-alphabet">
-    <scroll ref="scroll">
+    <scroll ref="scroll" :mouseWheel="true" class="scroll-divs" title="鼠标上下拖动">
       <div class="scroll-div" ref="scrolldiv">
         <ul>
           <li v-for="(item,index) in data" :key="index" @click="songername(item)">{{item}}</li>
@@ -63,14 +63,16 @@ export default {
       this.$emit("songername", item);
     },
     windowsize() {
-      this.screenWidth = window.screen.width;
-      this.screenHeight = window.screen.height;
-      if (this.screenHeight < this.$refs.scrolldiv.clientHeight - 400) {
-        this.$refs.scroll.$el.style.height = this.screenHeight + "px";
+      if (this.$refs.scrolldiv) {
+        this.screenWidth = window.screen.width;
+        this.screenHeight = window.screen.height;
+        if (this.screenHeight < this.$refs.scrolldiv.clientHeight - 400) {
+          this.$refs.scroll.$el.style.height = this.screenHeight + "px";
+        }
       }
     }
   },
-  created(){
+  created() {
     this.windowsize();
   }
 };
