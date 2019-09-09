@@ -74,7 +74,7 @@
                 <p>{{registered ? '请使用手机号注册' : (forget ? '请输入您的手机号，以及验证码(暂不支持邮箱修改密码！)' : '请使用手机号注册')}}</p>
                 <div class="login_from">
                   <Tinput v-model="userphone" type="number" placeholder="请输入您的手机号"></Tinput>
-                  <Tinput v-model="userpwd" type="password" placeholder="请输入您的密码"></Tinput>
+                  <Tinput v-model="userpwd" type="password" placeholder="请输入您的密码" v-if="!forget"></Tinput>
                   <div class="login_a">
                     <button @click="checktab()">手机号登录</button>
                     <button @click="checkyou()">邮箱登录</button>
@@ -159,31 +159,31 @@ export default {
       // }, 5000);
     },
     phonelogin() {
-      if (this.userloginphone) {
+      if (this.userloginphone != '' && this.loginphonepwd != '') {
         phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
-          let data = res.data;
-          let binding = JSON.parse(data.bindings[1].tokenJsonStr);
-          setToken(binding.access_token);
-          goPageByPath('/');
+          if(res.code == 200){
+            let data = res.data;
+            let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+            setToken(binding.access_token);
+            this.$Message.success('登录成功！');
+            goPageByPath('/');
+          }
         });
       } else {
-        // Talert.$create({
-        //   $props: {
-        //     title: "Hello",
-        //     text: "I am from pure JS"
-        //   }
-        // }).show();
-        console.log('填写手机号！');
+        this.$Message.error('请输入手机号和密码！');
       }
     },
     iptuseremail(item) {
-      if (item) {
-        // 弹出请填写邮箱的提示
-        console.log("弹出请填写邮箱的提示");
+      if (item != '') {
         if (!isemail(item)) {
           // 弹出请输入正确格式的邮箱的提示
           console.log("弹出请输入正确格式的邮箱的提示");
+        }else{
+          console.log('text');
         }
+      }else{
+        // 弹出请填写邮箱的提示
+        console.log("弹出请填写邮箱的提示");
       }
     }
   }

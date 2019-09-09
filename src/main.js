@@ -3,6 +3,9 @@ import '../config/reset.css';
 import App from './App.vue';
 import CreateAPI from 'vue-create-api';
 Vue.use(CreateAPI);
+import 'iview/dist/styles/iview.css';
+import iView from 'iview';
+Vue.use(iView);
 import Talert from './views/Components/talert';
 Vue.createAPI(Talert, true);
 //自制组件注册
@@ -49,6 +52,7 @@ let vue = new Vue({
   el: '#app',
   router: router,
   store,
+  Vue,
   render: h => h(App)
 });
 

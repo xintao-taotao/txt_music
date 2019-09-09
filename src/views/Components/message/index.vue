@@ -3,7 +3,7 @@
     <div class="message_ctn">
       <div class="message_body">
         <div class="message_icon">
-
+          
         </div>
         <div class="message_fonts">
           

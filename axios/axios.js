@@ -1,6 +1,5 @@
 import axios from 'axios'
 import _this from '../src/main'
-import Talert from '../src/views/Components/talert/index.vue'
 import {
   toJson
 } from '../src/utils/utils'
@@ -49,35 +48,45 @@ class HttpRequest {
         status
       };
     }, err => {
-      if (err.request.status == 202) {
-        //正确请求但是结果在处理中，请稍后请求
-        
-      } else if (err.request.status == 301) {
-        //地址已被转移！
-        _this.$modal.Alert('地址已被转移！','asdasdasdsa','prompt');
-        // _this.$VAlert.success('保存成功')
-      } else if (err.request.status == 303) {
-        //请使用get来请求资源
-      } else if (err.request.status == 400) {
-        //请求错误
-      } else if (err.request.status == 401) {
-        //没有认证信息！
-      } else if (err.request.status == 403) {
-        //没有权限！
-      } else if (err.request.status == 404) {
-        //内容不存在！
-      } else if (err.request.status == 408) {
-        //请求超时！
-      } else if (err.request.status == 500) {
-        //服务器错误！
-      } else if (err.request.status == 501) {
-        //请求还没有被实现！
-      } else if (err.request.status == 502) {
-        //网络错误！
-      } else if (err.request.status == 503) {
-        //服务暂时不可用！
+      switch (err.request.status) {
+        case 202:
+          _this.$Message.error('正确请求但是结果在处理中，请稍后请求');
+          break;
+        case 303:
+          _this.$Message.error('请使用get来请求资源');
+          break;
+        case 400:
+          _this.$Message.error('请求错误');
+          break;
+        case 401:
+          _this.$Message.error('没有认证信息！');
+          break;
+        case 403:
+          _this.$Message.error('没有权限！');
+          break;
+        case 404:
+          _this.$Message.error('内容不存在！');
+          break;
+        case 408:
+          _this.$Message.error('请求超时！');
+          break;
+        case 500:
+          _this.$Message.error('服务器错误！');
+          break;
+        case 501:
+          _this.$Message.error('请求还没有被实现！');
+          break;
+        case 502:
+          _this.$Message.error('网络错误！');
+          break;
+        case 503:
+          _this.$Message.error('服务暂时不可用！');
+          break;
+        case 509:
+          _this.$Message.error('密码错误超过限制');
+          break;
       }
-
+      return err.response.data;
     })
   }
   request(options) {
