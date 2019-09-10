@@ -44,3 +44,12 @@ export const userdata = () => {
     dataType: 'json'
   })
 }
+
+//检测手机号是否注册
+export const isregistered = (phone) => {
+  return axios.request({
+    url: `/cellphone/existence/check?phone=${phone}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}

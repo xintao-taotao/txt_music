@@ -50,12 +50,17 @@
                 <h5>登录</h5>
                 <p>请使用您本人的邮箱密码登录</p>
                 <div class="login_from">
-                  <Tinput
-                    v-model="userloginemail"
-                    type="text"
-                    @input="iptuseremail(userloginemail)"
-                    placeholder="请输入您的邮箱"
-                  ></Tinput>
+                  <div class="error_input">
+                    <transition-group name="error">
+                      <p class="error_fonts" v-show="emailstatus" key="4">请输入正确格式的邮箱</p>
+                    </transition-group>
+                    <Tinput
+                      v-model="userloginemail"
+                      type="text"
+                      @input="iptuseremail(userloginemail)"
+                      placeholder="请输入您的邮箱"
+                    ></Tinput>
+                  </div>
                   <Tinput v-model="loginemailpwd" type="password" placeholder="请输入您的密码"></Tinput>
                   <div class="login_a">
                     <button @click="loginstatus = true">手机号登录</button>
@@ -95,10 +100,17 @@
 
 <script>
 import { isemail, setToken, goPageByPath } from "utils/utils";
-import { phonelogin, loginstatus, userdata, emaillogin } from "api/user";
-import { setTimeout } from "timers";
+import {
+  phonelogin,
+  loginstatus,
+  userdata,
+  emaillogin,
+  isregistered
+} from "api/user";
+import { setTimeout, clearTimeout } from "timers";
 import { isphone } from "utils/utils";
 import Talert from "../Components/talert/index";
+let messagetimeout;
 export default {
   data() {
     return {
@@ -111,7 +123,8 @@ export default {
       forget: false,
       loginstatus: true,
       registered: false,
-      phonestatus: false
+      phonestatus: false,
+      emailstatus: false
     };
   },
   mounted() {
@@ -127,10 +140,24 @@ export default {
     },
     iptuserphone(newVal) {
       if (!isphone(newVal)) {
-        // 弹出请输入正确格式的手机号的提示
         this.phonestatus = true;
       } else {
         this.phonestatus = false;
+      }
+      if (newVal.length === 11) {
+        isregistered(newVal).then(res => {
+          if (res.data.code === 200) {
+            if (res.data.exist != 1) {
+              this.$Message.info("此号码未注册，请注册后再登录噢！");
+              messagetimeout = setTimeout(() => {
+                this.userphone = newVal;
+                this.userloginphone = "";
+                this.registered = true;
+                clearTimeout(messagetimeout);
+              }, 2000);
+            }
+          }
+        });
       }
     },
     checkyou() {
@@ -139,12 +166,12 @@ export default {
       this.loginstatus = false;
     },
     emaillogin() {
-      if (this.userloginemail) {
+      if (this.userloginemail != '' && this.loginemailpwd != '') {
         emaillogin(this.userloginemail, this.loginemailpwd).then(res => {
           console.log(res);
         });
       } else {
-        console.log("请填写邮箱");
+        this.$Message.error('请填写邮箱和密码！');
       }
     },
     login() {
@@ -159,31 +186,31 @@ export default {
       // }, 5000);
     },
     phonelogin() {
-      if (this.userloginphone != '' && this.loginphonepwd != '') {
-        phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
-          if(res.code == 200){
-            let data = res.data;
-            let binding = JSON.parse(data.bindings[1].tokenJsonStr);
-            setToken(binding.access_token);
-            this.$Message.success('登录成功！');
-            goPageByPath('/');
-          }
-        });
+      if (this.userloginphone != "" && this.loginphonepwd != "") {
+        if (!isphone(this.userloginphone)) {
+          this.$Message.error("请输入正确格式的手机号");
+        } else {
+          phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
+            if (res.code == 200) {
+              let data = res.data;
+              let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+              setToken(binding.access_token);
+              this.$Message.success("登录成功！");
+              goPageByPath("/");
+            }
+          });
+        }
       } else {
-        this.$Message.error('请输入手机号和密码！');
+        this.$Message.error("请输入手机号和密码！");
       }
     },
     iptuseremail(item) {
-      if (item != '') {
+      if (item != "") {
         if (!isemail(item)) {
-          // 弹出请输入正确格式的邮箱的提示
-          console.log("弹出请输入正确格式的邮箱的提示");
-        }else{
-          console.log('text');
+          this.emailstatus = true;
+        } else {
+          this.emailstatus = false;
         }
-      }else{
-        // 弹出请填写邮箱的提示
-        console.log("弹出请填写邮箱的提示");
       }
     }
   }
