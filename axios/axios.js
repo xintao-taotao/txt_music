@@ -55,9 +55,6 @@ class HttpRequest {
         case 303:
           _this.$Message.error('请使用get来请求资源');
           break;
-        case 400:
-          _this.$Message.error('请求错误');
-          break;
         case 401:
           _this.$Message.error('没有认证信息！');
           break;
@@ -78,9 +75,6 @@ class HttpRequest {
           break;
         case 502:
           _this.$Message.error('网络错误！');
-          break;
-        case 503:
-          _this.$Message.error('服务暂时不可用！');
           break;
         case 509:
           _this.$Message.error('密码错误超过限制');

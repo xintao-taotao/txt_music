@@ -52,7 +52,7 @@
                 <div class="login_from">
                   <div class="error_input">
                     <transition-group name="error">
-                      <p class="error_fonts" v-show="emailstatus" key="4">请输入正确格式的邮箱</p>
+                      <p class="error_fonts" v-show="emailstatus" key="5">请输入正确格式的邮箱</p>
                     </transition-group>
                     <Tinput
                       v-model="userloginemail"
@@ -78,8 +78,32 @@
                 <h5>{{registered ? '注册' : (forget ? '找回密码' : '注册')}}</h5>
                 <p>{{registered ? '请使用手机号注册' : (forget ? '请输入您的手机号，以及验证码(暂不支持邮箱修改密码！)' : '请使用手机号注册')}}</p>
                 <div class="login_from">
-                  <Tinput v-model="userphone" type="number" placeholder="请输入您的手机号"></Tinput>
+                  <Tinput v-model="username" type="text" placeholder="请输入您的昵称" v-if="!forget"></Tinput>
+                  <div class="error_input">
+                    <transition-group name="error">
+                      <p class="error_fonts" v-show="zhuphonestatus" key="6">请输入正确格式的手机号</p>
+                    </transition-group>
+                    <Tinput
+                      v-model="userphone"
+                      type="number"
+                      @input="zhuiptuserphone(userphone)"
+                      placeholder="请输入您的手机号"
+                      :code="true"
+                    ></Tinput>
+                  </div>
+                  <Tinput
+                    v-model="userpcode"
+                    type="number"
+                    placeholder="请输入手机验证码"
+                    @input="phonecode()"
+                  ></Tinput>
                   <Tinput v-model="userpwd" type="password" placeholder="请输入您的密码" v-if="!forget"></Tinput>
+                  <Tinput
+                    v-model="isuserpwd"
+                    type="password"
+                    placeholder="请再次输入您的密码"
+                    v-if="!forget"
+                  ></Tinput>
                   <div class="login_a">
                     <button @click="checktab()">手机号登录</button>
                     <button @click="checkyou()">邮箱登录</button>
@@ -105,7 +129,9 @@ import {
   loginstatus,
   userdata,
   emaillogin,
-  isregistered
+  isregistered,
+  iscode,
+  registerphone
 } from "api/user";
 import { setTimeout, clearTimeout } from "timers";
 import { isphone } from "utils/utils";
@@ -120,11 +146,17 @@ export default {
       loginemailpwd: "",
       userphone: "",
       userpwd: "",
+      isuserpwd: "",
+      username: "",
+      userpcode: "",
       forget: false,
       loginstatus: true,
       registered: false,
       phonestatus: false,
-      emailstatus: false
+      emailstatus: false,
+      zhuphonestatus: false,
+      iscodestatus: false,
+      temporarycount: 0
     };
   },
   mounted() {
@@ -137,6 +169,46 @@ export default {
       this.registered = false;
       this.forget = false;
       this.loginstatus = true;
+    },
+    phonecode() {
+      if (this.userpcode != "" && this.userphone != "") {
+        if (this.userpcode.length >= 4) {
+          iscode({
+            phone: this.userphone,
+            captcha: this.userpcode
+          }).then(res => {
+            if (res.code !== 200) {
+              this.$Message.error("验证码错误！");
+            } else {
+              this.iscodestatus = true;
+            }
+          });
+        }
+      }
+    },
+    zhuiptuserphone(newVal) {
+      if (!isphone(newVal)) {
+        this.zhuphonestatus = true;
+      } else {
+        this.zhuphonestatus = false;
+      }
+      if (newVal.length === 11) {
+        isregistered(newVal).then(res => {
+          if (res.data.code === 200) {
+            if (res.data.exist === 1) {
+              this.$Message.info("账号已经注册，请直接登录噢！");
+              messagetimeout = setTimeout(() => {
+                this.userloginphone = newVal;
+                this.userphone = "";
+                this.userpwd = "";
+                this.registered = false;
+                this.loginstatus = true;
+                clearTimeout(messagetimeout);
+              }, 2000);
+            }
+          }
+        });
+      }
     },
     iptuserphone(newVal) {
       if (!isphone(newVal)) {
@@ -166,24 +238,68 @@ export default {
       this.loginstatus = false;
     },
     emaillogin() {
-      if (this.userloginemail != '' && this.loginemailpwd != '') {
+      if (this.userloginemail != "" && this.loginemailpwd != "") {
         emaillogin(this.userloginemail, this.loginemailpwd).then(res => {
-          console.log(res);
+          if (res.data.code === 200) {
+            let data = res.data;
+            let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+            setToken(binding.access_token);
+            this.$Message.success("登录成功！");
+            goPageByPath("/");
+          }
         });
       } else {
-        this.$Message.error('请填写邮箱和密码！');
+        this.$Message.error("请填写邮箱和密码！");
       }
     },
     login() {
-      // phonelogin("18974661429", "xintao792883583").then(res => {
-      //   console.log(res);
-      //   console.log(document.cookie);
-      // });
-      // setTimeout(() => {
-      //   loginstatus().then(res => {
-      //     console.log(res);
-      //   });
-      // }, 5000);
+      if (this.registered) {
+        //注册
+        if (this.username == "") {
+          this.$Message.error("请输入您的昵称！");
+          return;
+        }
+        if (this.userphone == "") {
+          this.$Message.error("请输入您的手机号！");
+          return;
+        }
+        if (this.userpcode == "") {
+          this.$Message.error("请输入您的手机验证码！");
+          return;
+        }
+        if (this.userpwd == "" || this.isuserpwd == "") {
+          this.$Message.error("请输入您的密码！");
+          return;
+        }
+        if (this.userpwd !== this.isuserpwd) {
+          this.$Message.error("两次密码不一致，请检查！");
+          return;
+        }
+        if (!this.iscodestatus) {
+          this.$Message.error("手机验证码错误，请检查！");
+          return;
+        }
+        registerphone({
+          phone: this.userphone,
+          password: this.userpwd,
+          captcha: this.userpcode,
+          nickname: this.username
+        }).then(res => {
+          if(res.data && res.data.code === 200){
+            let data = res.data;
+            let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+            setToken(binding.access_token);
+            this.$Message.success("注册成功！");
+            goPageByPath("/");
+          }else if(res.code === 505){
+            this.$Message.error(res.message);
+            return;
+          }
+        });
+      } else {
+        //找回密码
+        console.log("1651856156");
+      }
     },
     phonelogin() {
       if (this.userloginphone != "" && this.loginphonepwd != "") {

@@ -53,3 +53,30 @@ export const isregistered = (phone) => {
     dataType: 'json'
   })
 }
+
+//发送验证码
+export const phonecode = (code) => {
+  return axios.request({
+    url: `/captcha/sent?phone=${code}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}
+
+//注册账号
+export const registerphone = (params) => {
+  return axios.request({
+    url: `/register/cellphone?phone=${params.phone}&password=${params.password}&captcha=${params.captcha}&nickname=${params.nickname}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}
+
+//验证验证码是否正确
+export const iscode = (params) => {
+  return axios.request({
+    url: `/captcha/verify?phone=${params.phone}&captcha=${params.captcha}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}

@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- 编码格式 -->
-    <meta charset="utf-8">
-    <!-- 强制使用最新ie浏览器渲染 -->
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <!-- 禁止百度转码 -->
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <!-- 使用webkit内核渲染(当然没有webkit内核就没办法) -->
-    <meta name="renderer" content="webkit">
-    <!-- width=device-width 强制让文档的宽度与设备的宽度保持1:1
+
+<head>
+  <!-- 编码格式 -->
+  <meta charset="utf-8">
+  <!-- 强制使用最新ie浏览器渲染 -->
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <!-- 禁止百度转码 -->
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <!-- 使用webkit内核渲染(当然没有webkit内核就没办法) -->
+  <meta name="renderer" content="webkit">
+  <!-- width=device-width 强制让文档的宽度与设备的宽度保持1:1
     initial-scale 文档初始化缩放比例是1:1
     maximum-scale 不允许用户点击屏幕放大浏览
     user-scalable 允许用户缩放到的最大比例 -->
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>txt_music</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but txt_music doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>txt_music</title>
+  <style>
+    .ivu-notice-desc {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but txt_music doesn't work properly without JavaScript enabled. Please enable it to
+      continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>
