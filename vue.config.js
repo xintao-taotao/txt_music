@@ -14,6 +14,7 @@ module.exports = {
       .set('utils', resolve('./src/utils'))
       .set('api', resolve('./src/api'))
   },
+  productionSourceMap: false,
   devServer: {
     proxy: {
       [BaseUrl.ROOT]: {
