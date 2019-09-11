@@ -242,7 +242,7 @@ export default {
         emaillogin(this.userloginemail, this.loginemailpwd).then(res => {
           if (res.data.code === 200) {
             let data = res.data;
-            let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+            let binding = JSON.parse(data.bindings[0].tokenJsonStr);
             setToken(binding.access_token);
             this.$Message.success("登录成功！");
             goPageByPath("/");
@@ -287,7 +287,7 @@ export default {
         }).then(res => {
           if(res.data && res.data.code === 200){
             let data = res.data;
-            let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+            let binding = JSON.parse(data.bindings[0].tokenJsonStr);
             setToken(binding.access_token);
             this.$Message.success("注册成功！");
             goPageByPath("/");
@@ -298,7 +298,7 @@ export default {
         });
       } else {
         //找回密码
-        console.log("1651856156");
+        this.$Message.error("功能暂未开放！");
       }
     },
     phonelogin() {
@@ -309,7 +309,7 @@ export default {
           phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
             if (res.code == 200) {
               let data = res.data;
-              let binding = JSON.parse(data.bindings[1].tokenJsonStr);
+              let binding = JSON.parse(data.bindings[0].tokenJsonStr);
               setToken(binding.access_token);
               this.$Message.success("登录成功！");
               goPageByPath("/");
