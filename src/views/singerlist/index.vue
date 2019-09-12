@@ -1,20 +1,10 @@
 <template>
   <div class="singerlist">
-    <div class="header">
+    <div class="header" ref="header">
       <div class="header-left">
         <i>最受欢迎的</i>
         <p>艺术家</p>
       </div>
-      <scroll :scrollX="true" style="width:400px;overflow-x: auto;">
-        <div>
-          <ul style="white-space: nowrap;display: inline-block;">
-            <li v-for="(item,index) in hotsongerlist" :key="index" style="display: inline-block;width: 100px;height: 80px;margin-left: 10px;background-color: lightcoral;">
-              <img v-lazy="item.picUrl" width="100"/>
-              <p>{{item.name}}</p>
-            </li>
-          </ul>
-        </div>
-      </scroll>
       <div class="header-right">
         <transition name="search">
           <div class="search">
@@ -31,6 +21,19 @@
     </div>
     <div class="content">
       <scrollAlphabet @songername="songername"></scrollAlphabet>
+      <scroll :scrollX="true">
+        <ul class="hotlist" ref="hotlist">
+          <li
+            v-for="(item,index) in hotsongerlist"
+            :key="index"
+            ref="songerli"
+            style="display: inline-block;width: 100px;height: 80px;"
+          >
+            <img v-lazy="item.picUrl" width="100" />
+            <p>{{item.name}}</p>
+          </li>
+        </ul>
+      </scroll>
       <scroll :data="songerlist">
         <div class="songer_div">
           <div>
@@ -52,6 +55,7 @@ import { songerlist, hotsonger } from "api/songs";
 import scrollAlphabet from "../Components/scroll-alphabet";
 import scroll from "../Components/scroll/index";
 import {} from "utils/utils";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -108,10 +112,27 @@ export default {
       //   }
       // });
     },
-    songername(item) {}
+    songername(item) {},
+    inithotlist() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          let width;
+          if (this.$refs.songerli && this.$refs.songerli.length > 0) {
+            width = 0;
+            this.$refs.songerli.forEach((item, index) => {
+              width = width + item.scrollWidth;
+            });
+          }
+          this.$refs.hotlist.style.width = width + "px";
+        }, 60);
+      });
+    }
   },
   created() {
     this.selectdata();
+    this.$nextTick(() => {
+      this.inithotlist();
+    });
   },
   components: {
     scrollAlphabet,
