@@ -80,3 +80,12 @@ export const iscode = (params) => {
     dataType: 'json'
   })
 }
+
+//找回密码
+export const retrevepassword = (params) => {
+  return axios.request({
+    url: `/register/cellphone?phone=${params.phone}&password=${params.password}&captcha=${params.captcha}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}

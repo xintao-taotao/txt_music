@@ -97,6 +97,18 @@
                     placeholder="请输入手机验证码"
                     @input="phonecode()"
                   ></Tinput>
+                  <Tinput
+                    v-model="retrieveuserpwd"
+                    type="password"
+                    placeholder="请输入新的密码"
+                    v-if="forget"
+                  ></Tinput>
+                  <Tinput
+                    v-model="isretrieveuserpwd"
+                    type="password"
+                    placeholder="请再次输入新的密码"
+                    v-if="forget"
+                  ></Tinput>
                   <Tinput v-model="userpwd" type="password" placeholder="请输入您的密码" v-if="!forget"></Tinput>
                   <Tinput
                     v-model="isuserpwd"
@@ -131,7 +143,8 @@ import {
   emaillogin,
   isregistered,
   iscode,
-  registerphone
+  registerphone,
+  retrevepassword
 } from "api/user";
 import { setTimeout, clearTimeout } from "timers";
 import { isphone } from "utils/utils";
@@ -149,6 +162,8 @@ export default {
       isuserpwd: "",
       username: "",
       userpcode: "",
+      retrieveuserpwd: "",
+      isretrieveuserpwd: "",
       forget: false,
       loginstatus: true,
       registered: false,
@@ -171,18 +186,37 @@ export default {
       this.loginstatus = true;
     },
     phonecode() {
-      if (this.userpcode != "" && this.userphone != "") {
-        if (this.userpcode.length >= 4) {
-          iscode({
-            phone: this.userphone,
-            captcha: this.userpcode
-          }).then(res => {
-            if (res.code !== 200) {
-              this.$Message.error("验证码错误！");
-            } else {
-              this.iscodestatus = true;
-            }
-          });
+      if (this.registered) {
+        //注册
+        if (this.userpcode != "" && this.userphone != "") {
+          if (this.userpcode.length >= 4) {
+            iscode({
+              phone: this.userphone,
+              captcha: this.userpcode
+            }).then(res => {
+              if (res.code !== 200) {
+                this.$Message.error("验证码错误！");
+              } else {
+                this.iscodestatus = true;
+              }
+            });
+          }
+        }
+      } else {
+        //找回密码
+        if (this.userphone != "" && this.userpcode != "") {
+          if (this.userpcode.length >= 4) {
+            iscode({
+              phone: this.userphone,
+              captcha: this.userpcode
+            }).then(res => {
+              if (res.code !== 200) {
+                this.$Message.error("验证码错误！");
+              } else {
+                this.iscodestatus = true;
+              }
+            });
+          }
         }
       }
     },
@@ -192,22 +226,25 @@ export default {
       } else {
         this.zhuphonestatus = false;
       }
-      if (newVal.length === 11) {
-        isregistered(newVal).then(res => {
-          if (res.data.code === 200) {
-            if (res.data.exist === 1) {
-              this.$Message.info("账号已经注册，请直接登录噢！");
-              messagetimeout = setTimeout(() => {
-                this.userloginphone = newVal;
-                this.userphone = "";
-                this.userpwd = "";
-                this.registered = false;
-                this.loginstatus = true;
-                clearTimeout(messagetimeout);
-              }, 2000);
+      if (!this.forget) {
+        if (newVal.length === 11) {
+          isregistered(newVal).then(res => {
+            if (res.data.code === 200) {
+              if (res.data.exist === 1) {
+                this.$Message.info("账号已经注册，请直接登录噢！");
+                messagetimeout = setTimeout(() => {
+                  this.userloginphone = newVal;
+                  this.userphone = "";
+                  this.userpwd = "";
+                  this.registered = false;
+                  this.forget = false;
+                  this.loginstatus = true;
+                  clearTimeout(messagetimeout);
+                }, 2000);
+              }
             }
-          }
-        });
+          });
+        }
       }
     },
     iptuserphone(newVal) {
@@ -285,20 +322,52 @@ export default {
           captcha: this.userpcode,
           nickname: this.username
         }).then(res => {
-          if(res.data && res.data.code === 200){
+          if (res.data && res.data.code === 200) {
             let data = res.data;
             let binding = JSON.parse(data.bindings[0].tokenJsonStr);
             setToken(binding.access_token);
             this.$Message.success("注册成功！");
             goPageByPath("/");
-          }else if(res.code === 505){
+          } else if (res.code === 505) {
             this.$Message.error(res.message);
             return;
           }
         });
       } else {
         //找回密码
-        this.$Message.error("功能暂未开放！");
+        if (this.userphone == "") {
+          this.$Message.error("请输入手机号码！");
+          return;
+        }
+        if (this.userpcode == "") {
+          this.$Message.error("请输入手机验证码！");
+          return;
+        }
+        if (this.retrieveuserpwd == "" || this.isretrieveuserpwd == "") {
+          this.$Message.error("请输入您的新密码！");
+          return;
+        }
+        if (this.retrieveuserpwd !== this.isretrieveuserpwd) {
+          this.$Message.error("两次密码不一致！请检查！");
+          return;
+        }
+        retrevepassword({
+          phone: this.userphone,
+          captcha: this.userpcode,
+          password: this.retrieveuserpwd
+        }).then(res => {
+          if(res.data.code === 200){
+            this.$Message.success('修改密码成功！');
+            this.userloginphone = this.userphone;
+            this.registered = false;
+            this.forget = false;
+            this.loginstatus = true;
+            this.userphone = '';
+            this.userpcode = '';
+            this.retrieveuserpwd = '';
+            this.isretrieveuserpwd = '';
+          }
+        });
       }
     },
     phonelogin() {
