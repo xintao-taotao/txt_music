@@ -100,11 +100,6 @@ img {
   background-color: #bbb;
 }
 
-@font-face {
-  font-family: SourceHanSansSC;
-  src: url('../src/fonts/SourceHanSansSC-Regular.otf');
-}
-
 .error-enter-active {
   transition: all .5s ease;
 }

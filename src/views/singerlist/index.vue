@@ -27,8 +27,10 @@
             v-for="(item,index) in hotsongerlist"
             :key="index"
             ref="songerli"
-            class="hotsongerlist"
             @click="selectsonger(item)"
+            @mousedown="(e)=>{onsinger(e,index)}"
+            @mouseup="(e)=>{upsinger(e,index)}"
+            @mouseleave="(e)=>{upsinger(e,index)}"
           >
             <img v-lazy="item.picUrl" @load="inithotlist"/>
             <div class="songer-info">
@@ -58,7 +60,7 @@
 import { songerlist, hotsonger } from "api/songs";
 import scrollAlphabet from "../Components/scroll-alphabet";
 import scroll from "../Components/scroll/index";
-import {} from "utils/utils";
+import { goPageByPath } from "utils/utils";
 import { setTimeout } from "timers";
 export default {
   data() {
@@ -82,6 +84,12 @@ export default {
       } else {
         this.searchinput = true;
       }
+    },
+    onsinger(e,index){
+      this.$refs.hotlist.children[index].className = 'singer-on-active';
+    },
+    upsinger(e,index){
+      this.$refs.hotlist.children[index].className = '';
     },
     selectdata() {
       hotsonger(0, 10).then(res => {
@@ -149,7 +157,7 @@ export default {
       // });
     },
     selectsonger(item){
-      console.log(item);
+      goPageByPath('/singer-details',{songerid: item.id})
     },
     songername(item) {},
     inithotlist() {

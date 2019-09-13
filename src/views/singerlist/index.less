@@ -10,7 +10,9 @@
 }
 
 .singerlist {
-  font-family: SourceHanSansSC;
+  padding: 45px 9.54%;
+  box-sizing: border-box;
+  width: 82.43%;
 }
 
 .header {
@@ -19,7 +21,7 @@
   position: relative;
 }
 
-.content{
+.content {
   margin-top: 50px;
 }
 
@@ -60,11 +62,20 @@
   white-space: nowrap;
 }
 
-.hotsongerlist {
+.hotlist>li {
   display: inline-grid;
   width: 267px;
   margin-right: 45px;
   cursor: pointer;
+}
+
+.hotlist>li>img {
+  width: 100%;
+  height: 200px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  transform: rotate3d(0,0,0,0deg);
+  transition: all .6s;
 }
 
 .songer-info {
@@ -78,15 +89,15 @@
   flex-wrap: wrap;
   align-items: center;
   height: 68px;
+  position: relative;
+  z-index: 2;
 }
 
-.songer-info>p{
+.songer-info>p {
   flex: 0 1 100%;
 }
 
-.hotsongerlist>img {
-  width: 100%;
-  height: 200px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+.singer-on-active>img{
+  transform: translateY(8px) !important;
+  transition: all .6s !important;
 }

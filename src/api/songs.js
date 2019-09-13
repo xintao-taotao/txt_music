@@ -17,3 +17,12 @@ export const hotsonger = (offset, limit = 30) => {
     dataType: 'json'
   })
 }
+
+//歌手详情
+export const singerdetails = (id) => {
+  return axios.request({
+    url: `/artists?id=${id}`,
+    method: 'get',
+    dataType: 'json'
+  })
+}

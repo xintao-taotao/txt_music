@@ -24,6 +24,13 @@ const routers = [{
       title: 'txt-music 歌手列表'
     },
     component: (resolve) => require(['./views/singerlist/index.vue'], resolve)
+  },{
+    path: '/singer-details',
+    name: 'singer-details',
+    meta: {
+      title: 'txt-music 歌手详情'
+    },
+    component: (resolve) => require(['./views/singerdetails/index.vue'], resolve)
   }]
 }]
 export default routers;
