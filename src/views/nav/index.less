@@ -3,6 +3,7 @@
   background: #E8E8F1;
   height: 100%;
   padding: 20px 30px 20px 30px;
+  position: relative;
 }
 
 .nav-item {
@@ -98,4 +99,35 @@
   top: 50%;
   background-color: #FD2D55;
   z-index: 2;
+}
+
+.user-info{
+  margin-top: 60px;
+  text-align: center;
+  display: flex;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 12px;
+  background-color: #fff;
+  padding: 16px;
+  width: calc(100% - 60px);
+  align-items: center;
+  overflow: hidden;
+}
+
+.avatar>img{
+  margin: auto;
+  width: 60px;
+}
+
+.avatar{
+  margin-right: 26px;
+  flex: 0 1 60px;
+}
+
+.user-name{
+  font-size: 15px;
+  flex: 0 1 140px;
 }

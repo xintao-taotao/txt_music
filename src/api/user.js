@@ -89,3 +89,12 @@ export const retrevepassword = (params) => {
     dataType: 'json'
   })
 }
+
+//获取用户详情
+export const userinfo = (id) => {
+  return axios.request({
+    url: `/user/detail?uid=${id}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}

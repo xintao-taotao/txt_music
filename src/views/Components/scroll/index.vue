@@ -70,7 +70,6 @@ export default {
       if (!this.$refs.myscroll) {
         return;
       }
-      console.log(this.scrollX);
       this.scroll = new BScroll(this.$refs.myscroll, {
         probeType: this.probeType,
         click: this.click,

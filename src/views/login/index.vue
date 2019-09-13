@@ -279,8 +279,8 @@ export default {
         emaillogin(this.userloginemail, this.loginemailpwd).then(res => {
           if (res.data.code === 200) {
             let data = res.data;
-            let binding = JSON.parse(data.bindings[0].tokenJsonStr);
-            setToken(binding.access_token);
+            let binding = JSON.parse(data.account.id);
+            setToken(binding);
             this.$Message.success("登录成功！");
             goPageByPath("/");
           }
@@ -324,8 +324,8 @@ export default {
         }).then(res => {
           if (res.data && res.data.code === 200) {
             let data = res.data;
-            let binding = JSON.parse(data.bindings[0].tokenJsonStr);
-            setToken(binding.access_token);
+            let binding = JSON.parse(data.account.id);
+            setToken(binding);
             this.$Message.success("注册成功！");
             goPageByPath("/");
           } else if (res.code === 505) {
@@ -378,8 +378,8 @@ export default {
           phonelogin(this.userloginphone, this.loginphonepwd).then(res => {
             if (res.code == 200) {
               let data = res.data;
-              let binding = JSON.parse(data.bindings[0].tokenJsonStr);
-              setToken(binding.access_token);
+              let binding = JSON.parse(data.account.id);
+              setToken(binding);
               this.$Message.success("登录成功！");
               goPageByPath("/");
             }

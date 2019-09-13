@@ -93,29 +93,51 @@
         </li>
       </ul>
     </div>
-    <div class="avater">
-      <img src />
-      <p>名字</p>
+    <div class="user-info">
+      <div class="avatar">
+        <img v-lazy="avatarUrl" />
+      </div>
+      <div class="user-name">
+        <p>{{nickname}}</p>
+      </div>
+      <div class="user-info-detail">
+        <img src="../../images/user-info-detail.png" alt="查看详情">
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { goPageByPath } from "utils/utils";
+import { goPageByPath, getToken } from "utils/utils";
+import { userinfo } from "api/user";
 export default {
   data() {
     return {
-      navactive: 1
+      navactive: 1,
+      avatarUrl: '',
+      nickname: '',
     };
   },
   methods: {
     jumpmenu(url) {
-      if(url){
+      if (url) {
         goPageByPath(url);
-      }else{
-        this.$Message.error('此功能暂未开放！');
+      } else {
+        this.$Message.error("此功能暂未开放！");
       }
+    },
+    selectuserinfo() {
+      userinfo(getToken()).then((res)=>{
+        if(res.data.code === 200){
+          let data = res.data;
+          this.avatarUrl = data.profile.avatarUrl;
+          this.nickname = data.profile.nickname;
+        }
+      })
     }
+  },
+  created() {
+    this.selectuserinfo();
   }
 };
 </script>

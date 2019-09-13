@@ -35,7 +35,7 @@ export default {
 
 <style lang="less">
 #app {
-  height: 100%;
+  height: inherit;
   max-width: 1920px;
   margin: auto;
 }

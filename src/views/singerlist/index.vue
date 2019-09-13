@@ -21,16 +21,20 @@
     </div>
     <div class="content">
       <scrollAlphabet @songername="songername"></scrollAlphabet>
-      <scroll :scrollX="true">
+      <scroll :scrollX="true" :mouseWheel="true">
         <ul class="hotlist" ref="hotlist">
           <li
             v-for="(item,index) in hotsongerlist"
             :key="index"
             ref="songerli"
-            style="display: inline-block;width: 100px;height: 80px;"
+            class="hotsongerlist"
+            @click="selectsonger(item)"
           >
-            <img v-lazy="item.picUrl" width="100" />
-            <p>{{item.name}}</p>
+            <img v-lazy="item.picUrl" @load="inithotlist"/>
+            <div class="songer-info">
+              <p>{{item.name}}</p>
+              <p v-for="(its,idx) in item.alias" :key="idx">{{its}}</p>
+            </div>
           </li>
         </ul>
       </scroll>
@@ -81,8 +85,40 @@ export default {
     },
     selectdata() {
       hotsonger(0, 10).then(res => {
-        console.log(res);
-        this.hotsongerlist = res.data.artists;
+        if(res.data.code === 200){
+          let data = res.data.artists;
+          if(data.length > 0){
+            data.forEach((item,index)=>{
+              //存储歌手昵称
+              let alias = [];
+              if(item.alias && item.alias.length > 0){
+                item.alias.forEach((als,index)=>{
+                  if(als){
+                    alias.push(als);
+                  }
+                })
+              }
+              this.hotsongerlist.push({
+                accountId: item.accountId,
+                albumSize: item.albumSize,
+                alias: alias,
+                briefDesc: item.briefDesc,
+                followed: item.followed,
+                id: item.id,
+                img1v1Id: item.img1v1Id,
+                img1v1Id_str: item.img1v1Id_str,
+                img1v1Url: item.img1v1Url,
+                musicSize: item.musicSize,
+                name: item.name,
+                picId: item.picId,
+                picId_str: item.picId_str,
+                picUrl: item.picUrl,
+                topicPerson: item.topicPerson,
+                trans: item.trans
+              })
+            }) 
+          }
+        }
       });
       // songerlist().then(res => {
       //   if (res.data.code === 200) {
@@ -112,6 +148,9 @@ export default {
       //   }
       // });
     },
+    selectsonger(item){
+      console.log(item);
+    },
     songername(item) {},
     inithotlist() {
       this.$nextTick(() => {
@@ -120,7 +159,11 @@ export default {
           if (this.$refs.songerli && this.$refs.songerli.length > 0) {
             width = 0;
             this.$refs.songerli.forEach((item, index) => {
-              width = width + item.scrollWidth;
+              if(index + 1 === this.$refs.songerli.length){
+                width = width + item.scrollWidth;
+              }else{
+                width = width + item.scrollWidth + 45;
+              }
             });
           }
           this.$refs.hotlist.style.width = width + "px";
