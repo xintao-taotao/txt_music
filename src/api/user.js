@@ -1,6 +1,6 @@
 import axios from '../../axios/api.requset';
 
-//手机登录
+/** 手机登录 */
 export const phonelogin = (phone, password) => {
   return axios.request({
     url: `/login/cellphone?countrycode=86&phone=${phone}&password=${password}`,
@@ -9,7 +9,7 @@ export const phonelogin = (phone, password) => {
   })
 }
 
-//邮箱登录
+/** 邮箱登录 */
 export const emaillogin = (email,password) => {
   return axios.request({
     url: `/login?email=${email}&password=${password}`,
@@ -18,7 +18,7 @@ export const emaillogin = (email,password) => {
   })
 }
 
-//登录状态
+/** 登录状态 */
 export const loginstatus = () => {
   return axios.request({
     url: '/login/status',
@@ -27,7 +27,7 @@ export const loginstatus = () => {
   })
 }
 
-//刷新登录
+/** 刷新登录 */
 export const shiftlogin = () => {
   return axios.request({
     url: '/login/refresh',
@@ -36,7 +36,7 @@ export const shiftlogin = () => {
   })
 }
 
-//获取用户歌单、收藏、dj数量等
+/** 获取用户歌单、收藏、dj数量等 */
 export const userdata = () => {
   return axios.request({
     url: '/user/subcount',
@@ -45,7 +45,7 @@ export const userdata = () => {
   })
 }
 
-//检测手机号是否注册
+/** 检测手机号是否注册 */
 export const isregistered = (phone) => {
   return axios.request({
     url: `/cellphone/existence/check?phone=${phone}`,
@@ -54,7 +54,7 @@ export const isregistered = (phone) => {
   })
 }
 
-//发送验证码
+/** 发送验证码 */
 export const phonecode = (code) => {
   return axios.request({
     url: `/captcha/sent?phone=${code}`,
@@ -63,7 +63,7 @@ export const phonecode = (code) => {
   })
 }
 
-//注册账号
+/** 注册账号 */
 export const registerphone = (params) => {
   return axios.request({
     url: `/register/cellphone?phone=${params.phone}&password=${params.password}&captcha=${params.captcha}&nickname=${params.nickname}`,
@@ -72,7 +72,7 @@ export const registerphone = (params) => {
   })
 }
 
-//验证验证码是否正确
+/** 验证验证码是否正确 */
 export const iscode = (params) => {
   return axios.request({
     url: `/captcha/verify?phone=${params.phone}&captcha=${params.captcha}`,
@@ -81,7 +81,7 @@ export const iscode = (params) => {
   })
 }
 
-//找回密码
+/** 找回密码 */
 export const retrevepassword = (params) => {
   return axios.request({
     url: `/register/cellphone?phone=${params.phone}&password=${params.password}&captcha=${params.captcha}`,
@@ -90,7 +90,7 @@ export const retrevepassword = (params) => {
   })
 }
 
-//获取用户详情
+/** 获取用户详情 */
 export const userinfo = (id) => {
   return axios.request({
     url: `/user/detail?uid=${id}`,
