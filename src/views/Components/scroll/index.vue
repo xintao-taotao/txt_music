@@ -63,7 +63,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.initscroll();
-    }, 20);
+    }, 60);
   },
   methods: {
     initscroll() {

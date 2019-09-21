@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="singer-album">
-      <scroll :scrollX="true" :mouseWheel="true">
+      <scroll :scrollX="true" :mouseWheel="true" ref="scrollalbum">
         <ul class="album" ref="album">
           <li v-for="(item,index) in singeralbum" :key="index" ref="songerli">
             <img v-lazy="item.picUrl" @load="initalbumwidth" />
@@ -62,7 +62,7 @@
       <div class="singer-songlist">
         <div class="singer-div-header">歌手MV</div>
         <div class="singer-div-list">
-          <scroll ref="singerdiv" :mouseWheel="true">
+          <scroll :mouseWheel="true">
             <ul
               class="singermvul"
               ref="singermvul"
@@ -181,7 +181,7 @@ export default {
     /** 初始化歌曲列表滚动高度 */
     initsingerlistheight() {
       setTimeout(() => {
-        if (this.$refs.singerdiv && this.$refs.singerlist) {
+        if (this.$refs.singerlist && this.$refs.singerlistli) {
           if (this.singerlist.length > 0) {
             let height = 0;
             this.$refs.singerlistli.forEach((item, index) => {
@@ -215,10 +215,12 @@ export default {
           let height = 0;
           if (this.$refs.singermvli.length > 0) {
             this.$refs.singermvli.forEach((item, index) => {
-              height = height + item.scrollHeight + 14;
+              if (index % 2 === 0) {
+                height = height + item.scrollHeight + 14;
+              }
             });
           }
-          this.$refs.singermvul.style.height = height / 2 + "px";
+          this.$refs.singermvul.style.height = height + "px";
         }
       }, 60);
     }
@@ -234,11 +236,11 @@ export default {
       /** 查询歌手mv */
       this.selectsingermvlist();
     }
-    this.$nextTick(()=>{
+    this.$nextTick(() => {
       this.initsingerlistheight();
       this.initsingermvheight();
       this.initalbumwidth();
-    })
+    });
   },
   components: {
     scroll
