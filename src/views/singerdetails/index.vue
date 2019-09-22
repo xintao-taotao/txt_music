@@ -41,7 +41,12 @@
         <div class="singer-div-list">
           <scroll ref="singerdiv" :mouseWheel="true">
             <ul v-if="singerlist && singerlist.length > 0" ref="singerlist" class="singerul">
-              <li v-for="(item,index) in singerlist" :key="index" ref="singerlistli">
+              <li
+                v-for="(item,index) in singerlist"
+                :key="index"
+                ref="singerlistli"
+                @click="player(item)"
+              >
                 <div class="songer-avatar">
                   <img v-lazy="item.picUrl" @load="initsingerlistheight" />
                 </div>
@@ -88,7 +93,8 @@ import {
   singermvlist
 } from "api/songs";
 import scroll from "../Components/scroll";
-import { timeconversion } from "utils/utils";
+import { timeconversion, goPageByPath } from "utils/utils";
+import { mapMutations, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -108,7 +114,14 @@ export default {
       singermvlist: []
     };
   },
+  computed: {
+    ...mapGetters(["songinfo", "currentsongId"])
+  },
   methods: {
+    ...mapMutations({
+      setsonginfo: "SET_SONGINFO",
+      setcurrentsongId: "SET_CURRENTSONGID"
+    }),
     /** 查询歌手详情信息和部分歌曲信息 */
     selectsingdetails() {
       this.singerid = this.$route.query.songerid;
@@ -120,6 +133,23 @@ export default {
           this.singeralias = data.artist.alias;
         }
       });
+    },
+    /** 获取歌曲准备播放 */
+    player(item) {
+      let data = {};
+      data['flag'] = item.flag;
+      data['name'] = item.name;
+      data['picUrl'] = item.picUrl;
+      data['musicurl'] = '';
+      let songer = [];
+      if(item.ar && item.ar.length && item.ar.length > 0){
+        item.ar.forEach((item,index)=>{
+          songer.push(item);
+        })
+      }
+      data['songer'] = songer;
+      this.setsonginfo(data);
+      this.setcurrentsongId(item.id);
     },
     /** 查询歌手专辑 */
     selectsingeralbum() {
@@ -154,7 +184,7 @@ export default {
     },
     /** 返回上一级路由 */
     back() {
-      this.$router.go(-1);
+      goPageByPath('/singerlist');
     },
     /** 查询歌手单曲 */
     selectsingerlist() {

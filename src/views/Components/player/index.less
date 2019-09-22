@@ -1,46 +1,97 @@
-.player{
+.player {
   height: 74px;
   box-sizing: border-box;
-  padding: 12px;
+  padding: 12px 20px;
   color: #fff;
   display: flex;
 }
 
-.play-bgcolor1{
+.play-bgcolor1 {
   background: #596B9F;
 }
 
-.play-bgcolor2{
+.play-bgcolor2 {
   background: #3F4F56;
 }
 
-.play-bgcolor3{
+.play-bgcolor3 {
   background: #60ABC3;
 }
 
-.play-bgcolor4{
+.play-bgcolor4 {
   background: #9A525D;
 }
 
-.play-bgcolor5{
+.play-bgcolor5 {
   background: #302C57;
 }
 
-.song-info-songer-info{
+.song-info-songer-info {
   display: flex;
+  align-items: center;
 }
 
-.player-operating{
+.player-operating {
   display: flex;
+  align-items: center;
+  margin-left: 20px;
 }
 
-.songer-avatar{
+.song-info>h5 {
+  font-size: 16px;
+  white-space:nowrap;
+  display: table-caption;
+}
+
+.song-info {
+  width: 100px;
+  overflow: hidden;
+}
+
+#singer-names{
+  overflow: hidden;
+  white-space:nowrap;
+  display: inline-flex;
+}
+
+#singer-names>span {
+  padding-right: 6px;
+  margin-right: 6px;
+  position: relative;
+}
+
+#singer-names>span:first-child {
+  margin-left: 0px;
+}
+
+#singer-names>span::after {
+  content: ",";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0px;
+}
+
+.songer-avatar {
   width: 50px;
   height: 50px;
+  margin-right: 30px;
 }
 
-.songer-avatar>img{
+.songer-avatar>img {
   height: 100%;
   width: 100%;
   border-radius: 60%;
+}
+
+.player-progress-bar{
+  display: block;
+}
+
+.player-ctn{
+  width: 68%;
+}
+
+.songer-lyrics-current{
+  color: #9e9e9e;
 }

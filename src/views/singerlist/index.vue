@@ -75,11 +75,11 @@ export default {
   methods: {
     searchbtn() {
       if (this.searchinput == true) {
-        //处理搜索事件
+        /** 处理搜索事件 */
         if (!this.search) {
           this.searchfont = true;
         } else {
-          //搜索代码
+          /** 搜索代码 */
         }
       } else {
         this.searchinput = true;
@@ -97,7 +97,7 @@ export default {
           let data = res.data.artists;
           if(data.length > 0){
             data.forEach((item,index)=>{
-              //存储歌手昵称
+              /** 存储歌手昵称 */
               let alias = [];
               if(item.alias && item.alias.length > 0){
                 item.alias.forEach((als,index)=>{

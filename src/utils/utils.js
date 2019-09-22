@@ -109,3 +109,70 @@ export const timeconversion = (time) => {
   }
   return result;
 }
+
+/** css滚动组件 */
+export const scrollAnimation = (classname, time) => {
+  if (classname && time) {
+    let div;
+    if (classname.indexOf("#") !== -1) {
+      div = document.getElementById(classname.replace('#', ''));
+    } else {
+      div = document.getElementsByClassName(classname.replace('.', ''));
+    }
+    if (div) {
+      let timesj = time * 1000;
+      let timetow = time + '900';
+      if (div.clientWidth > div.parentNode.clientWidth) {
+        let width = div.clientWidth - div.parentNode.clientWidth;
+        div.style.position = 'relative';
+        div.style.marginLeft = ~width + 'px';
+        getComputedStyle(div).length;
+        div.style.transition = `all ${time}s`;
+        setTimeout(
+          () => {
+            div.style.marginLeft = '0px';
+            getComputedStyle(div).length;
+            div.style.transition = `all 1s`;
+          },
+          timesj
+        );
+        setTimeout(
+          () => {
+            div.style.marginLeft = '0px';
+            getComputedStyle(div).length;
+            div.style.transition = `all 1s`;
+            scrollAnimation(classname, time);
+          },
+          timetow
+        );
+      }
+    } else if (div && div.length > 0) {
+      let timesj = time * 1000;
+      let timetow = time + '900';
+      if (div[0].clientWidth > div[0].parentNode.clientWidth) {
+        let width = div[0].clientWidth - div[0].parentNode.clientWidth;
+        div[0].style.position = 'relative';
+        div[0].style.marginLeft = ~width + 'px';
+        getComputedStyle(div[0]).length;
+        div[0].style.transition = `all ${time}s`;
+        setTimeout(
+          () => {
+            div[0].style.marginLeft = '0px';
+            getComputedStyle(div[0]).length;
+            div[0].style.transition = `all 1s`;
+          },
+          timesj
+        );
+        setTimeout(
+          () => {
+            div[0].style.marginLeft = '0px';
+            getComputedStyle(div[0]).length;
+            div[0].style.transition = `all 1s`;
+            scrollAnimation(classname, time);
+          },
+          timetow
+        );
+      }
+    }
+  }
+}

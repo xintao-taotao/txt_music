@@ -8,11 +8,11 @@ import iView from 'iview';
 Vue.use(iView);
 import Talert from './views/Components/talert';
 Vue.createAPI(Talert, true);
-//自制组件注册
+/** 自制组件注册 */
 import TXTComponents from '../src/views/Components/Components';
 Vue.use(TXTComponents);
 import { getToken } from 'utils/utils'
-import store from './store';
+import store from './views/store/index';
 import VueRouter from 'vue-router';
 import routers from './router.js';
 import axios from 'axios';
@@ -33,7 +33,7 @@ const RouterConfig = {
 };
 const router = new VueRouter(RouterConfig);
 
-//路由拦截器
+/** 路由拦截器 */
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title
@@ -47,7 +47,7 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-/* eslint-disable no-new */
+/** eslint-disable no-new */
 let vue = new Vue({
   el: '#app',
   router: router,

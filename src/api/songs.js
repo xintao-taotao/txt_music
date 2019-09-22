@@ -53,3 +53,30 @@ export const singermvlist = (id) => {
     dataType: 'json'
   })
 }
+
+/** 查看歌曲是否可用 */
+export const singerstatus = (id) => {
+  return axios.request({
+    url: `/check/music?id=${id}`,
+    method: 'get',
+    dataType: 'json'
+  })
+}
+
+/** 获取音乐播放地址 */
+export const singerurl = (id) => {
+  return axios.request({
+    url: `/song/url?id=${id}`,
+    method: 'get',
+    dataType: 'json'
+  })
+}
+
+/** 获取音乐歌词 */
+export const singerlyric = (id) => {
+  return axios.request({
+    url: `/lyric?id=${id}`,
+    method: 'get',
+    dataType: 'json'
+  })
+}

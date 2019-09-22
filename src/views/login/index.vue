@@ -187,7 +187,7 @@ export default {
     },
     phonecode() {
       if (this.registered) {
-        //注册
+        /** 注册 */
         if (this.userpcode != "" && this.userphone != "") {
           if (this.userpcode.length >= 4) {
             iscode({
@@ -203,7 +203,7 @@ export default {
           }
         }
       } else {
-        //找回密码
+        /** 找回密码 */
         if (this.userphone != "" && this.userpcode != "") {
           if (this.userpcode.length >= 4) {
             iscode({
@@ -291,7 +291,7 @@ export default {
     },
     login() {
       if (this.registered) {
-        //注册
+        /** 注册 */
         if (this.username == "") {
           this.$Message.error("请输入您的昵称！");
           return;
@@ -334,7 +334,7 @@ export default {
           }
         });
       } else {
-        //找回密码
+        /** 找回密码 */
         if (this.userphone == "") {
           this.$Message.error("请输入手机号码！");
           return;
