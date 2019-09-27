@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="singer-album">
-      <scroll :scrollX="true" :mouseWheel="true" ref="scrollalbum">
+      <scroll :scrollX="true" :mouseWheel="true">
         <ul class="album" ref="album">
           <li v-for="(item,index) in singeralbum" :key="index" ref="songerli">
             <img v-lazy="item.picUrl" @load="initalbumwidth" />
@@ -39,8 +39,8 @@
       <div class="singer-popularlist">
         <div class="singer-div-header">歌手歌曲</div>
         <div class="singer-div-list">
-          <scroll ref="singerdiv" :mouseWheel="true">
-            <ul v-if="singerlist && singerlist.length > 0" ref="singerlist" class="singerul">
+          <scroll :scrollX="true" :mouseWheel="true">
+            <ul ref="singerlist" class="singerul">
               <li
                 v-for="(item,index) in singerlist"
                 :key="index"
@@ -71,7 +71,6 @@
             <ul
               class="singermvul"
               ref="singermvul"
-              v-if="singermvlist && singermvlist.length && singermvlist.length > 0"
             >
               <li v-for="(item,index) in singermvlist" :key="index" ref="singermvli">
                 <img v-lazy="item.imgurl" @load="initsingermvheight" />
