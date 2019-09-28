@@ -27,15 +27,14 @@
     </div>
     <!-- 歌曲歌词 -->
     <div class="songer-lyrics">
-      <scroll ref="scroll" v-if="songerlyric && songerlyric.lines">
+      <scroll ref="scroll" :scrollX="true" :mouseWheel="true">
         <div class="songer-lyrics-ctn">
-          {{playingLyric}}
           <p
-            :class="currentLineNum === index ? 'songer-lyrics-current' : null"
+            :class="songertimecurrent === key ? 'songer-lyrics-current' : null"
             ref="lyricLine"
-            v-for="(line,index) in songerlyric.lines"
+            v-for="(item, key, index) in songerlyriclist"
             :key="index"
-          >{{line.txt}}</p>
+          >{{item}}</p>
         </div>
       </scroll>
     </div>
@@ -61,17 +60,23 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { singerstatus, singerurl, singerlyric } from "api/songs";
-import { scrollAnimation } from "utils/utils";
-import Lyric from "lyric-parser";
+import { scrollAnimation, Lyric } from "utils/utils";
 import scroll from "../scroll/index";
 export default {
   data() {
     return {
+      /** 播放器背景色 */
       backgroundcolor: ["#596B9F", "#3F4F56", "#60ABC3", "#9A525D", "#302C57"],
+      /** 播放器class名 */
       variablebackground: "play-bgcolor",
+      /** 当前歌词文本 */
+      playingLyric: "",
+      /** 歌词对象 */
       songerlyric: null,
-      currentLineNum: 0,
-      playingLyric: ""
+      /** 当前歌曲歌词列表 */
+      songerlyriclist: [],
+      /** 当前歌词播放的时间 */
+      songertimecurrent: 0
     };
   },
   components: {
@@ -154,33 +159,29 @@ export default {
     },
     /** 当前播放位置 */
     timeupdate(e) {
-      this.setsongschedule(e.target.currentTime);
+      if (this.songerlyric) {
+        this.playingLyric = this.songerlyric.getCurPlayLyric(
+          this.$refs.audio.currentTime
+        ).value;
+        this.songertimecurrent = this.songerlyric.getCurPlayLyric(
+          this.$refs.audio.currentTime
+        ).key;
+      }
     },
     /** 获取歌词 */
     singerlyric() {
-      console.log('asd');
       singerlyric(this.currentsongId).then(res => {
         if (res.data.code === 200) {
-          let data = res.data.lrc;
-          this.songerlyric = new Lyric(data.lyric, this.handleLyric);
-          this.songerlyric.play();
+          let data = res.data;
+          this.songerlyric = new Lyric(data);
+          /** 初始化歌词列表 */
+          this.initlyriclist();
         }
       });
     },
-    /** handleLyric回调函数 */
-    handleLyric({ lineNum, txt }) {
-      console.log(lineNum,txt);
-      if (!this.$refs.lyricLine) {
-          return
-        }
-        this.currentLineNum = lineNum
-        if (lineNum > 5) {
-          let lineEl = this.$refs.lyricLine[lineNum - 5]
-          this.$refs.scroll.scrollToElement(lineEl, 1000)
-        } else {
-          this.$refs.scroll.scrollTo(0, 0, 1000)
-        }
-        this.playingLyric = txt
+    /** 初始化歌词列表 */
+    initlyriclist() {
+      this.songerlyriclist = this.songerlyric.finalLrcMap;
     }
   },
   created() {
@@ -196,6 +197,22 @@ export default {
       this.singerlyric();
       /** 储存歌曲信息到缓存 */
       this.cacheinfo();
+    },
+    songertimecurrent(news, old) {
+      // if(){}
+      let index = 0;
+      for (let i in this.songerlyriclist) {
+        index = index + 1;
+        if (i === news) {
+          // console.log(this.$refs.lyricLine[index - 1]);
+          this.$refs.scroll.scrollToElement(
+            this.$refs.lyricLine[index - 1],
+            200,
+            true,
+            true
+          );
+        }
+      }
     }
   }
 };
