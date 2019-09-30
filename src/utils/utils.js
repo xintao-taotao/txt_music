@@ -257,9 +257,9 @@ export class Lyric {
 
     function g(prop) {
       let o = {};
-      if(hasTranslate){
+      if (hasTranslate) {
         o['value'] = v(this.finalLrcMap[prop]) + ('\n') + v(this.finalTlyricMap[prop]);
-      }else{
+      } else {
         o['value'] = v(this.finalLrcMap[prop]);
         o['key'] = prop
       }
@@ -270,4 +270,48 @@ export class Lyric {
       return typeof val === 'undefined' ? '' : val
     }
   }
+}
+
+/** 将audio播放时间转换成秒 */
+export const format = (interval) => {
+  interval = interval | 0;
+  const minute = interval / 60 | 0;
+  const second = _pad(interval % 60);
+  return `${minute}:${second}`;
+}
+/** 搭配audio转换秒方法 */
+export const _pad = (num, n = 2) => {
+  let len = num.toString().length;
+  while (len < n) {
+    num = '0' + num;
+    len++;
+  }
+  return num;
+}
+
+/** javascript生成兼容性的css代码 */
+export function prefixStyle(style) {
+  let elementStyle = document.createElement('div').style
+  let vendor = (() => {
+    let transformNames = {
+      webkit: 'webkitTransform',
+      Moz: 'MozTransform',
+      O: 'OTransform',
+      ms: 'msTransform',
+      standard: 'transform'
+    }
+    for (let key in transformNames) {
+      if (elementStyle[transformNames[key]] !== undefined) {
+        return key
+      }
+    }
+    return false
+  })()
+  if (vendor === false) {
+    return false
+  }
+  if (vendor === 'standard') {
+    return style
+  }
+  return vendor + style.charAt(0).toUpperCase() + style.substr(1)
 }

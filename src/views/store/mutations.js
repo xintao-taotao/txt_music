@@ -13,6 +13,9 @@ const matutaions = {
   [types.SET_SONGINFO](state, songinfo) {
     state.songinfo = songinfo;
   },
+  [types.SET_SONGCOUNT](state, songcount) {
+    state.songcount = songcount;
+  },
 }
 
 export default matutaions;

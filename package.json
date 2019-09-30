@@ -14,7 +14,6 @@
     "install": "^0.13.0",
     "iview": "^3.5.0",
     "js-cookie": "^2.2.0",
-    "lyric-parser": "^1.0.1",
     "npm": "^6.10.3",
     "postcss": "^7.0.17",
     "postcss-pxtorem": "^4.0.1",

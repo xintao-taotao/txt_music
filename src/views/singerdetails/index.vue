@@ -1,6 +1,6 @@
 <template>
   <div class="singer-details">
-    <div class="singer-header">
+    <div class="singer-header" ref="header">
       <div class="singer-back" @click="back()">
         <img src="../../images/Buttons-Random@2x.png" />
       </div>
@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="singer-album">
+    <div class="singer-album" ref="albums">
       <scroll :scrollX="true" :mouseWheel="true">
         <ul class="album" ref="album">
           <li v-for="(item,index) in singeralbum" :key="index" ref="songerli">
@@ -35,7 +35,7 @@
         </ul>
       </scroll>
     </div>
-    <div class="singer-list">
+    <div class="singer-list" ref="detailbottom">
       <div class="singer-popularlist">
         <div class="singer-div-header">歌手歌曲</div>
         <div class="singer-div-list">
@@ -68,10 +68,7 @@
         <div class="singer-div-header">歌手MV</div>
         <div class="singer-div-list">
           <scroll :mouseWheel="true">
-            <ul
-              class="singermvul"
-              ref="singermvul"
-            >
+            <ul class="singermvul" ref="singermvul">
               <li v-for="(item,index) in singermvlist" :key="index" ref="singermvli">
                 <img v-lazy="item.imgurl" @load="initsingermvheight" />
                 <font>{{item.name}}</font>
@@ -136,17 +133,17 @@ export default {
     /** 获取歌曲准备播放 */
     player(item) {
       let data = {};
-      data['flag'] = item.flag;
-      data['name'] = item.name;
-      data['picUrl'] = item.picUrl;
-      data['musicurl'] = '';
+      data["flag"] = item.flag;
+      data["name"] = item.name;
+      data["picUrl"] = item.picUrl;
+      data["musicurl"] = "";
       let songer = [];
-      if(item.ar && item.ar.length && item.ar.length > 0){
-        item.ar.forEach((item,index)=>{
+      if (item.ar && item.ar.length && item.ar.length > 0) {
+        item.ar.forEach((item, index) => {
           songer.push(item);
-        })
+        });
       }
-      data['songer'] = songer;
+      data["songer"] = songer;
       this.setsonginfo(data);
       this.setcurrentsongId(item.id);
     },
@@ -162,11 +159,11 @@ export default {
             });
           }
         }
-        /** 初始化滚动宽度 */
+        /** 初始化歌手专辑横向滚动宽度 */
         this.initalbumwidth();
       });
     },
-    /** 初始化横向滚动宽度 */
+    /** 初始化歌手专辑横向滚动宽度 */
     initalbumwidth() {
       setTimeout(() => {
         if (this.$refs.songerli && this.$refs.album) {
@@ -183,7 +180,7 @@ export default {
     },
     /** 返回上一级路由 */
     back() {
-      goPageByPath('/singerlist');
+      goPageByPath("/singerlist");
     },
     /** 查询歌手单曲 */
     selectsingerlist() {
@@ -266,8 +263,11 @@ export default {
       this.selectsingermvlist();
     }
     this.$nextTick(() => {
+      /** 初始化歌曲列表滚动高度 */
       this.initsingerlistheight();
+      /** 初始化歌手mv列表滚动高度 */
       this.initsingermvheight();
+      /** 初始化歌手专辑横向滚动宽度 */
       this.initalbumwidth();
     });
   },
