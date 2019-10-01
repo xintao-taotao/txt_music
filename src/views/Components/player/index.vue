@@ -59,6 +59,13 @@
       </div>
       <div class="player-play-time">{{songcount}}</div>
     </div>
+    <div class="player-operating">
+      <img src="../../../images/big_maximum_volume.png" />
+      <img src="../../../images/playlist_cycle.png" v-if="playermode === 0" />
+      <img src="../../../images/player_random.png" v-else-if="playermode === 1" />
+      <img src="../../../images/player_single_cycle.png" v-else-if="playermode === 2" />
+      <img src="../../../images/big_playerlist.png" />
+    </div>
     <audio
       :src="songinfo.musicurl"
       ref="audio"
@@ -102,7 +109,8 @@ export default {
       "currentsongId",
       "playstate",
       "songschedule",
-      "songcount"
+      "songcount",
+      "playermode"
     ])
   },
   methods: {
@@ -114,7 +122,9 @@ export default {
       /** 修改当前歌曲播放进度 */
       setsongschedule: "SET_SONGSCHEDULE",
       /** 修改当前歌曲总长度 */
-      setsongcount: "SET_SONGCOUNT"
+      setsongcount: "SET_SONGCOUNT",
+      /** 修改当前播放器播放模式 */
+      setplayermode: "SET_PLAYERMODE"
     }),
     /** 初始化播放器背景色 */
     initplayerbackgroundcolor() {
@@ -134,8 +144,10 @@ export default {
       this.$refs.audio.currentTime = currentTime;
     },
     _triggerPercent() {
-      const currentTime = this.$refs.audio.duration * this._getPercent();;
-      this.setsongschedule(format(this.$refs.audio.currentTime = currentTime));
+      const currentTime = this.$refs.audio.duration * this._getPercent();
+      this.setsongschedule(
+        format((this.$refs.audio.currentTime = currentTime))
+      );
       this.$refs.audio.currentTime = currentTime;
     },
     /** 返回通用参数 */
@@ -261,7 +273,9 @@ export default {
         Math.max(0, this.touch.left + deltaX)
       );
       this._offset(offsetWidth);
-      this.setsongschedule(format(this.$refs.audio.duration * this._getPercent()));
+      this.setsongschedule(
+        format(this.$refs.audio.duration * this._getPercent())
+      );
       this.$refs.audio.currentTime =
         this.$refs.audio.duration * this._getPercent();
     }

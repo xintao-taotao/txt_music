@@ -16,6 +16,9 @@ const matutaions = {
   [types.SET_SONGCOUNT](state, songcount) {
     state.songcount = songcount;
   },
+  [types.SET_PLAYERMODE](state, playermode) {
+    state.playermode = playermode;
+  },
 }
 
 export default matutaions;

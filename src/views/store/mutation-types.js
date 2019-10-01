@@ -8,3 +8,5 @@ export const SET_SONGCOUNT = "SET_SONGCOUNT";
 export const SET_PLAYSTATE = 'SET_PLAYSTATE';
 /** 常量--当前歌曲信息 */
 export const SET_SONGINFO = 'SET_SONGINFO';
+/** 常量--当前播放器播放模式 */
+export const SET_PLAYERMODE = 'SET_PLAYERMODE';
