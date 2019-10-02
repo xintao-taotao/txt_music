@@ -15,14 +15,14 @@
     <!-- 操作div -->
     <div class="player-operating">
       <div class="player-prev" title="上一首">
-        <img src="../../../images/big_prev.png" />
+        <img src="../../../images/big_prev.png" @click="prevsonger" />
       </div>
       <div class="play-pause" :title="playstate ? '暂停' : '播放'">
         <img src="../../../images/big_play.png" v-if="playstate" @click="musicpause" />
         <img src="../../../images/big_pause.png" v-else @click="musicplayer" />
       </div>
       <div class="player-next" title="下一首">
-        <img src="../../../images/big_next.png" />
+        <img src="../../../images/big_next.png" @click="songswitch" />
       </div>
     </div>
     <!-- 歌曲歌词 -->
@@ -61,10 +61,19 @@
     </div>
     <div class="player-operating">
       <img src="../../../images/big_maximum_volume.png" />
-      <img src="../../../images/playlist_cycle.png" v-if="playermode === 0" />
-      <img src="../../../images/player_random.png" v-else-if="playermode === 1" />
-      <img src="../../../images/player_single_cycle.png" v-else-if="playermode === 2" />
+      <img src="../../../images/playlist_cycle.png" v-if="playermode === 0" @click="switchmode(1)" />
+      <img
+        src="../../../images/player_random.png"
+        v-else-if="playermode === 1"
+        @click="switchmode(2)"
+      />
+      <img
+        src="../../../images/player_single_cycle.png"
+        v-else-if="playermode === 2"
+        @click="switchmode(0)"
+      />
       <img src="../../../images/big_playerlist.png" />
+      <li v-for="(item,index) in playerlist" :key="index" v-show="false">{{item}}</li>
     </div>
     <audio
       :src="songinfo.musicurl"
@@ -72,14 +81,21 @@
       @canplay="audioready"
       @timeupdate="timeupdate"
       v-show="false"
+      @ended="songswitch"
     ></audio>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { singerstatus, singerurl, singerlyric } from "api/songs";
-import { scrollAnimation, Lyric, format, prefixStyle, _pad } from "utils/utils";
+import { singerstatus, singerurl, singerlyric, songerdetails } from "api/songs";
+import {
+  scrollAnimation,
+  Lyric,
+  format,
+  prefixStyle,
+  playerrandom
+} from "utils/utils";
 import scroll from "../scroll/index";
 const transform = prefixStyle("transform");
 const progressBtnWidth = 16;
@@ -110,7 +126,9 @@ export default {
       "playstate",
       "songschedule",
       "songcount",
-      "playermode"
+      "playermode",
+      "playerlist",
+      "prevsongerid"
     ])
   },
   methods: {
@@ -121,11 +139,91 @@ export default {
       setplatstate: "SET_PLAYSTATE",
       /** 修改当前歌曲播放进度 */
       setsongschedule: "SET_SONGSCHEDULE",
+      /** 修改当前歌曲id */
+      setcurrentsongId: "SET_CURRENTSONGID",
       /** 修改当前歌曲总长度 */
       setsongcount: "SET_SONGCOUNT",
       /** 修改当前播放器播放模式 */
-      setplayermode: "SET_PLAYERMODE"
+      setplayermode: "SET_PLAYERMODE",
+      /** 修改上一首歌id */
+      setprevsongerid: "SET_PREVSONGERID"
     }),
+    /** 用户手动切换模式点击事件 */
+    switchmode(item) {
+      this.setplayermode(item);
+      this.$Message.success(
+        item === 0
+          ? "已切换列表循环播放"
+          : item === 1
+          ? "已切换随机播放"
+          : "已切换单曲循环播放"
+      );
+    },
+    /** 上一首歌 */
+    prevsonger() {
+      if (this.prevsongerid) {
+        this.setcurrentsongId(this.prevsongerid);
+        songerdetails(this.prevsongerid).then(res => {
+          if (res.data.code === 200) {
+            let data = res.data.songs[0];
+            let item = {};
+            item["name"] = data.name;
+            item["picUrl"] = data.al.picUrl;
+            item["songer"] = data.ar;
+            this.setsonginfo(item);
+          }
+        });
+      }
+    },
+    /** 切歌 */
+    songswitch() {
+      if (this.playerlist.length > 0) {
+        /** 如果是列表循环播放模式 */
+        if (this.playermode === 0) {
+          let indexs = 0;
+          let data = {};
+          this.playerlist.forEach((item, index) => {
+            if (this.currentsongId === item.id) {
+              data["flag"] = this.playerlist[index + 1].flag;
+              data["name"] = this.playerlist[index + 1].name;
+              data["picUrl"] = this.playerlist[index + 1].picUrl;
+              data["songer"] = this.playerlist[index + 1].ar;
+              indexs = index;
+            }
+          });
+          data["musicurl"] = "";
+          this.setsonginfo(data);
+          /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
+          if (this.currentsongId) {
+            this.setprevsongerid(this.currentsongId);
+          }
+          this.setcurrentsongId(this.playerlist[indexs + 1].id);
+          /** 如果是随机播放模式 */
+        } else if (this.playermode === 1) {
+          let indexs = playerrandom(this.playerlist.length);
+          let data = {};
+          this.playerlist.forEach((item, index) => {
+            if (this.currentsongId === item.id) {
+              data["flag"] = this.playerlist[indexs].flag;
+              data["name"] = this.playerlist[indexs].name;
+              data["picUrl"] = this.playerlist[indexs].picUrl;
+              data["songer"] = this.playerlist[indexs].ar;
+            }
+          });
+          data["musicurl"] = "";
+          this.setsonginfo(data);
+          /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
+          if (this.currentsongId) {
+            this.setprevsongerid(this.currentsongId);
+          }
+          /** 传入当前播放列表的长度 */
+          this.setcurrentsongId(this.playerlist[indexs].id);
+          /** 如果是单曲循环模式 */
+        } else if (this.playermode === 2) {
+          this.$refs.audio.currentTime = 0;
+        }
+      }
+    },
     /** 初始化播放器背景色 */
     initplayerbackgroundcolor() {
       let count = Math.ceil(Math.random() * this.backgroundcolor.length);

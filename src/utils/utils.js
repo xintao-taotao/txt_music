@@ -83,7 +83,7 @@ export const toJson = (str) => {
     if (typeof obj == "object") {
       return obj;
     }
-  } catch (e) {}
+  } catch (e) { }
   return false;
 };
 
@@ -314,4 +314,14 @@ export function prefixStyle(style) {
     return style
   }
   return vendor + style.charAt(0).toUpperCase() + style.substr(1)
+}
+
+/** 生成随机数随机播放歌曲 */
+export const playerrandom = (length) => {
+  let random = Math.ceil(Math.random() * length);
+  if (random === 0) {
+    playerrandom(length);
+    return;
+  }
+  return random;
 }

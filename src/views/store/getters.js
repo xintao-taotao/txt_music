@@ -10,3 +10,7 @@ export const playstate = state => state.playstate;
 export const songinfo = state => state.songinfo;
 /** getters封装--当前播放器播放模式，0表示列表循环播放，1表示随机播放，2表示单曲循环播放 */
 export const playermode = state => state.playermode;
+/** getters封装--当前播放器播放列表 */
+export const playerlist = state => state.playerlist;
+/** getters封装--上一首歌曲id */
+export const prevsongerid = state => state.prevsongerid;

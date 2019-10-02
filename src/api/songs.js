@@ -80,3 +80,11 @@ export const singerlyric = (id) => {
     dataType: 'json'
   })
 }
+/** 获取歌曲详情信息 */
+export const songerdetails = (id) => {
+  return axios.request({
+    url: `/song/detail?ids=${id}`,
+    method: 'get',
+    dataType: 'json'
+  })
+}

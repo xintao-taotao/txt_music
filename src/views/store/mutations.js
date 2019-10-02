@@ -19,6 +19,12 @@ const matutaions = {
   [types.SET_PLAYERMODE](state, playermode) {
     state.playermode = playermode;
   },
+  [types.SET_PLAYERLIST](state, playerlist) {
+    state.playerlist = playerlist;
+  },
+  [types.SET_PREVSONGERID](state, prevsongerid) {
+    state.prevsongerid = prevsongerid;
+  },
 }
 
 export default matutaions;
