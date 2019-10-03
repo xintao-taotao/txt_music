@@ -15,7 +15,7 @@
     <!-- 操作div -->
     <div class="player-operating">
       <div class="player-prev" title="上一首">
-        <img src="../../../images/big_prev.png" @click="prevsonger" />
+        <img src="../../../images/big_prev.png" @click="prevsongers" />
       </div>
       <div class="play-pause" :title="playstate ? '暂停' : '播放'">
         <img src="../../../images/big_play.png" v-if="playstate" @click="musicpause" />
@@ -113,7 +113,9 @@ export default {
       /** 当前歌曲歌词列表 */
       songerlyriclist: [],
       /** 当前歌词播放的时间 */
-      songertimecurrent: 0
+      songertimecurrent: 0,
+      /** 上一首歌id列表 */
+      prevsongerlist: []
     };
   },
   components: {
@@ -127,8 +129,7 @@ export default {
       "songschedule",
       "songcount",
       "playermode",
-      "playerlist",
-      "prevsongerid"
+      "playerlist"
     ])
   },
   methods: {
@@ -144,9 +145,7 @@ export default {
       /** 修改当前歌曲总长度 */
       setsongcount: "SET_SONGCOUNT",
       /** 修改当前播放器播放模式 */
-      setplayermode: "SET_PLAYERMODE",
-      /** 修改上一首歌id */
-      setprevsongerid: "SET_PREVSONGERID"
+      setplayermode: "SET_PLAYERMODE"
     }),
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
@@ -160,11 +159,21 @@ export default {
       );
     },
     /** 上一首歌 */
-    prevsonger() {
-      if (this.prevsongerid) {
-        this.setcurrentsongId(this.prevsongerid);
-        songerdetails(this.prevsongerid).then(res => {
+    prevsongers() {
+      if (this.prevsongerlist) {
+        this.setcurrentsongId(
+          this.prevsongerlist[this.prevsongerlist.length - 1]
+        );
+        songerdetails(
+          this.prevsongerlist.length
+            ? this.prevsongerlist[this.prevsongerlist.length - 1]
+            : this.prevsongerlist
+        ).then(res => {
           if (res.data.code === 200) {
+            this.prevsongerlist = this.prevsongerlist.slice(
+              0,
+              this.prevsongerlist.length - 1
+            );
             let data = res.data.songs[0];
             let item = {};
             item["name"] = data.name;
@@ -195,7 +204,7 @@ export default {
           this.setsonginfo(data);
           /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
           if (this.currentsongId) {
-            this.setprevsongerid(this.currentsongId);
+            this.prevsongerlist.push(this.currentsongId);
           }
           this.setcurrentsongId(this.playerlist[indexs + 1].id);
           /** 如果是随机播放模式 */
@@ -214,7 +223,7 @@ export default {
           this.setsonginfo(data);
           /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
           if (this.currentsongId) {
-            this.setprevsongerid(this.currentsongId);
+            this.prevsongerlist.push(this.currentsongId);
           }
           /** 传入当前播放列表的长度 */
           this.setcurrentsongId(this.playerlist[indexs].id);
@@ -386,7 +395,11 @@ export default {
   },
   watch: {
     /** 监听歌曲id */
-    currentsongId() {
+    currentsongId(news, old) {
+      /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
+      if (old && old != this.currentsongId) {
+        this.prevsongerlist.push(old);
+      }
       /** 开始播放当前歌曲 */
       this.initplayer();
       /** 获取歌曲歌词 */

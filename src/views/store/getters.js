@@ -12,5 +12,3 @@ export const songinfo = state => state.songinfo;
 export const playermode = state => state.playermode;
 /** getters封装--当前播放器播放列表 */
 export const playerlist = state => state.playerlist;
-/** getters封装--上一首歌曲id */
-export const prevsongerid = state => state.prevsongerid;

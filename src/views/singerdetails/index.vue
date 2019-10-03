@@ -120,9 +120,7 @@ export default {
       /** 修改当前歌曲id */
       setcurrentsongId: "SET_CURRENTSONGID",
       /** 修改当前播放器播放列表 */
-      setplayerlist: "SET_PLAYERLIST",
-      /** 修改上一首歌id */
-      setprevsongerid: "SET_PREVSONGERID"
+      setplayerlist: "SET_PLAYERLIST"
     }),
     /** 查询歌手详情信息和部分歌曲信息 */
     selectsingdetails() {
@@ -151,11 +149,9 @@ export default {
       }
       data["songer"] = songer;
       this.setsonginfo(data);
-      /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
-      if (this.currentsongId) {
-        this.setprevsongerid(this.currentsongId);
+      if (item.id !== this.currentsongId) {
+        this.setcurrentsongId(item.id);
       }
-      this.setcurrentsongId(item.id);
       this.setplayerlist(this.singerlist);
     },
     /** 查询歌手专辑 */
