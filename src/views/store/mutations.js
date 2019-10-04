@@ -22,6 +22,9 @@ const matutaions = {
   [types.SET_PLAYERLIST](state, playerlist) {
     state.playerlist = playerlist;
   },
+  [types.SET_PLAYERVOLUME](state, playervolume) {
+    state.playervolume = playervolume;
+  },
 }
 
 export default matutaions;

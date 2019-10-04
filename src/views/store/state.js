@@ -12,7 +12,9 @@ const state = {
   /** 当前播放器播放模式，0表示列表循环播放，1表示随机播放，2表示单曲循环播放 */
   playermode: 0,
   /** 当前播放列表 */
-  playerlist: []
+  playerlist: [],
+  /** 当前播放器音量 */
+  playervolume: 1
 }
 
 export default state;

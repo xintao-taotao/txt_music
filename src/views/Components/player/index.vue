@@ -60,7 +60,7 @@
       <div class="player-play-time">{{songcount}}</div>
     </div>
     <div class="player-operating">
-      <img src="../../../images/big_maximum_volume.png" />
+      <volume @position="position"></volume>
       <img src="../../../images/playlist_cycle.png" v-if="playermode === 0" @click="switchmode(1)" />
       <img
         src="../../../images/player_random.png"
@@ -97,6 +97,7 @@ import {
   playerrandom
 } from "utils/utils";
 import scroll from "../scroll/index";
+import volume from "../volume/index";
 const transform = prefixStyle("transform");
 const progressBtnWidth = 16;
 export default {
@@ -119,7 +120,8 @@ export default {
     };
   },
   components: {
-    scroll
+    scroll,
+    volume
   },
   computed: {
     ...mapGetters([
@@ -129,7 +131,8 @@ export default {
       "songschedule",
       "songcount",
       "playermode",
-      "playerlist"
+      "playerlist",
+      "playervolume"
     ])
   },
   methods: {
@@ -145,7 +148,9 @@ export default {
       /** 修改当前歌曲总长度 */
       setsongcount: "SET_SONGCOUNT",
       /** 修改当前播放器播放模式 */
-      setplayermode: "SET_PLAYERMODE"
+      setplayermode: "SET_PLAYERMODE",
+      /** 修改当前播放器音量 */
+      setplayervolume: "SET_PLAYERVOLUME"
     }),
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
@@ -157,6 +162,14 @@ export default {
           ? "已切换随机播放"
           : "已切换单曲循环播放"
       );
+    },
+    /** 调节播放器音量 */
+    position(count) {
+      this.$refs.audio.volume = count;
+      /** 修改当前播放器音量 */
+      this.setplayervolume(count);
+      /** 缓存播放器音量 */
+      localStorage.setItem("playervolume", this.playervolume);
     },
     /** 上一首歌 */
     prevsongers() {
@@ -312,6 +325,7 @@ export default {
       if (this.songinfo.musicurl && this.songinfo.musicurl !== "") {
         this.setplatstate(true);
         this.$refs.audio.play();
+        this.$refs.audio.volume = 1;
         this.setsongcount(format(this.$refs.audio.duration));
       }
     },
@@ -321,7 +335,18 @@ export default {
       this.$refs.audio.pause();
     },
     /** 缓存歌曲信息等 */
-    cacheinfo() {},
+    cacheinfo() {
+      /** 缓存播放器显示状态 */
+      localStorage.setItem("playerstate", true);
+      /** 缓存歌曲信息 */
+      localStorage.setItem("songinfo", JSON.stringify(this.songinfo));
+      /** 缓存播放状态 */
+      localStorage.setItem("playstate", this.playstate);
+      /** 缓存播放模式 */
+      localStorage.setItem("playermode", this.playermode);
+      /** 缓存播放器音量 */
+      localStorage.setItem("playervolume", this.playervolume);
+    },
     /** 音频文件准备就绪 */
     audioready() {
       this.musicplayer();
@@ -341,6 +366,8 @@ export default {
       const offsetWidth =
         (e.target.currentTime / this.$refs.audio.duration) * barWidth;
       this._offset(offsetWidth);
+      /** 缓存当前播放时间 */
+      localStorage.setItem("currentTime", this.$refs.audio.currentTime);
     },
     /** 获取歌词 */
     singerlyric() {
