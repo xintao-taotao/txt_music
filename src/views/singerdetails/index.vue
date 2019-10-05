@@ -111,7 +111,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["songinfo", "currentsongId", "playerlist", "prevsongerid"])
+    ...mapGetters(["songinfo", "currentsongId", "prevsongerid"])
   },
   methods: {
     ...mapMutations({
@@ -136,6 +136,13 @@ export default {
     },
     /** 获取歌曲准备播放 */
     player(item) {
+      /** 深拷贝当前歌曲列表--开始 */
+      let date = [];
+      for (let i = 0; i < this.singerlist.length; i++) {
+        date.push(this.singerlist[i]);
+      }
+      /** 深拷贝当前歌曲列表--结束 */
+      this.setplayerlist(date);
       let data = {};
       data["flag"] = item.flag;
       data["name"] = item.name;
@@ -152,7 +159,6 @@ export default {
       if (item.id !== this.currentsongId) {
         this.setcurrentsongId(item.id);
       }
-      this.setplayerlist(this.singerlist);
     },
     /** 查询歌手专辑 */
     selectsingeralbum() {

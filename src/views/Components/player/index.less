@@ -39,6 +39,12 @@
   margin-left: 20px;
 }
 
+.player-operating>div,
+.player-operating>img {
+  margin: 0px 2px;
+  cursor: pointer;
+}
+
 .song-info>h5 {
   font-size: 16px;
   white-space: nowrap;
@@ -87,7 +93,7 @@
 }
 
 .player-ctn {
-  width: 64%;
+  width: 62%;
   display: flex;
   align-items: center;
 }
@@ -149,4 +155,32 @@
   border: 3px solid #fff;
   border-radius: 50%;
   background: #fff;
+}
+
+.player-list {
+  position: absolute;
+  bottom: 74px;
+  width: 250px;
+  box-sizing: border-box;
+  right: 20px;
+  box-shadow: 0px 0px 20px #6b6b6b inset;
+  border: 1px solid #6b6b6b;
+  color: #000;
+}
+
+.player-list-ctn>.scroll {
+  height: 250px;
+  overflow: hidden;
+}
+
+.player-list-ctn {
+  padding: 20px;
+  padding-top: 0px;
+}
+
+.player-list-header {
+  line-height: 40px;
+  padding: 0px 10px;
+  text-align: left;
+  font-size: 18px;
 }

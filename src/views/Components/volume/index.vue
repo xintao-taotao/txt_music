@@ -10,7 +10,12 @@
       </div>
     </div>
     <div class="volume-img">
-      <img src="../../../images/big_maximum_volume.png" />
+      <img src="../../../images/big_maximum_volume.png" v-if="positionX > 50" />
+      <img
+        src="../../../images/big_maximum_volume_small.png"
+        v-else-if="positionX > 0 && positionX < 50"
+      />
+      <img src="../../../images/big_maximum_volume_close.png" v-else-if="positionX === 0" />
     </div>
   </div>
 </template>

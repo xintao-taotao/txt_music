@@ -72,8 +72,26 @@
         v-else-if="playermode === 2"
         @click="switchmode(0)"
       />
+
       <img src="../../../images/big_playerlist.png" />
-      <li v-for="(item,index) in playerlist" :key="index" v-show="false">{{item}}</li>
+      <div class="player-list">
+        <div class="player-list-header">
+          <h5>播放列表</h5>
+          <i title="关闭"></i>
+        </div>
+        <div class="player-list-ctn">
+          <scroll ref="playerlistscroll" :scrollX="true" :mouseWheel="true">
+            <ul>
+              <li v-for="(item,index) in playerlist" :key="index">
+                <div
+                  class="list-item-div"
+                  v-show="playermode !== 2 && item.id !== currentsongId"
+                >{{item}}</div>
+              </li>
+            </ul>
+          </scroll>
+        </div>
+      </div>
     </div>
     <audio
       :src="songinfo.musicurl"
@@ -116,7 +134,9 @@ export default {
       /** 当前歌词播放的时间 */
       songertimecurrent: 0,
       /** 上一首歌id列表 */
-      prevsongerlist: []
+      prevsongerlist: [],
+      /** 列表循环播放列表 */
+      songernormallist: []
     };
   },
   components: {
@@ -150,11 +170,18 @@ export default {
       /** 修改当前播放器播放模式 */
       setplayermode: "SET_PLAYERMODE",
       /** 修改当前播放器音量 */
-      setplayervolume: "SET_PLAYERVOLUME"
+      setplayervolume: "SET_PLAYERVOLUME",
+      /** 修改当前播放器播放列表 */
+      setplayerlist: "SET_PLAYERLIST"
     }),
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
       this.setplayermode(item);
+      if (item === 0) {
+        this.setplayerlist(this.songernormallist);
+      } else if (item === 1) {
+        this.setplayerlist(playerrandom(this.playerlist));
+      }
       this.$Message.success(
         item === 0
           ? "已切换列表循环播放"
@@ -215,21 +242,26 @@ export default {
           });
           data["musicurl"] = "";
           this.setsonginfo(data);
-          /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
+          /** 如果id存在，则已经点播过一首歌，则push上一首歌的id给变量 */
           if (this.currentsongId) {
             this.prevsongerlist.push(this.currentsongId);
           }
           this.setcurrentsongId(this.playerlist[indexs + 1].id);
           /** 如果是随机播放模式 */
         } else if (this.playermode === 1) {
-          let indexs = playerrandom(this.playerlist.length);
           let data = {};
           this.playerlist.forEach((item, index) => {
             if (this.currentsongId === item.id) {
-              data["flag"] = this.playerlist[indexs].flag;
-              data["name"] = this.playerlist[indexs].name;
-              data["picUrl"] = this.playerlist[indexs].picUrl;
-              data["songer"] = this.playerlist[indexs].ar;
+              console.log(JSON.stringify(this.playerlist.splice(index, 1)));
+              // this.setplayerlist(this.playerlist.splice(index, 1));
+              console.log(
+                JSON.stringify(this.playerlist),
+                this.playerlist.length
+              );
+              data["flag"] = this.playerlist[0].flag;
+              data["name"] = this.playerlist[0].name;
+              data["picUrl"] = this.playerlist[0].picUrl;
+              data["songer"] = this.playerlist[0].ar;
             }
           });
           data["musicurl"] = "";
@@ -239,7 +271,7 @@ export default {
             this.prevsongerlist.push(this.currentsongId);
           }
           /** 传入当前播放列表的长度 */
-          this.setcurrentsongId(this.playerlist[indexs].id);
+          this.setcurrentsongId(this.playerlist[0].id);
           /** 如果是单曲循环模式 */
         } else if (this.playermode === 2) {
           this.$refs.audio.currentTime = 0;
@@ -419,6 +451,12 @@ export default {
     this.touch = {};
     /** 初始化播放器背景色（随机） */
     this.initplayerbackgroundcolor();
+    /** 记录列表循环播放 */
+    let date = [];
+    for (let i = 0; i < this.playerlist.length; i++) {
+      date.push(this.playerlist[i]);
+    }
+    this.songernormallist = date;
   },
   watch: {
     /** 监听歌曲id */

@@ -317,11 +317,13 @@ export function prefixStyle(style) {
 }
 
 /** 生成随机数随机播放歌曲 */
-export const playerrandom = (length) => {
-  let random = Math.ceil(Math.random() * length);
-  if (random === 0) {
-    playerrandom(length);
-    return;
+export const playerrandom = (arr) => {
+  var len = arr.length;
+  for (var i = 0; i < len - 1; i++) {
+    var index = parseInt(Math.random() * (len - i));
+    var temp = arr[index];
+    arr[index] = arr[len - i - 1];
+    arr[len - i - 1] = temp;
   }
-  return random;
+  return arr;
 }

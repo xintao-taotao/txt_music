@@ -13,7 +13,7 @@ class HttpRequest {
   getInsideConfig() {
     const config = {
       baseURL: this.baseUrl,
-      timeout: 9000,
+      timeout: 60000,
       headers: {
         'Content-Type': 'application/json'
       }
