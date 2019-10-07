@@ -1,6 +1,6 @@
 <template>
   <div class="volume" @click.stop="modifystatus">
-    <div class="volume-circular-ctn" v-show="volume">
+    <div class="volume-circular-ctn" v-show="playervolumestatus" @click.stop>
       <div>
         <div class="volume-circular-bgcolor"></div>
         <div class="volume-circular" @mousedown.stop="scroll">
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="volume-img">
-      <img src="../../../images/big_maximum_volume.png" v-if="positionX > 50" />
+      <img src="../../../images/big_maximum_volume.png" v-if="positionX > 49" />
       <img
         src="../../../images/big_maximum_volume_small.png"
         v-else-if="positionX > 0 && positionX < 50"
@@ -21,15 +21,14 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
       /** 位移位置 */
       positionX: 100,
       /** 操作状态 */
-      status: false,
-      /** 音量调节是否显示 */
-      volume: false
+      status: false
     };
   },
   mounted() {
@@ -39,14 +38,23 @@ export default {
     });
   },
   methods: {
+    ...mapMutations({
+      /** 修改播放列表显示状态 */
+      setplayerliststatus: "SET_PLAYERLISTSTATUS",
+      /** 修改音量调节显示状态 */
+      setplayervolumestatus: "SET_PLAYERVOLUMESTATUS"
+    }),
     /** 修改volume状态 */
     modifystatus() {
-      this.volume = true;
+      if (this.playerliststatus) {
+        this.setplayerliststatus(false);
+      }
+      this.setplayervolumestatus(!this.playervolumestatus);
     },
     /** 监听addEventListene事件 */
     closevolume() {
       if (!this.status) {
-        this.volume = false;
+        this.setplayervolumestatus(false);
       }
     },
     /** 滚动调节音量大小事件 */
@@ -80,6 +88,9 @@ export default {
         this.status = false;
       };
     }
+  },
+  computed: {
+    ...mapGetters(["playerliststatus", "playervolumestatus"])
   }
 };
 </script>

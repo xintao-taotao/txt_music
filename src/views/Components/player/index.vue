@@ -72,26 +72,7 @@
         v-else-if="playermode === 2"
         @click="switchmode(0)"
       />
-
-      <img src="../../../images/big_playerlist.png" />
-      <div class="player-list">
-        <div class="player-list-header">
-          <h5>播放列表</h5>
-          <i title="关闭"></i>
-        </div>
-        <div class="player-list-ctn">
-          <scroll ref="playerlistscroll" :scrollX="true" :mouseWheel="true">
-            <ul>
-              <li v-for="(item,index) in playerlist" :key="index">
-                <div
-                  class="list-item-div"
-                  v-show="playermode !== 2 && item.id !== currentsongId"
-                >{{item}}</div>
-              </li>
-            </ul>
-          </scroll>
-        </div>
-      </div>
+      <playerlist ref="playerlist"></playerlist>
     </div>
     <audio
       :src="songinfo.musicurl"
@@ -116,6 +97,7 @@ import {
 } from "utils/utils";
 import scroll from "../scroll/index";
 import volume from "../volume/index";
+import playerlist from "../playerlist/index";
 const transform = prefixStyle("transform");
 const progressBtnWidth = 16;
 export default {
@@ -141,7 +123,8 @@ export default {
   },
   components: {
     scroll,
-    volume
+    volume,
+    playerlist
   },
   computed: {
     ...mapGetters([
@@ -252,12 +235,6 @@ export default {
           let data = {};
           this.playerlist.forEach((item, index) => {
             if (this.currentsongId === item.id) {
-              console.log(JSON.stringify(this.playerlist.splice(index, 1)));
-              // this.setplayerlist(this.playerlist.splice(index, 1));
-              console.log(
-                JSON.stringify(this.playerlist),
-                this.playerlist.length
-              );
               data["flag"] = this.playerlist[0].flag;
               data["name"] = this.playerlist[0].name;
               data["picUrl"] = this.playerlist[0].picUrl;
@@ -357,7 +334,6 @@ export default {
       if (this.songinfo.musicurl && this.songinfo.musicurl !== "") {
         this.setplatstate(true);
         this.$refs.audio.play();
-        this.$refs.audio.volume = 1;
         this.setsongcount(format(this.$refs.audio.duration));
       }
     },
@@ -451,12 +427,6 @@ export default {
     this.touch = {};
     /** 初始化播放器背景色（随机） */
     this.initplayerbackgroundcolor();
-    /** 记录列表循环播放 */
-    let date = [];
-    for (let i = 0; i < this.playerlist.length; i++) {
-      date.push(this.playerlist[i]);
-    }
-    this.songernormallist = date;
   },
   watch: {
     /** 监听歌曲id */
@@ -484,6 +454,16 @@ export default {
             true
           );
         }
+      }
+    },
+    playerlist(news, old) {
+      if (news.length > 0) {
+        /** 记录列表循环播放 */
+        let date = [];
+        for (let i = 0; i < this.playerlist.length; i++) {
+          date.push(this.playerlist[i]);
+        }
+        this.songernormallist = date;
       }
     }
   }

@@ -14,3 +14,7 @@ export const SET_PLAYERMODE = 'SET_PLAYERMODE';
 export const SET_PLAYERLIST = 'SET_PLAYERLIST';
 /** 常量--当前播放器音量 */
 export const SET_PLAYERVOLUME = 'SET_PLAYERVOLUME';
+/** 常量--播放列表显示状态 */
+export const SET_PLAYERLISTSTATUS = 'SET_PLAYERLISTSTATUS';
+/** 常量--音量调节显示状态 */
+export const SET_PLAYERVOLUMESTATUS = 'SET_PLAYERVOLUMESTATUS';

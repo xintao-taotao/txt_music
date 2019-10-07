@@ -14,7 +14,11 @@ const state = {
   /** 当前播放列表 */
   playerlist: [],
   /** 当前播放器音量 */
-  playervolume: 1
+  playervolume: 1,
+  /** 播放列表显示状态 */
+  playerliststatus: false,
+  /** 音量调节显示状态 */
+  playervolumestatus: false
 }
 
 export default state;
