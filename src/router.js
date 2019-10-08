@@ -31,6 +31,13 @@ const routers = [{
       title: 'txt-music 歌手详情'
     },
     component: (resolve) => require(['./views/singerdetails/index.vue'], resolve)
+  },{
+    path: '/personalized',
+    name: 'personalized',
+    meta: {
+      title: 'txt-music 推荐歌单'
+    },
+    component: (resolve) => require(['./views/personalized/index.vue'], resolve)
   }]
 }]
 export default routers;
