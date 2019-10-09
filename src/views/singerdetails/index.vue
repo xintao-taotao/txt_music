@@ -17,8 +17,8 @@
           </div>
         </div>
         <div class="singer-btn-list">
-          <img src="../../images/random-btn.png" />
-          <img src="../../images/play-btn.png" />
+          <img src="../../images/random-btn.png" @click="randomplayer" />
+          <img src="../../images/play-btn.png" @click="playerall" />
         </div>
       </div>
     </div>
@@ -89,7 +89,7 @@ import {
   singermvlist
 } from "api/songs";
 import scroll from "../Components/scroll";
-import { timeconversion, goPageByPath } from "utils/utils";
+import { timeconversion, goPageByPath, playerrandom } from "utils/utils";
 import { mapMutations, mapGetters } from "vuex";
 export default {
   data() {
@@ -111,7 +111,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["songinfo", "currentsongId", "prevsongerid"])
+    ...mapGetters(["songinfo", "currentsongId", "prevsongerid", "playerlist"])
   },
   methods: {
     ...mapMutations({
@@ -120,7 +120,9 @@ export default {
       /** 修改当前歌曲id */
       setcurrentsongId: "SET_CURRENTSONGID",
       /** 修改当前播放器播放列表 */
-      setplayerlist: "SET_PLAYERLIST"
+      setplayerlist: "SET_PLAYERLIST",
+      /** 修改当前播放器播放模式 */
+      setplayermode: "SET_PLAYERMODE"
     }),
     /** 查询歌手详情信息和部分歌曲信息 */
     selectsingdetails() {
@@ -150,14 +152,71 @@ export default {
       data["musicurl"] = "";
       let songer = [];
       if (item.ar && item.ar.length && item.ar.length > 0) {
-        item.ar.forEach((item, index) => {
-          songer.push(item);
+        item.ar.forEach((items, index) => {
+          songer.push(items);
         });
       }
       data["songer"] = songer;
       this.setsonginfo(data);
       if (item.id !== this.currentsongId) {
         this.setcurrentsongId(item.id);
+      }
+    },
+    /** 处理播放按钮事件 */
+    playerall() {
+      this.setplayermode(0);
+      /** 深拷贝当前歌曲列表--开始 */
+      let date = [];
+      for (let i = 0; i < this.singerlist.length; i++) {
+        date.push(this.singerlist[i]);
+      }
+      /** 深拷贝当前歌曲列表--结束 */
+      this.setplayerlist(date);
+      let data = {};
+      data["flag"] = this.singerlist[0].flag;
+      data["name"] = this.singerlist[0].name;
+      data["picUrl"] = this.singerlist[0].picUrl;
+      data["musicurl"] = "";
+      let songer = [];
+      if (
+        this.singerlist[0].ar &&
+        this.singerlist[0].ar.length &&
+        this.singerlist[0].ar.length > 0
+      ) {
+        this.singerlist[0].ar.forEach((item, index) => {
+          songer.push(item);
+        });
+      }
+      data["songer"] = songer;
+      this.setsonginfo(data);
+      if (this.singerlist[0].id !== this.currentsongId) {
+        this.setcurrentsongId(this.singerlist[0].id);
+      }
+    },
+    /** 处理随机播放按钮事件 */
+    randomplayer() {
+      /** 深拷贝当前歌曲列表--开始 */
+      let date = [];
+      for (let i = 0; i < this.singerlist.length; i++) {
+        date.push(this.singerlist[i]);
+      }
+      /** 深拷贝当前歌曲列表--结束 */
+      this.setplayermode(1);
+      this.setplayerlist(playerrandom(date));
+      /** 传入当前播放列表的长度 */
+      this.setcurrentsongId(this.playerlist[0].id);
+      if (this.playerlist.length > 0) {
+        let data = {};
+        this.playerlist.forEach((item, index) => {
+          if (this.currentsongId === item.id) {
+            data["flag"] = this.playerlist[0].flag;
+            data["name"] = this.playerlist[0].name;
+            data["picUrl"] = this.playerlist[0].picUrl;
+            data["songer"] = this.playerlist[0].ar;
+          }
+        });
+        data["musicurl"] = "";
+        this.setsonginfo(data);
       }
     },
     /** 查询歌手专辑 */

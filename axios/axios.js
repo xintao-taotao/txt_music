@@ -61,9 +61,6 @@ class HttpRequest {
         case 403:
           _this.$Message.error('没有权限！');
           break;
-        case 404:
-          _this.$Message.error('内容不存在！');
-          break;
         case 408:
           _this.$Message.error('请求超时！');
           break;
@@ -80,7 +77,20 @@ class HttpRequest {
           _this.$Message.error('密码错误超过限制');
           break;
       }
-      return err.response.data;
+      err.response.data.code = parseInt(err.response.data.code);
+      let obj = toJson(err.response.data);
+      if (obj) {
+        err.response.data = obj
+      }
+      let code = err.response.data.code;
+      let data = err.response.data;
+      let status = err.response.status;
+      typeof code === 'number' && window.isNaN(code) ? code = 201 : code = code;
+      return {
+        code,
+        data,
+        status
+      };
     })
   }
   request(options) {

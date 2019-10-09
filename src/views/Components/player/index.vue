@@ -118,7 +118,9 @@ export default {
       /** 上一首歌id列表 */
       prevsongerlist: [],
       /** 列表循环播放列表 */
-      songernormallist: []
+      songernormallist: [],
+      /** 当前歌曲是否可以播放(配合记录上一首歌) */
+      activestatus: false
     };
   },
   components: {
@@ -183,7 +185,7 @@ export default {
     },
     /** 上一首歌 */
     prevsongers() {
-      if (this.prevsongerlist) {
+      if (this.prevsongerlist.length >= 2) {
         this.setcurrentsongId(
           this.prevsongerlist[this.prevsongerlist.length - 1]
         );
@@ -205,6 +207,8 @@ export default {
             this.setsonginfo(item);
           }
         });
+      } else {
+        this.$Message.info("已经是第一首歌了哦！");
       }
     },
     /** 切歌 */
@@ -216,39 +220,56 @@ export default {
           let data = {};
           this.playerlist.forEach((item, index) => {
             if (this.currentsongId === item.id) {
-              data["flag"] = this.playerlist[index + 1].flag;
-              data["name"] = this.playerlist[index + 1].name;
-              data["picUrl"] = this.playerlist[index + 1].picUrl;
-              data["songer"] = this.playerlist[index + 1].ar;
-              indexs = index;
+              /** 防止是最后一首歌曲 */
+              if (index + 1 === this.playerlist.length) {
+                data["flag"] = this.playerlist[0].flag;
+                data["name"] = this.playerlist[0].name;
+                data["picUrl"] = this.playerlist[0].picUrl;
+                data["songer"] = this.playerlist[0].ar;
+                indexs = 0;
+              } else {
+                data["flag"] = this.playerlist[index + 1].flag;
+                data["name"] = this.playerlist[index + 1].name;
+                data["picUrl"] = this.playerlist[index + 1].picUrl;
+                data["songer"] = this.playerlist[index + 1].ar;
+                indexs = index + 1;
+              }
             }
           });
           data["musicurl"] = "";
           this.setsonginfo(data);
           /** 如果id存在，则已经点播过一首歌，则push上一首歌的id给变量 */
-          if (this.currentsongId) {
+          if (this.currentsongId && !this.activestatus) {
             this.prevsongerlist.push(this.currentsongId);
           }
-          this.setcurrentsongId(this.playerlist[indexs + 1].id);
+          this.setcurrentsongId(this.playerlist[indexs].id);
           /** 如果是随机播放模式 */
         } else if (this.playermode === 1) {
           let data = {};
+          let indexs = 0;
           this.playerlist.forEach((item, index) => {
             if (this.currentsongId === item.id) {
-              data["flag"] = this.playerlist[0].flag;
-              data["name"] = this.playerlist[0].name;
-              data["picUrl"] = this.playerlist[0].picUrl;
-              data["songer"] = this.playerlist[0].ar;
+              /** 防止是最后一首歌曲 */
+              if (index + 1 === this.playerlist.length) {
+                this.setcurrentsongId(null);
+                this.setplayerlist([]);
+              } else {
+                indexs = indexs + index + 1;
+                data["flag"] = this.playerlist[index + 1].flag;
+                data["name"] = this.playerlist[index + 1].name;
+                data["picUrl"] = this.playerlist[index + 1].picUrl;
+                data["songer"] = this.playerlist[index + 1].ar;
+              }
             }
           });
           data["musicurl"] = "";
           this.setsonginfo(data);
           /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
-          if (this.currentsongId) {
+          if (this.currentsongId && !this.activestatus) {
             this.prevsongerlist.push(this.currentsongId);
           }
           /** 传入当前播放列表的长度 */
-          this.setcurrentsongId(this.playerlist[0].id);
+          this.setcurrentsongId(this.playerlist[indexs].id);
           /** 如果是单曲循环模式 */
         } else if (this.playermode === 2) {
           this.$refs.audio.currentTime = 0;
@@ -297,13 +318,22 @@ export default {
     initplayer() {
       /** 如果音乐不可用，则不执行下方代码 */
       let singstatus = false;
+      this.activestatus = false;
       singerstatus(this.currentsongId).then(res => {
         if (res.data.success === true) {
           if (res.data.message !== "ok") {
             singstatus = true;
             this.$Message.error("亲爱的,此歌曲暂无版权噢！");
+            this.activestatus = true;
+            this.songswitch();
             return;
           }
+        } else {
+          singstatus = true;
+          this.$Message.error("亲爱的,此歌曲暂无版权噢！");
+          this.activestatus = true;
+          this.songswitch();
+          return;
         }
       });
       /** 如果音乐可用 */
@@ -432,7 +462,7 @@ export default {
     /** 监听歌曲id */
     currentsongId(news, old) {
       /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
-      if (old && old != this.currentsongId) {
+      if (old && old != this.currentsongId && !this.activestatus) {
         this.prevsongerlist.push(old);
       }
       /** 开始播放当前歌曲 */
