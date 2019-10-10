@@ -65,11 +65,22 @@ import { setTimeout } from "timers";
 export default {
   data() {
     return {
+      /** 搜索框的值 */
       search: "",
+      /** 搜索框的展示状态 */
       searchinput: false,
+      /** 搜索框提示文字的显示状态 */
       searchfont: false,
+      /** 歌手列表数据 */
       songerlist: [],
-      hotsongerlist: []
+      /** 最受欢迎的歌手数据列表 */
+      hotsongerlist: [],
+      /** 用户选择的分类歌手字母数据 */
+      useractiveletter: '',
+      /** 分类歌手数据分页 */
+      useractiveindex: 0,
+      /** 分类歌手每一页数据量 */
+      useractivepagecount: 30
     };
   },
   methods: {
@@ -128,38 +139,41 @@ export default {
           }
         }
       });
-      // songerlist().then(res => {
-      //   if (res.data.code === 200) {
-      //     let data = res.data.artists;
-      //     if (data.length > 0) {
-      //       data.forEach(item => {
-      //         this.songerlist.push({
-      //           accountId: item.accountId,
-      //           albumSize: item.albumSize,
-      //           alias: item.alias,
-      //           briefDesc: item.briefDesc,
-      //           followed: item.followed,
-      //           id: item.id,
-      //           img1v1Id: item.img1v1Id,
-      //           img1v1Id_str: item.img1v1Id_str,
-      //           img1v1Url: item.img1v1Url,
-      //           musicSize: item.musicSize,
-      //           name: item.name,
-      //           picId: item.picId,
-      //           picId_str: item.picId_str,
-      //           picUrl: item.picUrl,
-      //           topicPerson: item.topicPerson,
-      //           trans: item.trans
-      //         });
-      //       });
-      //     }
-      //   }
-      // });
+      songerlist(1001,this.useractiveletter).then(res => {
+        if (res.data.code === 200) {
+          let data = res.data.artists;
+          if (data.length > 0) {
+            data.forEach(item => {
+              this.songerlist.push({
+                accountId: item.accountId,
+                albumSize: item.albumSize,
+                alias: item.alias,
+                briefDesc: item.briefDesc,
+                followed: item.followed,
+                id: item.id,
+                img1v1Id: item.img1v1Id,
+                img1v1Id_str: item.img1v1Id_str,
+                img1v1Url: item.img1v1Url,
+                musicSize: item.musicSize,
+                name: item.name,
+                picId: item.picId,
+                picId_str: item.picId_str,
+                picUrl: item.picUrl,
+                topicPerson: item.topicPerson,
+                trans: item.trans
+              });
+            });
+          }
+        }
+      });
     },
     selectsonger(item){
       goPageByPath('/singer-details',{songerid: item.id})
     },
-    songername(item) {},
+    songername(item) {
+      this.useractiveletter = item;
+      console.log(this.useractiveletter);
+    },
     inithotlist() {
       this.$nextTick(() => {
         setTimeout(() => {

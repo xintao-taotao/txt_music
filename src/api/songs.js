@@ -1,9 +1,25 @@
 import axios from '../../axios/api.requset';
 
 /** 歌手分类列表 */
-export const songerlist = (cat = '1001', initial) => {
+export const songerlist = (cat = '1001', initial, limit) => {
+  let url;
+  if(cat && !initial && !limit){
+    url = `/artist/list?cat=${cat}`
+  }else if(initial && !car && !limit){
+    url = `/artist/list?initial=${initial}`
+  }else if(limit && !initial && !car){
+    url = `/artist/list?limit=${limit}`
+  }else if(cat && initial){
+    url = `/artist/list?cat=${cat}&initial=${initial}`
+  } else if(cat && limit){
+    url = `/artist/list?cat=${cat}&limit=${limit}`
+  } else if (initial && limit) {
+    url = `/artist/list?initial=${initial}&limit=${limit}`
+  } else if (cat && initial && limit) {
+    url = `/artist/list?cat=${cat}&initial=${initial}&limit=${limit}`
+  }
   return axios.request({
-    url: initial ? `/artist/list?cat=${cat}&initial=${initial}` : `/artist/list?cat=${cat}`,
+    url: url,
     method: 'get',
     dataType: 'json'
   })
