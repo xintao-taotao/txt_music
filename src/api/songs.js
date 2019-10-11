@@ -1,22 +1,25 @@
 import axios from '../../axios/api.requset';
 
-/** 歌手分类列表 */
-export const songerlist = (cat = '1001', initial, limit) => {
+/** 歌手分类列表
+ * 1·歌手文字分类
+ * 2·每页返回多少条数据
+ * 3·当前页索引
+ * 4·歌手字母分类
+ */
+export const songerlist = (cat = '1001', limit, offset, initial) => {
   let url;
-  if(cat && !initial && !limit){
-    url = `/artist/list?cat=${cat}`
-  }else if(initial && !car && !limit){
-    url = `/artist/list?initial=${initial}`
-  }else if(limit && !initial && !car){
-    url = `/artist/list?limit=${limit}`
-  }else if(cat && initial){
-    url = `/artist/list?cat=${cat}&initial=${initial}`
-  } else if(cat && limit){
-    url = `/artist/list?cat=${cat}&limit=${limit}`
-  } else if (initial && limit) {
-    url = `/artist/list?initial=${initial}&limit=${limit}`
-  } else if (cat && initial && limit) {
-    url = `/artist/list?cat=${cat}&initial=${initial}&limit=${limit}`
+  if(initial){
+    if(cat){
+      url = `/artist/list?cat=${cat}&initial=${initial}&limit=${limit}&offset=${offset}`
+    }else{
+      url = `/artist/list?cat=1001&initial=${initial}&limit=${limit}&offset=${offset}`
+    }
+  }else{
+    if(cat){
+      url = `/artist/list?cat=${cat}&limit=${limit}&offset=${offset}`
+    }else{
+      url = `/artist/list?cat=1001&limit=${limit}&offset=${offset}`
+    }
   }
   return axios.request({
     url: url,

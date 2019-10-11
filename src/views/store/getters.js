@@ -18,3 +18,5 @@ export const playervolume = state => state.playervolume;
 export const  playerliststatus = state => state.playerliststatus;
 /** getters封装--音量调节显示状态 */
 export const playervolumestatus = state => state.playervolumestatus;
+/** getters封装--播放器显示状态 */
+export const playerstatus = state => state.playerstatus;

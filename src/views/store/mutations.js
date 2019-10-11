@@ -31,6 +31,9 @@ const matutaions = {
   [types.SET_PLAYERVOLUMESTATUS](state, playervolumestatus) {
     state.playervolumestatus = playervolumestatus;
   },
+  [types.SET_PLAYERSTATUS](state, playerstatus) {
+    state.playerstatus = playerstatus;
+  },
 }
 
 export default matutaions;

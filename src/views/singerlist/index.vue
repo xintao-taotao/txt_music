@@ -32,26 +32,36 @@
             @mouseup="(e)=>{upsinger(e,index)}"
             @mouseleave="(e)=>{upsinger(e,index)}"
           >
-            <img v-lazy="item.picUrl" @load="inithotlist"/>
+            <img v-lazy="item.picUrl" @load="inithotlist" />
             <div class="songer-info">
               <p>{{item.name}}</p>
-              <p v-for="(its,idx) in item.alias" :key="idx">{{its}}</p>
+              <span v-for="(its,idx) in item.alias" :key="idx">{{its}}</span>
             </div>
           </li>
         </ul>
       </scroll>
-      <scroll :data="songerlist">
-        <div class="songer_div">
-          <div>
-            <ul class="songerlist_ul">
-              <li v-for="(item,index) in songerlist" :key="index">
-                <img v-lazy="item.picUrl" />
-                <p>{{item.name}}</p>
-              </li>
-            </ul>
-          </div>
+      <div class="header fuheader">
+        <div class="header-left fuheader-left">
+          <i>歌手列表</i>
+          <p>{{useractivefontdata ? (useractiveletter ? useractivefontdata + ' - ' + useractiveletter : useractivefontdata) : useractiveletter ? useractiveletter : null}}</p>
         </div>
-      </scroll>
+        <scroll-songertype @dataemit="dataemit"></scroll-songertype>
+      </div>
+      <div class="songer_div" :class="playerstatus ? 'minheight' : null">
+        <scroll :mouseWheel="true">
+          <ul class="songerlist_ul">
+            <li v-for="(item,index) in songerlist" :key="index">
+              <img v-lazy="item.picUrl" />
+              <div class="songer-info fusonger-info">
+                <p>{{item.name}}</p>
+                <p>
+                  <span v-for="(its,idx) in item.alias" :key="idx">{{its}}</span>
+                </p>
+              </div>
+            </li>
+          </ul>
+        </scroll>
+      </div>
     </div>
   </div>
 </template>
@@ -62,6 +72,8 @@ import scrollAlphabet from "../Components/scroll-alphabet";
 import scroll from "../Components/scroll/index";
 import { goPageByPath } from "utils/utils";
 import { setTimeout } from "timers";
+import scrollSongertype from "../Components/scroll-songertype/index";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -76,14 +88,22 @@ export default {
       /** 最受欢迎的歌手数据列表 */
       hotsongerlist: [],
       /** 用户选择的分类歌手字母数据 */
-      useractiveletter: '',
+      useractiveletter: "",
+      /** 用户选择的文字分类数据 */
+      useractivefont: "5001",
+      /** 用户选择的文字分类文字数据 */
+      useractivefontdata: "入驻歌手",
       /** 分类歌手数据分页 */
       useractiveindex: 0,
       /** 分类歌手每一页数据量 */
       useractivepagecount: 30
     };
   },
+  computed: {
+    ...mapGetters(["playerstatus"])
+  },
   methods: {
+    /** 搜索按钮点击事件 */
     searchbtn() {
       if (this.searchinput == true) {
         /** 处理搜索事件 */
@@ -96,53 +116,33 @@ export default {
         this.searchinput = true;
       }
     },
-    onsinger(e,index){
-      this.$refs.hotlist.children[index].className = 'singer-on-active';
+    /** 当用户鼠标按下的时候增加类名 */
+    onsinger(e, index) {
+      this.$refs.hotlist.children[index].className = "singer-on-active";
     },
-    upsinger(e,index){
-      this.$refs.hotlist.children[index].className = '';
+    /** 当用户鼠标松开的时候清空类名 */
+    upsinger(e, index) {
+      this.$refs.hotlist.children[index].className = "";
     },
-    selectdata() {
-      hotsonger(0, 10).then(res => {
-        if(res.data.code === 200){
-          let data = res.data.artists;
-          if(data.length > 0){
-            data.forEach((item,index)=>{
-              /** 存储歌手昵称 */
-              let alias = [];
-              if(item.alias && item.alias.length > 0){
-                item.alias.forEach((als,index)=>{
-                  if(als){
-                    alias.push(als);
-                  }
-                })
-              }
-              this.hotsongerlist.push({
-                accountId: item.accountId,
-                albumSize: item.albumSize,
-                alias: alias,
-                briefDesc: item.briefDesc,
-                followed: item.followed,
-                id: item.id,
-                img1v1Id: item.img1v1Id,
-                img1v1Id_str: item.img1v1Id_str,
-                img1v1Url: item.img1v1Url,
-                musicSize: item.musicSize,
-                name: item.name,
-                picId: item.picId,
-                picId_str: item.picId_str,
-                picUrl: item.picUrl,
-                topicPerson: item.topicPerson,
-                trans: item.trans
-              })
-            }) 
-          }
-        }
-      });
-      songerlist(1001,this.useractiveletter).then(res => {
+    /** 记录用户点击的文字数据 */
+    dataemit(data) {
+      this.useractivefont = data.value;
+      this.useractivefontdata = data.label;
+      /** 查询分类歌手数据 */
+      this.selectclassificationsonger();
+    },
+    /** 查询分类歌手数据 */
+    selectclassificationsonger() {
+      songerlist(
+        this.useractivefont,
+        this.useractivepagecount,
+        this.useractiveindex,
+        this.useractiveletter
+      ).then(res => {
         if (res.data.code === 200) {
           let data = res.data.artists;
           if (data.length > 0) {
+            this.songerlist = [];
             data.forEach(item => {
               this.songerlist.push({
                 accountId: item.accountId,
@@ -167,13 +167,56 @@ export default {
         }
       });
     },
-    selectsonger(item){
-      goPageByPath('/singer-details',{songerid: item.id})
+    /** 查询最受欢迎的歌手数据 */
+    selectdata() {
+      hotsonger(0, 10).then(res => {
+        if (res.data.code === 200) {
+          let data = res.data.artists;
+          if (data.length > 0) {
+            data.forEach((item, index) => {
+              /** 存储歌手昵称 */
+              let alias = [];
+              if (item.alias && item.alias.length > 0) {
+                item.alias.forEach((als, index) => {
+                  if (als) {
+                    alias.push(als);
+                  }
+                });
+              }
+              this.hotsongerlist.push({
+                accountId: item.accountId,
+                albumSize: item.albumSize,
+                alias: alias,
+                briefDesc: item.briefDesc,
+                followed: item.followed,
+                id: item.id,
+                img1v1Id: item.img1v1Id,
+                img1v1Id_str: item.img1v1Id_str,
+                img1v1Url: item.img1v1Url,
+                musicSize: item.musicSize,
+                name: item.name,
+                picId: item.picId,
+                picId_str: item.picId_str,
+                picUrl: item.picUrl,
+                topicPerson: item.topicPerson,
+                trans: item.trans
+              });
+            });
+          }
+        }
+      });
     },
+    /** 跳转到歌手详情页 */
+    selectsonger(item) {
+      goPageByPath("/singer-details", { songerid: item.id });
+    },
+    /** 记录用户点击的字母数据 */
     songername(item) {
       this.useractiveletter = item;
-      console.log(this.useractiveletter);
+      /** 查询分类歌手数据 */
+      this.selectclassificationsonger();
     },
+    /** 初始化最受欢迎歌手宽度 */
     inithotlist() {
       this.$nextTick(() => {
         setTimeout(() => {
@@ -181,9 +224,9 @@ export default {
           if (this.$refs.songerli && this.$refs.songerli.length > 0) {
             width = 0;
             this.$refs.songerli.forEach((item, index) => {
-              if(index + 1 === this.$refs.songerli.length){
+              if (index + 1 === this.$refs.songerli.length) {
                 width = width + item.scrollWidth;
-              }else{
+              } else {
                 width = width + item.scrollWidth + 45;
               }
             });
@@ -194,14 +237,19 @@ export default {
     }
   },
   created() {
+    /** 查询最受欢迎的歌手数据 */
     this.selectdata();
     this.$nextTick(() => {
+      /** 初始化最受欢迎歌手宽度 */
       this.inithotlist();
     });
+    /** 查询分类歌手数据 */
+      this.selectclassificationsonger();
   },
   components: {
     scrollAlphabet,
-    scroll
+    scroll,
+    scrollSongertype
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :class="variablebackground" v-if="currentsongId">
+  <div class="player" :class="variablebackground" v-if="playerstatus">
     <!-- 歌曲信息 -->
     <div class="song-info-songer-info">
       <div class="songer-avatar">
@@ -137,7 +137,8 @@ export default {
       "songcount",
       "playermode",
       "playerlist",
-      "playervolume"
+      "playervolume",
+      "playerstatus"
     ])
   },
   methods: {
@@ -157,7 +158,9 @@ export default {
       /** 修改当前播放器音量 */
       setplayervolume: "SET_PLAYERVOLUME",
       /** 修改当前播放器播放列表 */
-      setplayerlist: "SET_PLAYERLIST"
+      setplayerlist: "SET_PLAYERLIST",
+      /** 修改播放器显示状态 */
+      setplayerstatus: "SET_PLAYERSTATUS"
     }),
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
@@ -464,6 +467,10 @@ export default {
       /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
       if (old && old != this.currentsongId && !this.activestatus) {
         this.prevsongerlist.push(old);
+      }
+      /** 修改播放器显示状态 */
+      if(news){
+        this.setplayerstatus(true);
       }
       /** 开始播放当前歌曲 */
       this.initplayer();

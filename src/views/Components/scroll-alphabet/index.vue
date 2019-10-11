@@ -1,9 +1,9 @@
 <template>
   <div class="scroll-alphabet">
-    <scroll ref="scroll" :mouseWheel="true" class="scroll-divs" title="鼠标上下拖动">
+    <scroll ref="scroll" :mouseWheel="true" class="scroll-divs" title="鼠标上下拖动" :class="playerstatus ? 'minhegiht' : ''">
       <div class="scroll-div" ref="scrolldiv">
         <ul>
-          <li v-for="(item,index) in data" :key="index" @click="songername(item)">{{item}}</li>
+          <li v-for="(item,index) in data" :key="index" @click="songername(item)" :class="activevalue === item ? 'activeclass' : 'classnav'">{{item}}</li>
         </ul>
       </div>
     </scroll>
@@ -12,6 +12,7 @@
 
 <script>
 import scroll from "../scroll/index";
+import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
@@ -44,11 +45,18 @@ export default {
         "Z"
       ],
       screenWidth: "",
-      screenHeight: ""
+      screenHeight: "",
+      /** 当前用户选择的字母数据 */
+      activevalue: ''
     };
   },
   components: {
     scroll
+  },
+  computed: {
+    ...mapGetters([
+      "playerstatus"
+    ])
   },
   mounted() {
     this.screenWidth = window.screen.width;
@@ -60,6 +68,7 @@ export default {
   },
   methods: {
     songername(item) {
+      this.activevalue = item;
       this.$emit("songername", item);
     },
     windowsize() {

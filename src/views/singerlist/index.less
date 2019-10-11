@@ -1,12 +1,12 @@
 .header-left>i {
   color: #EC3063;
-  font-size: 1.8rem;
+  font-size: 28.8px;
   display: inline-block;
-  margin-bottom: .4rem;
+  margin-bottom: 6px;
 }
 
 .header-left>p {
-  font-size: 3.4rem;
+  font-size: 54px;
 }
 
 .singerlist {
@@ -29,10 +29,10 @@
   background: url('../../images/search_icon.png') no-repeat center center;
   background-size: contain;
   display: inline-block;
-  height: 3.34rem;
-  width: 3.34rem;
+  height: 54px;
+  width: 54px;
   cursor: pointer;
-  margin-left: 1rem;
+  margin-left: 16px;
 }
 
 .search {
@@ -42,6 +42,7 @@
 
 .songerlist_ul>li>img {
   max-width: 100%;
+  height: 210px;
 }
 
 .songerlist_ul {
@@ -50,12 +51,20 @@
 }
 
 .songerlist_ul>li {
-  flex: 0 1 20%;
+  display: inline-grid;
+  width: 259px;
+  margin-right: 45px;
+  cursor: pointer;
 }
 
 .songer_div {
-  overflow: hidden;
   position: relative;
+  height: 262px;
+  overflow: hidden;
+}
+
+.songer_div>.scroll{
+  height: 100%;
 }
 
 .hotlist {
@@ -79,7 +88,8 @@
 }
 
 .songer-info {
-  background: #60ABC3;
+  background: #a6a6a6;
+  color: #fff;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   padding: 10px;
@@ -93,11 +103,43 @@
   z-index: 2;
 }
 
-.songer-info>p {
+.songer-info>span,.songer-info>p {
   flex: 0 1 100%;
+}
+
+.fusonger-info{
+  background: inherit;
+  color: #515a6e;
+  text-align: center;
+}
+
+.fusonger-info span{
+  flex: inherit;
+  display: inline-block;
+  margin: 0px 6px;
 }
 
 .singer-on-active>img{
   transform: translateY(8px) !important;
   transition: all .6s !important;
+}
+
+.fuheader{
+  align-items: center;
+  margin-top: 46px;
+}
+
+.fuheader-left>i {
+  color: #EC3063;
+  font-size: 20.8px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.fuheader-left>p {
+  font-size: 30px;
+}
+
+.minheight{
+  height: 188px;
 }

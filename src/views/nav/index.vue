@@ -112,14 +112,14 @@
       <div class="user-info-detail">
         <img src="../../images/user-info-detail.png" alt="查看详情" />
       </div>
+      <Icon type="md-close" size="22" class="close" @click="exitlogin" title="退出登录"/>
     </div>
   </div>
 </template>
 
 <script>
-import { goPageByPath, getToken } from "utils/utils";
+import { goPageByPath, getToken, removeToken } from "utils/utils";
 import { userinfo } from "api/user";
-import { watch } from "fs";
 export default {
   data() {
     return {
@@ -145,6 +145,12 @@ export default {
           this.nickname = data.profile.nickname;
         }
       });
+    },
+    /** 退出登录事件 */
+    exitlogin(){
+      removeToken();
+      this.$Message.success('退出成功！欢迎再次使用本系统！');
+      goPageByPath('/login');
     },
     /** 初始化选中事件处理 */
     initactivenav() {
