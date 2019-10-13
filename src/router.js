@@ -38,6 +38,13 @@ const routers = [{
       title: 'txt-music 推荐歌单'
     },
     component: (resolve) => require(['./views/personalized/index.vue'], resolve)
+  },{
+    path: '/mv-details',
+    name: 'mv-details',
+    meta: {
+      title: 'txt-music mv详情'
+    },
+    component: (resolve) => require(['./views/mvdetails/index.vue'], resolve)
   }]
 }]
 export default routers;

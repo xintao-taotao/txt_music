@@ -69,7 +69,7 @@
         <div class="singer-div-list">
           <scroll :mouseWheel="true">
             <ul class="singermvul" ref="singermvul">
-              <li v-for="(item,index) in singermvlist" :key="index" ref="singermvli">
+              <li v-for="(item,index) in singermvlist" :key="index" ref="singermvli" @click="watchmv(item)">
                 <img v-lazy="item.imgurl" @load="initsingermvheight" />
                 <font>{{item.name}}</font>
               </li>
@@ -135,6 +135,10 @@ export default {
           this.singeralias = data.artist.alias;
         }
       });
+    },
+    /** 查看mv */
+    watchmv(item){
+      goPageByPath("/mv-details", { mv: item.id });
     },
     /** 获取歌曲准备播放 */
     player(item) {
