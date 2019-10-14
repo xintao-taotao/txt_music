@@ -50,7 +50,7 @@
       <div class="songer_div" :class="playerstatus ? 'minheight' : null">
         <scroll :mouseWheel="true">
           <ul class="songerlist_ul">
-            <li v-for="(item,index) in songerlist" :key="index">
+            <li v-for="(item,index) in songerlist" :key="index" @click="selectsonger(item)">
               <img v-lazy="item.picUrl" />
               <div class="songer-info fusonger-info">
                 <p>{{item.name}}</p>
