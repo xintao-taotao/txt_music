@@ -100,7 +100,7 @@ export default {
           /** 请求视频播放地址 */
           this.initvideourl();
         } else {
-          this.$Message.error("数据异常！");
+          this.$Message.error("数据异常！请重试！");
           this.$router.go(-1);
           return;
         }
