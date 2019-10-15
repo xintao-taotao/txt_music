@@ -126,8 +126,8 @@ export default {
     },
     /** 记录用户点击的文字数据 */
     dataemit(data) {
-      this.useractivefont = data.value;
-      this.useractivefontdata = data.label;
+      this.useractivefont = data.value === this.useractivefont ? 5001 : data.value;
+      this.useractivefontdata = data.label === this.useractivefontdata ? null : data.label;
       /** 查询分类歌手数据 */
       this.selectclassificationsonger();
     },
@@ -212,7 +212,7 @@ export default {
     },
     /** 记录用户点击的字母数据 */
     songername(item) {
-      this.useractiveletter = item;
+      this.useractiveletter = item === this.useractiveletter ? null : item;
       /** 查询分类歌手数据 */
       this.selectclassificationsonger();
     },

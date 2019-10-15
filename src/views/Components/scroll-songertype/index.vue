@@ -77,7 +77,7 @@ export default {
   methods:{
     /** 处理点击列表的事件 */
     dataemit(item){
-      this.activevalue = item.value;
+      this.activevalue = item.value === this.activevalue ? null : item.value;
       /** 将数据返回到父级组件 */
       this.$emit('dataemit',item);
     },

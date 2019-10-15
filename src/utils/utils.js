@@ -259,6 +259,7 @@ export class Lyric {
       let o = {};
       if (hasTranslate) {
         o['value'] = v(this.finalLrcMap[prop]) + ('\n') + v(this.finalTlyricMap[prop]);
+        o['key'] = prop
       } else {
         o['value'] = v(this.finalLrcMap[prop]);
         o['key'] = prop

@@ -98,6 +98,7 @@ import {
 import scroll from "../scroll/index";
 import volume from "../volume/index";
 import playerlist from "../playerlist/index";
+import { clearInterval } from "timers";
 const transform = prefixStyle("transform");
 const progressBtnWidth = 16;
 export default {
@@ -345,17 +346,24 @@ export default {
         singerurl(this.currentsongId).then(res => {
           if (res.data.code === 200) {
             let data = res.data.data[0];
-            let item = {};
-            item["flag"] = data.flag;
-            item["musicurl"] = data.url;
-            item["name"] = this.songinfo.name;
-            item["picUrl"] = this.songinfo.picUrl;
-            item["songer"] = this.songinfo.songer;
-            this.setsonginfo(item);
-            /** css动画滚动歌名 */
-            scrollAnimation("#songer-name", 6);
-            /** css动画滚动歌手 */
-            scrollAnimation("#singer-names", 4);
+            if (data.url) {
+              let item = {};
+              item["flag"] = data.flag;
+              item["musicurl"] = data.url;
+              item["name"] = this.songinfo.name;
+              item["picUrl"] = this.songinfo.picUrl;
+              item["songer"] = this.songinfo.songer;
+              this.setsonginfo(item);
+              /** css动画滚动歌名 */
+              scrollAnimation("#songer-name", 6);
+              /** css动画滚动歌手 */
+              scrollAnimation("#singer-names", 4);
+            } else {
+              this.$Message.error("亲爱的,此歌曲暂无版权噢！");
+              this.activestatus = true;
+              this.songswitch();
+              return;
+            }
           }
         });
       }
@@ -366,6 +374,20 @@ export default {
     musicplayer() {
       if (this.songinfo.musicurl && this.songinfo.musicurl !== "") {
         this.setplatstate(true);
+        let volumestatus = false;
+        let pause = setTimeout(() => {
+          volumestatus = true;
+        }, 1000);
+        let volume = this.$refs.audio.volume;
+        let pausevolume = setInterval(() => {
+          if (volumestatus) {
+            clearTimeout(pause);
+            clearInterval(pausevolume);
+          } else {
+            volume = volume + 0.1;
+            this.$refs.audio.volume = volume >= volume === 1 ? 1 : volume;
+          }
+        }, 100);
         this.$refs.audio.play();
         this.setsongcount(format(this.$refs.audio.duration));
       }
@@ -373,7 +395,21 @@ export default {
     /** 暂停播放歌曲 */
     musicpause() {
       this.setplatstate(false);
-      this.$refs.audio.pause();
+      let volumestatus = false;
+      let pause = setTimeout(() => {
+        this.$refs.audio.pause();
+        volumestatus = true;
+      }, 1000);
+      let volume = this.$refs.audio.volume;
+      let pausevolume = setInterval(() => {
+        if (volumestatus) {
+          clearTimeout(pause);
+          clearInterval(pausevolume);
+        } else {
+          volume = volume - 0.1;
+          this.$refs.audio.volume = volume === 0 ? 0 : volume;
+        }
+      }, 100);
     },
     /** 缓存歌曲信息等 */
     cacheinfo() {
@@ -469,7 +505,7 @@ export default {
         this.prevsongerlist.push(old);
       }
       /** 修改播放器显示状态 */
-      if(news){
+      if (news) {
         this.setplayerstatus(true);
       }
       /** 开始播放当前歌曲 */

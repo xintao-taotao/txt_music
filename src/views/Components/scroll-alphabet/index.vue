@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     songername(item) {
-      this.activevalue = item;
+      this.activevalue = item === this.activevalue ? null : item;
       this.$emit("songername", item);
     },
     windowsize() {
