@@ -17,14 +17,10 @@
 }
 
 .play-bgcolor3 {
-  background: #60ABC3;
-}
-
-.play-bgcolor4 {
   background: #9A525D;
 }
 
-.play-bgcolor5 {
+.play-bgcolor4 {
   background: #302C57;
 }
 
@@ -68,8 +64,8 @@
   position: relative;
 }
 
-#singer-names>span:first-child {
-  margin-left: 0px;
+#singer-names>span:first-child::after {
+  content: none;
 }
 
 #singer-names>span::after {
@@ -90,10 +86,11 @@
   height: 100%;
   width: 100%;
   border-radius: 60%;
+  cursor: pointer;
 }
 
 .player-ctn {
-  width: 62%;
+  width: 60%;
   display: flex;
   align-items: center;
 }
@@ -189,7 +186,21 @@ button {
   transition: all .5s ease;
 }
 
-.music-play:hover {
-  border-style: solid;
-  border-width: 13px 0 13px 20px;
+@keyframes music_disc {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.img-play{
+  animation: music_disc 20s linear infinite;
+}
+
+.img-pause{
+  animation: music_disc 20s linear infinite;
+  animation-play-state: paused;
 }

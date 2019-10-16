@@ -1,9 +1,14 @@
 <template>
   <div class="volume" @click.stop="modifystatus">
-    <div class="volume-circular-ctn" v-show="playervolumestatus" @click.stop>
+    <div
+      class="volume-circular-ctn"
+      v-show="playervolumestatus"
+      @click.stop
+      @mouseleave="mouseleave"
+    >
       <div>
-        <div class="volume-circular-bgcolor"></div>
-        <div class="volume-circular" @mousedown.stop="scroll">
+        <div class="volume-circular-bgcolor" ref="circular"></div>
+        <div class="volume-circular" @mousedown.stop="scroll" ref="volumecircular">
           <i>{{positionX}}</i>
         </div>
         <div class="volume-circular-height"></div>
@@ -35,6 +40,8 @@ export default {
     this.$nextTick(() => {
       /** 监听addEventListene事件 */
       document.addEventListener("click", this.closevolume);
+      /** 初始化圆点位置 */
+      this.initdress();
     });
   },
   methods: {
@@ -44,6 +51,11 @@ export default {
       /** 修改音量调节显示状态 */
       setplayervolumestatus: "SET_PLAYERVOLUMESTATUS"
     }),
+    mouseleave() {
+      document.onmousemove = null;
+      document.onmouseup = null;
+      this.status = false;
+    },
     /** 修改volume状态 */
     modifystatus() {
       if (this.playerliststatus) {
@@ -87,10 +99,29 @@ export default {
         document.onmouseup = null;
         this.status = false;
       };
+    },
+    /** 初始化圆点位置 */
+    initdress() {
+      this.$nextTick(() => {
+        let height = 111;
+        let diressheight = localStorage.getItem("playervolume")
+          ? localStorage.getItem("playervolume")
+          : 1;
+        diressheight = diressheight * 100;
+        let count = (diressheight / height) * 100;
+        this.$refs.volumecircular.style.top = count + "px";
+      });
     }
   },
   computed: {
     ...mapGetters(["playerliststatus", "playervolumestatus"])
+  },
+  created() {
+    let volume = localStorage.getItem("playervolume")
+      ? localStorage.getItem("playervolume")
+      : 1;
+    this.positionX = volume * 100;
+    this.$emit("settingvolume", volume);
   }
 };
 </script>

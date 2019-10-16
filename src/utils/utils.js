@@ -83,7 +83,7 @@ export const toJson = (str) => {
     if (typeof obj == "object") {
       return obj;
     }
-  } catch (e) { }
+  } catch (e) {}
   return false;
 };
 
@@ -111,70 +111,83 @@ export const timeconversion = (time) => {
 }
 
 /** css滚动组件 */
-export const scrollAnimation = (classname, time) => {
-  if (classname && time) {
-    let div;
-    if (classname.indexOf("#") !== -1) {
-      div = document.getElementById(classname.replace('#', ''));
-    } else {
-      div = document.getElementsByClassName(classname.replace('.', ''));
-    }
-    if (div) {
-      let timesj = time * 1000;
-      let timetow = time + '900';
-      if (div.clientWidth > div.parentNode.clientWidth) {
-        let width = div.clientWidth - div.parentNode.clientWidth;
-        div.style.position = 'relative';
-        div.style.marginLeft = ~width + 'px';
-        getComputedStyle(div).length;
-        div.style.transition = `all ${time}s`;
-        setTimeout(
-          () => {
-            div.style.marginLeft = '0px';
-            getComputedStyle(div).length;
-            div.style.transition = `all 1s`;
-          },
-          timesj
-        );
-        setTimeout(
-          () => {
-            div.style.marginLeft = '0px';
-            getComputedStyle(div).length;
-            div.style.transition = `all 1s`;
-            scrollAnimation(classname, time);
-          },
-          timetow
-        );
+export const scrollAnimation = (classname, time = 12, timeout = 1000) => {
+  setTimeout(() => {
+    if (classname && time) {
+      let div;
+      if (classname.indexOf("#") !== -1) {
+        div = document.getElementById(classname.replace('#', ''));
+      } else {
+        div = document.getElementsByClassName(classname.replace('.', ''));
       }
-    } else if (div && div.length > 0) {
-      let timesj = time * 1000;
-      let timetow = time + '900';
-      if (div[0].clientWidth > div[0].parentNode.clientWidth) {
-        let width = div[0].clientWidth - div[0].parentNode.clientWidth;
-        div[0].style.position = 'relative';
-        div[0].style.marginLeft = ~width + 'px';
-        getComputedStyle(div[0]).length;
-        div[0].style.transition = `all ${time}s`;
-        setTimeout(
-          () => {
-            div[0].style.marginLeft = '0px';
-            getComputedStyle(div[0]).length;
-            div[0].style.transition = `all 1s`;
-          },
-          timesj
-        );
-        setTimeout(
-          () => {
-            div[0].style.marginLeft = '0px';
-            getComputedStyle(div[0]).length;
-            div[0].style.transition = `all 1s`;
-            scrollAnimation(classname, time);
-          },
-          timetow
-        );
+      if ((div && div.length === 1) || div && div.clientWidth) {
+        let timesj = time * 1000;
+        let timetow = time + '900';
+        let divdom = div[0] ? div[0] : div;
+        if (divdom.clientWidth > divdom.parentNode.clientWidth ? divdom.clientWidth > divdom.parentNode.clientWidth : divdom.clientWidth > divdom.parentNode.parentNode.clientWidth) {
+          let width = divdom.clientWidth - divdom.parentNode.clientWidth;
+          divdom.style.position = 'relative';
+          divdom.style.marginLeft = ~width + 'px';
+          getComputedStyle(divdom).length;
+          divdom.style.transition = `all ${time}s`;
+          divdom.style.transitionTimingFunction = 'ease-in';
+          setTimeout(
+            () => {
+              divdom.style.marginLeft = '0px';
+              getComputedStyle(divdom).length;
+              divdom.style.transition = `all 1s`;
+              divdom.style.transitionTimingFunction = 'ease-in';
+            },
+            timesj
+          );
+          setTimeout(
+            () => {
+              divdom.style.marginLeft = '0px';
+              getComputedStyle(divdom).length;
+              divdom.style.transition = `all 1s`;
+              divdom.style.transitionTimingFunction = 'ease-in';
+              scrollAnimation(classname, time, 0);
+            },
+            timetow
+          );
+        }
+      } else if (div && div.length >= 2) {
+        let timesj = time * 1000;
+        let timetow = time + '900';
+        for (let i = 0; i < div.length; i++) {
+          let item = div[i].clientWidth > div[i].parentNode.clientWidth ? div[i].parentNode.clientWidth : div[i].parentNode.parentNode.clientWidth;
+          if (item < div[i].clientWidth) {
+            let width = div[i].clientWidth - item;
+            let doms = div[i].clientWidth < div[i].parentNode.clientWidth ? div[i].parentNode : (div[i].parentNode.clientWidth > div[i].parentNode.parentNode.clientWidth ? div[i].parentNode : div[i]);
+            doms.style.position = 'relative';
+            doms.style.marginLeft = ~(width + 60) + 'px';
+            getComputedStyle(doms).length;
+            doms.style.transition = `all ${time}s`;
+            doms.style.transitionTimingFunction = 'ease-in';
+            setTimeout(
+              () => {
+                doms.style.marginLeft = '0px';
+                getComputedStyle(doms).length;
+                doms.style.transition = `all 1s`;
+                doms.style.transitionTimingFunction = 'ease-in';
+              },
+              timesj
+            );
+            setTimeout(
+              () => {
+                doms.style.marginLeft = '0px';
+                getComputedStyle(doms).length;
+                doms.style.transition = `all 1s`;
+                doms.style.transitionTimingFunction = 'ease-in';
+                scrollAnimation(classname, time, 0);
+              },
+              timetow
+            );
+          }
+        }
       }
     }
-  }
+  }, timeout)
 }
 
 /** 解析歌词 */
@@ -327,4 +340,16 @@ export const playerrandom = (arr) => {
     arr[len - i - 1] = temp;
   }
   return arr;
+}
+
+/** 下载文件 */
+export const download = (dom, type, name, url) => {
+  fetch(url).then(res => res.blob()).then(blob => {
+    // 使用获取到的blob对象创建的url
+    const url = window.URL.createObjectURL(blob);
+    dom.href = url;
+    // 指定下载的文件名
+    dom.download = `${name}.${type === 'mp4' ? 'mp4' : 'mp3'}`;
+    dom.click();
+  });
 }

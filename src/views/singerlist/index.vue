@@ -53,10 +53,12 @@
             <li v-for="(item,index) in songerlist" :key="index" @click="selectsonger(item)">
               <img v-lazy="item.picUrl" />
               <div class="songer-info fusonger-info">
-                <p>{{item.name}}</p>
-                <p>
-                  <span v-for="(its,idx) in item.alias" :key="idx">{{its}}</span>
-                </p>
+                <div>
+                  <p>{{item.name}}</p>
+                  <p class="fusonger-info-p">
+                    <span v-for="(its,idx) in item.alias" :key="idx">{{its}}</span>
+                  </p>
+                </div>
               </div>
             </li>
           </ul>
@@ -70,7 +72,7 @@
 import { songerlist, hotsonger } from "api/songs";
 import scrollAlphabet from "../Components/scroll-alphabet";
 import scroll from "../Components/scroll/index";
-import { goPageByPath } from "utils/utils";
+import { goPageByPath, scrollAnimation } from "utils/utils";
 import { setTimeout } from "timers";
 import scrollSongertype from "../Components/scroll-songertype/index";
 import { mapGetters } from "vuex";
@@ -126,8 +128,10 @@ export default {
     },
     /** 记录用户点击的文字数据 */
     dataemit(data) {
-      this.useractivefont = data.value === this.useractivefont ? 5001 : data.value;
-      this.useractivefontdata = data.label === this.useractivefontdata ? null : data.label;
+      this.useractivefont =
+        data.value === this.useractivefont ? 5001 : data.value;
+      this.useractivefontdata =
+        data.label === this.useractivefontdata ? null : data.label;
       /** 查询分类歌手数据 */
       this.selectclassificationsonger();
     },
@@ -143,7 +147,7 @@ export default {
           let data = res.data.artists;
           if (data.length > 0) {
             this.songerlist = [];
-            this.$refs.songerdiv.scrollTo(0,0);
+            this.$refs.songerdiv.scrollTo(0, 0);
             data.forEach(item => {
               this.songerlist.push({
                 accountId: item.accountId,
@@ -164,6 +168,7 @@ export default {
                 trans: item.trans
               });
             });
+            scrollAnimation('fusonger-info-p');
           }
         }
       });
@@ -245,7 +250,7 @@ export default {
       this.inithotlist();
     });
     /** 查询分类歌手数据 */
-      this.selectclassificationsonger();
+    this.selectclassificationsonger();
   },
   components: {
     scrollAlphabet,

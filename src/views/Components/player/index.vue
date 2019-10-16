@@ -3,7 +3,12 @@
     <!-- 歌曲信息 -->
     <div class="song-info-songer-info">
       <div class="songer-avatar">
-        <img v-lazy="songinfo.picUrl" :alt="songinfo.name" />
+        <img
+          v-lazy="songinfo.picUrl"
+          :alt="songinfo.name"
+          :class="playstate ? 'img-play' : 'img-pause'"
+          @click="songdetail"
+        />
       </div>
       <div class="song-info">
         <h5 id="songer-name">{{songinfo.name}}</h5>
@@ -19,7 +24,7 @@
       </div>
       <div class="play-pause" :title="playstate ? '暂停' : '播放'">
         <button class="music-play" v-if="playstate" @click="musicpause"></button>
-        <button class="music-pause" v-else @click="musicplayer"></button>
+        <button class="music-pause" v-else @click="player"></button>
         <!-- <img src="../../../images/big_play.png" v-if="playstate" @click="musicpause" /> -->
         <!-- <img src="../../../images/big_pause.png" v-else @click="musicplayer" /> -->
       </div>
@@ -28,7 +33,7 @@
       </div>
     </div>
     <!-- 歌曲歌词 -->
-    <div class="songer-lyrics">
+    <div class="songer-lyrics" v-if="Object.entries(songerlyriclist).lenght === 0 || Object.entries(songerlyriclist).length > 0">
       <scroll ref="scroll" :scrollX="true" :mouseWheel="true">
         <div class="songer-lyrics-ctn">
           <p
@@ -37,6 +42,9 @@
             v-for="(item, key, index) in songerlyriclist"
             :key="index"
           >{{item}}</p>
+        </div>
+        <div class="songer-lyrics-ctn" v-if="songerlyriclist.length === 0">
+          <p>此歌曲是纯音乐，请尽情享受吧！</p>
         </div>
       </scroll>
     </div>
@@ -62,7 +70,10 @@
       <div class="player-play-time">{{songcount}}</div>
     </div>
     <div class="player-operating">
-      <volume @position="position"></volume>
+      <a ref="download" @click="download">
+        <img src="../../../images/download.png" />
+      </a>
+      <volume @position="position" ref="volume" @settingvolume="settingvolume"></volume>
       <img src="../../../images/playlist_cycle.png" v-if="playermode === 0" @click="switchmode(1)" />
       <img
         src="../../../images/player_random.png"
@@ -95,19 +106,19 @@ import {
   Lyric,
   format,
   prefixStyle,
-  playerrandom
+  playerrandom,
+  download
 } from "utils/utils";
 import scroll from "../scroll/index";
 import volume from "../volume/index";
 import playerlist from "../playerlist/index";
-import { clearInterval } from "timers";
 const transform = prefixStyle("transform");
 const progressBtnWidth = 16;
 export default {
   data() {
     return {
       /** 播放器背景色 */
-      backgroundcolor: ["#596B9F", "#3F4F56", "#60ABC3", "#9A525D", "#302C57"],
+      backgroundcolor: ["#596B9F", "#3F4F56", "#9A525D", "#302C57"],
       /** 播放器class名 */
       variablebackground: "play-bgcolor",
       /** 当前歌词文本 */
@@ -165,6 +176,20 @@ export default {
       /** 修改播放器显示状态 */
       setplayerstatus: "SET_PLAYERSTATUS"
     }),
+    /** 下载当前音乐 */
+    download() {
+      if (this.songinfo.musicurl) {
+        download(
+          this.$refs.download,
+          "mp3",
+          this.songinfo.name,
+          this.songinfo.musicurl
+        );
+        this.$Message.success("下载成功！");
+      } else {
+        this.$Message.error("亲爱的,此歌曲暂无版权噢！");
+      }
+    },
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
       this.setplayermode(item);
@@ -282,6 +307,11 @@ export default {
         }
       }
     },
+    /** 跳转到歌曲详情页 */
+    songdetail(){
+      /** 功能暂时没开放 */
+      this.$Message.error('功能暂未开放');
+    },
     /** 初始化播放器背景色 */
     initplayerbackgroundcolor() {
       let count = Math.ceil(Math.random() * this.backgroundcolor.length);
@@ -357,9 +387,9 @@ export default {
               item["songer"] = this.songinfo.songer;
               this.setsonginfo(item);
               /** css动画滚动歌名 */
-              scrollAnimation("#songer-name", 6);
+              scrollAnimation("#songer-name");
               /** css动画滚动歌手 */
-              scrollAnimation("#singer-names", 4);
+              scrollAnimation("#singer-names");
             } else {
               this.$Message.error("亲爱的,此歌曲暂无版权噢！");
               this.activestatus = true;
@@ -377,19 +407,32 @@ export default {
       if (this.songinfo.musicurl && this.songinfo.musicurl !== "") {
         this.setplatstate(true);
         let volumestatus = false;
-        let pause = setTimeout(() => {
-          volumestatus = true;
-        }, 1000);
-        let volume = this.$refs.audio.volume;
-        let pausevolume = setInterval(() => {
-          if (!volumestatus) {
-            volume = volume + 0.1;
-            this.$refs.audio.volume = volume >= 1 ? 1 : volume;
-          }
-        }, 100);
         this.$refs.audio.play();
         this.setsongcount(format(this.$refs.audio.duration));
       }
+    },
+    /** 播放 */
+    player() {
+      this.setplatstate(true);
+      let volumestatus = false;
+      let pause = setTimeout(() => {
+        volumestatus = true;
+      }, 1000);
+      let volume = this.$refs.audio.volume;
+      let pausevolume = setInterval(() => {
+        volume = volume + 0.1;
+        if (!volumestatus && volume <= 1) {
+          this.$refs.audio.volume = volume;
+        } else {
+          this.$refs.audio.volume = 1;
+          this.$refs.audio.volume = 1;
+          clearInterval(pausevolume);
+          /** 同步更新音量组件音量值 */
+          this.$refs.volume.positionX = 100;
+        }
+      }, 100);
+      this.$refs.audio.play();
+      this.setsongcount(format(this.$refs.audio.duration));
     },
     /** 暂停播放歌曲 */
     musicpause() {
@@ -401,24 +444,35 @@ export default {
       }, 1000);
       let volume = this.$refs.audio.volume;
       let pausevolume = setInterval(() => {
-        if (!volumestatus) {
-          volume = volume - 0.1;
-          this.$refs.audio.volume = volume === 0 ? 0 : volume;
+        volume = volume - 0.1;
+        if (!volumestatus && volume > 0) {
+          this.$refs.audio.volume = volume;
+        } else {
+          this.$refs.audio.volume = 0;
+          clearInterval(pausevolume);
+          /** 同步更新音量组件音量值 */
+          this.$refs.volume.positionX = 0;
         }
       }, 100);
+    },
+    /** 初始化音量 */
+    settingvolume(count) {
+      this.$nextTick(() => {
+        this.$refs.audio.volume = count;
+      });
     },
     /** 缓存歌曲信息等 */
     cacheinfo() {
       /** 缓存播放器显示状态 */
-      localStorage.setItem("playerstate", true);
+      localStorage.setItem("playerstate", localStorage.getItem("playerstate") ? localStorage.getItem("playerstate") : true);
       /** 缓存歌曲信息 */
-      localStorage.setItem("songinfo", JSON.stringify(this.songinfo));
+      localStorage.setItem("songinfo", localStorage.getItem("songinfo") ? localStorage.getItem("songinfo") : JSON.stringify(this.songinfo));
       /** 缓存播放状态 */
-      localStorage.setItem("playstate", this.playstate);
+      localStorage.setItem("playstate", localStorage.getItem("playstate") ? localStorage.getItem("playstate") : this.playstate);
       /** 缓存播放模式 */
-      localStorage.setItem("playermode", this.playermode);
+      localStorage.setItem("playermode", localStorage.getItem("playermode") ? localStorage.getItem("playermode") : this.playermode);
       /** 缓存播放器音量 */
-      localStorage.setItem("playervolume", this.playervolume);
+      localStorage.setItem("playervolume", localStorage.getItem("playervolume") ? localStorage.getItem("playervolume") : this.playervolume);
     },
     /** 音频文件准备就绪 */
     audioready() {
@@ -427,14 +481,16 @@ export default {
     /** 当前播放位置 */
     timeupdate(e) {
       if (this.songerlyric) {
-        this.playingLyric = this.songerlyric.getCurPlayLyric(
-          this.$refs.audio.currentTime
-        ).value;
-        this.songertimecurrent = this.songerlyric.getCurPlayLyric(
-          this.$refs.audio.currentTime
-        ).key;
-        this.setsongschedule(format(this.$refs.audio.currentTime));
+        if (this.songerlyric.finalLrcMap) {
+          this.playingLyric = this.songerlyric.getCurPlayLyric(
+            this.$refs.audio.currentTime
+          ).value;
+          this.songertimecurrent = this.songerlyric.getCurPlayLyric(
+            this.$refs.audio.currentTime
+          ).key;
+        }
       }
+      this.setsongschedule(format(this.$refs.audio.currentTime));
       const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth;
       const offsetWidth =
         (e.target.currentTime / this.$refs.audio.duration) * barWidth;
@@ -455,7 +511,10 @@ export default {
     },
     /** 初始化歌词列表 */
     initlyriclist() {
-      this.songerlyriclist = this.songerlyric.finalLrcMap;
+      this.songerlyriclist =
+        this.songerlyric && this.songerlyric.finalLrcMap
+          ? this.songerlyric.finalLrcMap
+          : [];
     },
     /** 手指触摸屏幕时触发 */
     progressTouchStart(e) {
@@ -504,11 +563,13 @@ export default {
       if (news) {
         this.setplayerstatus(true);
       }
+      /** 清空歌词数组 */
+      this.songerlyriclist = [];
       /** 开始播放当前歌曲 */
       this.initplayer();
       /** 获取歌曲歌词 */
       this.singerlyric();
-      /** 储存歌曲信息到缓存 */
+      /** 储存信息到缓存 */
       this.cacheinfo();
     },
     songertimecurrent(news, old) {

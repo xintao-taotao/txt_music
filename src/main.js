@@ -11,18 +11,18 @@ Vue.createAPI(Talert, true);
 /** 自制组件注册 */
 import TXTComponents from '../src/views/Components/Components';
 Vue.use(TXTComponents);
-import { getToken } from 'utils/utils'
+import {
+  getToken
+} from 'utils/utils'
 import store from './views/store/index';
 import VueRouter from 'vue-router';
 import routers from './router.js';
 import axios from 'axios';
 import VueLazyload from 'vue-lazyload'
-Vue.use(VueLazyload
-//   {
-//   error: '',
-//   loading: ''
-// }
-);
+Vue.use(VueLazyload, {
+  error: require('./images/loading.png'),
+  loading: require('./images/loading.png')
+});
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = false;
 Vue.use(VueRouter);

@@ -43,6 +43,7 @@
 .songerlist_ul>li>img {
   max-width: 100%;
   height: 210px;
+  margin: auto;
 }
 
 .songerlist_ul {
@@ -51,7 +52,7 @@
 }
 
 .songerlist_ul>li {
-  display: inline-grid;
+  display: flow-root;
   width: 259px;
   margin-right: 45px;
   cursor: pointer;
@@ -63,7 +64,7 @@
   overflow: hidden;
 }
 
-.songer_div>.scroll{
+.songer_div>.scroll {
   height: 100%;
 }
 
@@ -83,7 +84,7 @@
   height: 200px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  transform: rotate3d(0,0,0,0deg);
+  transform: rotate3d(0, 0, 0, 0deg);
   transition: all .6s;
 }
 
@@ -101,30 +102,38 @@
   height: 68px;
   position: relative;
   z-index: 2;
+  max-width: 100%;
 }
 
-.songer-info>span,.songer-info>p {
+.songer-info>span,
+.songer-info>p {
   flex: 0 1 100%;
 }
 
-.fusonger-info{
+.fusonger-info {
   background: inherit;
   color: #515a6e;
   text-align: center;
 }
 
-.fusonger-info span{
-  flex: inherit;
+.fusonger-info>div>p:nth-child(2) {
+  display: inline-block;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.fusonger-info span {
+  flex: none;
   display: inline-block;
   margin: 0px 6px;
 }
 
-.singer-on-active>img{
+.singer-on-active>img {
   transform: translateY(8px) !important;
   transition: all .6s !important;
 }
 
-.fuheader{
+.fuheader {
   align-items: center;
   margin-top: 46px;
 }
@@ -140,6 +149,11 @@
   font-size: 30px;
 }
 
-.minheight{
+.minheight {
   height: 188px;
+}
+
+.fusonger-info>div{
+  overflow: hidden;
+  width: 100%;
 }
