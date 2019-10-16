@@ -18,8 +18,10 @@
         <img src="../../../images/big_prev.png" @click="prevsongers" />
       </div>
       <div class="play-pause" :title="playstate ? '暂停' : '播放'">
-        <img src="../../../images/big_play.png" v-if="playstate" @click="musicpause" />
-        <img src="../../../images/big_pause.png" v-else @click="musicplayer" />
+        <button class="music-play" v-if="playstate" @click="musicpause"></button>
+        <button class="music-pause" v-else @click="musicplayer"></button>
+        <!-- <img src="../../../images/big_play.png" v-if="playstate" @click="musicpause" /> -->
+        <!-- <img src="../../../images/big_pause.png" v-else @click="musicplayer" /> -->
       </div>
       <div class="player-next" title="下一首">
         <img src="../../../images/big_next.png" @click="songswitch" />
@@ -380,12 +382,9 @@ export default {
         }, 1000);
         let volume = this.$refs.audio.volume;
         let pausevolume = setInterval(() => {
-          if (volumestatus) {
-            clearTimeout(pause);
-            clearInterval(pausevolume);
-          } else {
+          if (!volumestatus) {
             volume = volume + 0.1;
-            this.$refs.audio.volume = volume >= volume === 1 ? 1 : volume;
+            this.$refs.audio.volume = volume >= 1 ? 1 : volume;
           }
         }, 100);
         this.$refs.audio.play();
@@ -402,10 +401,7 @@ export default {
       }, 1000);
       let volume = this.$refs.audio.volume;
       let pausevolume = setInterval(() => {
-        if (volumestatus) {
-          clearTimeout(pause);
-          clearInterval(pausevolume);
-        } else {
+        if (!volumestatus) {
           volume = volume - 0.1;
           this.$refs.audio.volume = volume === 0 ? 0 : volume;
         }

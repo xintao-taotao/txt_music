@@ -48,7 +48,7 @@
         <scroll-songertype @dataemit="dataemit"></scroll-songertype>
       </div>
       <div class="songer_div" :class="playerstatus ? 'minheight' : null">
-        <scroll :mouseWheel="true">
+        <scroll :mouseWheel="true" ref="songerdiv">
           <ul class="songerlist_ul">
             <li v-for="(item,index) in songerlist" :key="index" @click="selectsonger(item)">
               <img v-lazy="item.picUrl" />
@@ -143,6 +143,7 @@ export default {
           let data = res.data.artists;
           if (data.length > 0) {
             this.songerlist = [];
+            this.$refs.songerdiv.scrollTo(0,0);
             data.forEach(item => {
               this.songerlist.push({
                 accountId: item.accountId,
