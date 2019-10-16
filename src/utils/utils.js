@@ -345,11 +345,11 @@ export const playerrandom = (arr) => {
 /** 下载文件 */
 export const download = (dom, type, name, url) => {
   fetch(url).then(res => res.blob()).then(blob => {
-    // 使用获取到的blob对象创建的url
-    const url = window.URL.createObjectURL(blob);
-    dom.href = url;
-    // 指定下载的文件名
-    dom.download = `${name}.${type === 'mp4' ? 'mp4' : 'mp3'}`;
-    dom.click();
+      // 使用获取到的blob对象创建的url
+      const url = window.URL.createObjectURL(blob);
+      dom.href = url;
+      // 指定下载的文件名
+      dom.download = `${name}.${type === 'mp4' ? 'mp4' : 'mp3'}`;
+      return;
   });
 }

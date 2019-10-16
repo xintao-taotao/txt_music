@@ -33,7 +33,10 @@
       </div>
     </div>
     <!-- 歌曲歌词 -->
-    <div class="songer-lyrics" v-if="Object.entries(songerlyriclist).lenght === 0 || Object.entries(songerlyriclist).length > 0">
+    <div
+      class="songer-lyrics"
+      v-if="Object.entries(songerlyriclist).lenght === 0 || Object.entries(songerlyriclist).length > 0"
+    >
       <scroll ref="scroll" :scrollX="true" :mouseWheel="true">
         <div class="songer-lyrics-ctn">
           <p
@@ -70,7 +73,7 @@
       <div class="player-play-time">{{songcount}}</div>
     </div>
     <div class="player-operating">
-      <a ref="download" @click="download">
+      <a ref="download" @click="downloadsuccess">
         <img src="../../../images/download.png" />
       </a>
       <volume @position="position" ref="volume" @settingvolume="settingvolume"></volume>
@@ -176,20 +179,6 @@ export default {
       /** 修改播放器显示状态 */
       setplayerstatus: "SET_PLAYERSTATUS"
     }),
-    /** 下载当前音乐 */
-    download() {
-      if (this.songinfo.musicurl) {
-        download(
-          this.$refs.download,
-          "mp3",
-          this.songinfo.name,
-          this.songinfo.musicurl
-        );
-        this.$Message.success("下载成功！");
-      } else {
-        this.$Message.error("亲爱的,此歌曲暂无版权噢！");
-      }
-    },
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
       this.setplayermode(item);
@@ -308,9 +297,9 @@ export default {
       }
     },
     /** 跳转到歌曲详情页 */
-    songdetail(){
+    songdetail() {
       /** 功能暂时没开放 */
-      this.$Message.error('功能暂未开放');
+      this.$Message.error("功能暂未开放");
     },
     /** 初始化播放器背景色 */
     initplayerbackgroundcolor() {
@@ -409,6 +398,8 @@ export default {
         let volumestatus = false;
         this.$refs.audio.play();
         this.setsongcount(format(this.$refs.audio.duration));
+        /** 初始化下载 */
+        this.download();
       }
     },
     /** 播放 */
@@ -433,6 +424,10 @@ export default {
       }, 100);
       this.$refs.audio.play();
       this.setsongcount(format(this.$refs.audio.duration));
+    },
+    /** 下载成功提示 */
+    downloadsuccess(){
+      this.$Message.success('下载成功！');
     },
     /** 暂停播放歌曲 */
     musicpause() {
@@ -464,15 +459,40 @@ export default {
     /** 缓存歌曲信息等 */
     cacheinfo() {
       /** 缓存播放器显示状态 */
-      localStorage.setItem("playerstate", localStorage.getItem("playerstate") ? localStorage.getItem("playerstate") : true);
+      localStorage.setItem(
+        "playerstate",
+        localStorage.getItem("playerstate")
+          ? localStorage.getItem("playerstate")
+          : true
+      );
       /** 缓存歌曲信息 */
-      localStorage.setItem("songinfo", localStorage.getItem("songinfo") ? localStorage.getItem("songinfo") : JSON.stringify(this.songinfo));
+      localStorage.setItem(
+        "songinfo",
+        localStorage.getItem("songinfo")
+          ? localStorage.getItem("songinfo")
+          : JSON.stringify(this.songinfo)
+      );
       /** 缓存播放状态 */
-      localStorage.setItem("playstate", localStorage.getItem("playstate") ? localStorage.getItem("playstate") : this.playstate);
+      localStorage.setItem(
+        "playstate",
+        localStorage.getItem("playstate")
+          ? localStorage.getItem("playstate")
+          : this.playstate
+      );
       /** 缓存播放模式 */
-      localStorage.setItem("playermode", localStorage.getItem("playermode") ? localStorage.getItem("playermode") : this.playermode);
+      localStorage.setItem(
+        "playermode",
+        localStorage.getItem("playermode")
+          ? localStorage.getItem("playermode")
+          : this.playermode
+      );
       /** 缓存播放器音量 */
-      localStorage.setItem("playervolume", localStorage.getItem("playervolume") ? localStorage.getItem("playervolume") : this.playervolume);
+      localStorage.setItem(
+        "playervolume",
+        localStorage.getItem("playervolume")
+          ? localStorage.getItem("playervolume")
+          : this.playervolume
+      );
     },
     /** 音频文件准备就绪 */
     audioready() {
@@ -544,6 +564,17 @@ export default {
       );
       this.$refs.audio.currentTime =
         this.$refs.audio.duration * this._getPercent();
+    },
+    /** 初始化下载当前音乐 */
+    download() {
+      if (this.songinfo.musicurl) {
+        download(
+          this.$refs.download,
+          "mp3",
+          this.songinfo.name,
+          this.songinfo.musicurl
+        );
+      }
     }
   },
   created() {
