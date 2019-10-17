@@ -57,6 +57,7 @@
       <div class="progress-bar-wrapper">
         <div class="progress-bar" ref="progressBar" @click="progressClick">
           <div class="bar-inner">
+            <div class="progress-buffered" :style="{width: playerbuffered}"></div>
             <div class="progress" ref="progress"></div>
             <div
               class="progress-btn-wrapper"
@@ -137,7 +138,9 @@ export default {
       /** 列表循环播放列表 */
       songernormallist: [],
       /** 当前歌曲是否可以播放(配合记录上一首歌) */
-      activestatus: false
+      activestatus: false,
+      /** 缓冲条宽度 */
+      playerbuffered: ""
     };
   },
   components: {
@@ -182,6 +185,7 @@ export default {
     /** 用户手动切换模式点击事件 */
     switchmode(item) {
       this.setplayermode(item);
+      this.cacheplayermode(item);
       if (item === 0) {
         this.setplayerlist(this.songernormallist);
       } else if (item === 1) {
@@ -200,6 +204,7 @@ export default {
       this.$refs.audio.volume = count;
       /** 修改当前播放器音量 */
       this.setplayervolume(count);
+      this.cacheplayervolume(count);
       /** 缓存播放器音量 */
       localStorage.setItem("playervolume", this.playervolume);
     },
@@ -225,6 +230,7 @@ export default {
             item["picUrl"] = data.al.picUrl;
             item["songer"] = data.ar;
             this.setsonginfo(item);
+            this.cachesonginfo(item);
           }
         });
       } else {
@@ -258,6 +264,7 @@ export default {
           });
           data["musicurl"] = "";
           this.setsonginfo(data);
+          this.cachesonginfo(data);
           /** 如果id存在，则已经点播过一首歌，则push上一首歌的id给变量 */
           if (this.currentsongId && !this.activestatus) {
             this.prevsongerlist.push(this.currentsongId);
@@ -284,6 +291,7 @@ export default {
           });
           data["musicurl"] = "";
           this.setsonginfo(data);
+          this.cachesonginfo(data);
           /** 如果id存在，则已经点播过一首歌，则赋值上一首歌的id给变量 */
           if (this.currentsongId && !this.activestatus) {
             this.prevsongerlist.push(this.currentsongId);
@@ -375,6 +383,7 @@ export default {
               item["picUrl"] = this.songinfo.picUrl;
               item["songer"] = this.songinfo.songer;
               this.setsonginfo(item);
+              this.cachesonginfo(item);
               /** css动画滚动歌名 */
               scrollAnimation("#songer-name");
               /** css动画滚动歌手 */
@@ -395,6 +404,7 @@ export default {
     musicplayer() {
       if (this.songinfo.musicurl && this.songinfo.musicurl !== "") {
         this.setplatstate(true);
+        this.cacheplaystate(true);
         let volumestatus = false;
         this.$refs.audio.play();
         this.setsongcount(format(this.$refs.audio.duration));
@@ -405,50 +415,18 @@ export default {
     /** 播放 */
     player() {
       this.setplatstate(true);
-      let volumestatus = false;
-      let pause = setTimeout(() => {
-        volumestatus = true;
-      }, 1000);
-      let volume = this.$refs.audio.volume;
-      let pausevolume = setInterval(() => {
-        volume = volume + 0.1;
-        if (!volumestatus && volume <= 1) {
-          this.$refs.audio.volume = volume;
-        } else {
-          this.$refs.audio.volume = 1;
-          this.$refs.audio.volume = 1;
-          clearInterval(pausevolume);
-          /** 同步更新音量组件音量值 */
-          this.$refs.volume.positionX = 100;
-        }
-      }, 100);
+      this.cacheplaystate(true);
       this.$refs.audio.play();
-      this.setsongcount(format(this.$refs.audio.duration));
     },
     /** 下载成功提示 */
-    downloadsuccess(){
-      this.$Message.success('下载成功！');
+    downloadsuccess() {
+      this.$Message.success("下载成功！");
     },
     /** 暂停播放歌曲 */
     musicpause() {
       this.setplatstate(false);
-      let volumestatus = false;
-      let pause = setTimeout(() => {
-        this.$refs.audio.pause();
-        volumestatus = true;
-      }, 1000);
-      let volume = this.$refs.audio.volume;
-      let pausevolume = setInterval(() => {
-        volume = volume - 0.1;
-        if (!volumestatus && volume > 0) {
-          this.$refs.audio.volume = volume;
-        } else {
-          this.$refs.audio.volume = 0;
-          clearInterval(pausevolume);
-          /** 同步更新音量组件音量值 */
-          this.$refs.volume.positionX = 0;
-        }
-      }, 100);
+      this.cacheplaystate(false);
+      this.$refs.audio.pause();
     },
     /** 初始化音量 */
     settingvolume(count) {
@@ -459,47 +437,100 @@ export default {
     /** 缓存歌曲信息等 */
     cacheinfo() {
       /** 缓存播放器显示状态 */
+      this.cacheplayerstate();
+      /** 缓存歌曲信息 */
+      this.cachesonginfo();
+      /** 缓存播放状态 */
+      this.cacheplaystate();
+      /** 缓存播放模式 */
+      this.cacheplayermode();
+      /** 缓存播放器音量 */
+      this.cacheplayervolume();
+      /** 缓存当前歌曲id */
+      this.cachesongerid();
+    },
+    /** 缓存播放器显示状态 */
+    cacheplayerstate(item) {
       localStorage.setItem(
         "playerstate",
-        localStorage.getItem("playerstate")
+        item != undefined
+          ? item
+          : localStorage.getItem("playerstate")
           ? localStorage.getItem("playerstate")
           : true
       );
-      /** 缓存歌曲信息 */
+    },
+    /** 缓存歌曲信息 */
+    cachesonginfo(item) {
       localStorage.setItem(
         "songinfo",
-        localStorage.getItem("songinfo")
+        item
+          ? JSON.stringify(item)
+          : localStorage.getItem("songinfo")
           ? localStorage.getItem("songinfo")
           : JSON.stringify(this.songinfo)
       );
-      /** 缓存播放状态 */
+    },
+    /** 缓存播放状态 */
+    cacheplaystate(item) {
       localStorage.setItem(
         "playstate",
-        localStorage.getItem("playstate")
+        item != undefined
+          ? item
+          : localStorage.getItem("playstate")
           ? localStorage.getItem("playstate")
           : this.playstate
       );
-      /** 缓存播放模式 */
+    },
+    /** 缓存播放模式 */
+    cacheplayermode(item) {
       localStorage.setItem(
         "playermode",
-        localStorage.getItem("playermode")
+        item != undefined
+          ? item
+          : localStorage.getItem("playermode")
           ? localStorage.getItem("playermode")
           : this.playermode
       );
-      /** 缓存播放器音量 */
+    },
+    /** 缓存播放器音量 */
+    cacheplayervolume(item) {
       localStorage.setItem(
         "playervolume",
-        localStorage.getItem("playervolume")
+        item != undefined
+          ? item
+          : localStorage.getItem("playervolume")
           ? localStorage.getItem("playervolume")
           : this.playervolume
+      );
+    },
+    /** 缓存当前歌曲id */
+    cachesongerid(item) {
+      localStorage.setItem(
+        "songid",
+        item
+          ? item
+          : localStorage.getItem("songid")
+          ? localStorage.getItem("songid")
+          : this.currentsongId
       );
     },
     /** 音频文件准备就绪 */
     audioready() {
       this.musicplayer();
     },
+    /** 缓冲条进度 */
+    initbuffer() {
+      this.playerbuffered =
+        (this.$refs.audio.buffered.end(this.$refs.audio.buffered.length - 1) /
+          this.$refs.audio.duration) *
+          100 +
+        "%";
+    },
     /** 当前播放位置 */
     timeupdate(e) {
+      /** 缓冲条进度 */
+      this.initbuffer();
       if (this.songerlyric) {
         if (this.songerlyric.finalLrcMap) {
           this.playingLyric = this.songerlyric.getCurPlayLyric(

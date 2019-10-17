@@ -69,7 +69,12 @@
         <div class="singer-div-list">
           <scroll :mouseWheel="true">
             <ul class="singermvul" ref="singermvul">
-              <li v-for="(item,index) in singermvlist" :key="index" ref="singermvli" @click="watchmv(item)">
+              <li
+                v-for="(item,index) in singermvlist"
+                :key="index"
+                ref="singermvli"
+                @click="watchmv(item)"
+              >
                 <img v-lazy="item.imgurl" @load="initsingermvheight" />
                 <font>{{item.name}}</font>
               </li>
@@ -137,7 +142,7 @@ export default {
       });
     },
     /** 查看mv */
-    watchmv(item){
+    watchmv(item) {
       goPageByPath("/mv-details", { mv: item.id });
     },
     /** 获取歌曲准备播放 */
@@ -169,6 +174,7 @@ export default {
     /** 处理播放按钮事件 */
     playerall() {
       this.setplayermode(0);
+      localStorage.setItem("playermode", 0);
       /** 深拷贝当前歌曲列表--开始 */
       let date = [];
       for (let i = 0; i < this.singerlist.length; i++) {
@@ -206,6 +212,7 @@ export default {
       }
       /** 深拷贝当前歌曲列表--结束 */
       this.setplayermode(1);
+      localStorage.setItem("playermode", 0);
       this.setplayerlist(playerrandom(date));
       /** 传入当前播放列表的长度 */
       this.setcurrentsongId(this.playerlist[0].id);
