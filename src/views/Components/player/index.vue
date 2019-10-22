@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :class="variablebackground" v-if="playerstatus">
+  <div class="player" :class="variablebackground" v-show="playerstatus">
     <!-- 歌曲信息 -->
     <div class="song-info-songer-info">
       <div class="songer-avatar">
@@ -33,10 +33,7 @@
       </div>
     </div>
     <!-- 歌曲歌词 -->
-    <div
-      class="songer-lyrics"
-      v-if="Object.entries(songerlyriclist).lenght === 0 || Object.entries(songerlyriclist).length > 0"
-    >
+    <div class="songer-lyrics">
       <scroll ref="scroll" :scrollX="true" :mouseWheel="true">
         <div class="songer-lyrics-ctn">
           <p
@@ -110,11 +107,13 @@ import {
   format,
   prefixStyle,
   playerrandom,
-  download
+  download,
+  initscrollAnimation
 } from "utils/utils";
 import scroll from "../scroll/index";
 import volume from "../volume/index";
 import playerlist from "../playerlist/index";
+import bus from "utils/bus";
 const transform = prefixStyle("transform");
 const progressBtnWidth = 16;
 export default {
@@ -144,6 +143,11 @@ export default {
     scroll,
     volume,
     playerlist
+  },
+  mounted() {
+    bus.$on("initcurrent", data => {
+      this.$refs.audio.currentTime = data;
+    });
   },
   computed: {
     ...mapGetters([
@@ -426,8 +430,8 @@ export default {
       this.setsongcount(format(this.$refs.audio.duration));
     },
     /** 下载成功提示 */
-    downloadsuccess(){
-      this.$Message.success('下载成功！');
+    downloadsuccess() {
+      this.$Message.success("下载成功！");
     },
     /** 暂停播放歌曲 */
     musicpause() {
@@ -523,7 +527,9 @@ export default {
       singerlyric(this.currentsongId).then(res => {
         if (res.data.code === 200) {
           let data = res.data;
-          this.songerlyric = new Lyric(data);
+          if (data && data["lrc"]) {
+            this.songerlyric = new Lyric(data);
+          }
           /** 初始化歌词列表 */
           this.initlyriclist();
         }
@@ -575,6 +581,11 @@ export default {
           this.songinfo.musicurl
         );
       }
+    },
+    /** 初始化歌曲名字和歌手滚动 */
+    initscrollAnimation() {
+      initscrollAnimation("#songer-name");
+      initscrollAnimation("#singer-names");
     }
   },
   created() {
@@ -594,8 +605,12 @@ export default {
       if (news) {
         this.setplayerstatus(true);
       }
+      /** 初始化歌曲名字和歌手滚动 */
+      this.initscrollAnimation();
       /** 清空歌词数组 */
       this.songerlyriclist = [];
+      /** 清空歌词对象 */
+      this.songerlyric = null;
       /** 开始播放当前歌曲 */
       this.initplayer();
       /** 获取歌曲歌词 */
