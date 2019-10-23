@@ -345,11 +345,70 @@ export const playerrandom = (arr) => {
 /** 下载文件 */
 export const download = (dom, type, name, url) => {
   fetch(url).then(res => res.blob()).then(blob => {
-      // 使用获取到的blob对象创建的url
-      const url = window.URL.createObjectURL(blob);
-      dom.href = url;
-      // 指定下载的文件名
-      dom.download = `${name}.${type === 'mp4' ? 'mp4' : 'mp3'}`;
-      return;
+    // 使用获取到的blob对象创建的url
+    const url = window.URL.createObjectURL(blob);
+    dom.href = url;
+    // 指定下载的文件名
+    dom.download = `${name}.${type === 'mp4' ? 'mp4' : 'mp3'}`;
+    return;
   });
+}
+
+/** 初始化css滚动组件 */
+export const initscrollAnimation = (classname, timeout = 1000) => {
+  setTimeout(() => {
+    if (classname) {
+      let div;
+      if (classname.indexOf("#") !== -1) {
+        div = document.getElementById(classname.replace('#', ''));
+      } else {
+        div = document.getElementsByClassName(classname.replace('.', ''));
+      }
+      if ((div && div.length === 1) || div && div.clientWidth) {
+        let divdom = div[0] ? div[0] : div;
+        divdom.style.marginLeft = '0px';
+        getComputedStyle(divdom).length;
+        divdom.style.transition = `all 1s`;
+        divdom.style.transitionTimingFunction = 'ease-in';
+      } else if (div && div.length >= 2) {
+        for (let i = 0; i < div.length; i++) {
+          div[i].style.marginLeft = '0px';
+          getComputedStyle(div[i]).length;
+          div[i].style.transition = `all 1s`;
+          div[i].style.transitionTimingFunction = 'ease-in';
+        }
+      }
+    }
+  }, timeout)
+}
+
+/** 毫秒转换成年月日时分秒 */
+export const timeconversionymdhms = (time) => {
+  let t = new Date(time);
+  let tf = function (i) {
+    return (i < 10 ? '0' : '') + i
+  };
+  let formats = 'yyyy-MM-dd HH:mm:ss';
+  return formats.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+    switch (a) {
+      case 'yyyy':
+        return tf(t.getFullYear());
+        break;
+      case 'MM':
+        return tf(t.getMonth() + 1);
+        break;
+      case 'mm':
+        return tf(t.getMinutes());
+        break;
+      case 'dd':
+        return tf(t.getDate());
+        break;
+      case 'HH':
+        return tf(t.getHours());
+        break;
+      case 'ss':
+        return tf(t.getSeconds());
+        break;
+    }
+  })
 }

@@ -7,6 +7,7 @@
         @timeupdate="timeupdate"
         ref="video"
         controls="controls"
+        :autoplay="this.canplaystatus"
       ></video>
       <div :style="{width: videobuffered}"></div>
     </div>

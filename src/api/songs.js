@@ -107,3 +107,21 @@ export const songerdetails = (id) => {
     dataType: 'json'
   })
 }
+
+/** 获取排行榜(根据条件) */
+export const leaderboard = (idx) => {
+  return axios.request({
+    url: `/top/list?idx=${idx}`,
+    method: 'get',
+    dataType: 'json'
+  })
+}
+
+/** 获取全部排行榜 */
+export const allleaderboard = () => {
+  return axios.request({
+    url: '/toplist',
+    method: 'get',
+    dataType: 'json'
+  })
+}

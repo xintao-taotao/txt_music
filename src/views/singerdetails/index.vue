@@ -96,6 +96,7 @@ import {
 import scroll from "../Components/scroll";
 import { timeconversion, goPageByPath, playerrandom } from "utils/utils";
 import { mapMutations, mapGetters } from "vuex";
+import bus from "utils/bus";
 export default {
   data() {
     return {
@@ -147,28 +148,32 @@ export default {
     },
     /** 获取歌曲准备播放 */
     player(item) {
-      /** 深拷贝当前歌曲列表--开始 */
-      let date = [];
-      for (let i = 0; i < this.singerlist.length; i++) {
-        date.push(this.singerlist[i]);
-      }
-      /** 深拷贝当前歌曲列表--结束 */
-      this.setplayerlist(date);
-      let data = {};
-      data["flag"] = item.flag;
-      data["name"] = item.name;
-      data["picUrl"] = item.picUrl;
-      data["musicurl"] = "";
-      let songer = [];
-      if (item.ar && item.ar.length && item.ar.length > 0) {
-        item.ar.forEach((items, index) => {
-          songer.push(items);
-        });
-      }
-      data["songer"] = songer;
-      this.setsonginfo(data);
-      if (item.id !== this.currentsongId) {
-        this.setcurrentsongId(item.id);
+      if (item.id === this.currentsongId) {
+        bus.$emit("initcurrent", 0);
+      } else {
+        /** 深拷贝当前歌曲列表--开始 */
+        let date = [];
+        for (let i = 0; i < this.singerlist.length; i++) {
+          date.push(this.singerlist[i]);
+        }
+        /** 深拷贝当前歌曲列表--结束 */
+        this.setplayerlist(date);
+        let data = {};
+        data["flag"] = item.flag;
+        data["name"] = item.name;
+        data["picUrl"] = item.picUrl;
+        data["musicurl"] = "";
+        let songer = [];
+        if (item.ar && item.ar.length && item.ar.length > 0) {
+          item.ar.forEach((items, index) => {
+            songer.push(items);
+          });
+        }
+        data["songer"] = songer;
+        this.setsonginfo(data);
+        if (item.id !== this.currentsongId) {
+          this.setcurrentsongId(item.id);
+        }
       }
     },
     /** 处理播放按钮事件 */
