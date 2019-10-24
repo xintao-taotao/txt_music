@@ -70,9 +70,6 @@ class HttpRequest {
         case 501:
           _this.$Message.error('请求还没有被实现！');
           break;
-        case 502:
-          _this.$Message.error('网络错误！');
-          break;
         case 509:
           _this.$Message.error('密码错误超过限制');
           break;

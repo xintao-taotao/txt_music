@@ -108,8 +108,7 @@ export default {
           ? localStorage.getItem("playervolume")
           : 1;
         diressheight = diressheight * 100;
-        let count = (diressheight / height) * 100;
-        this.$refs.volumecircular.style.top = count + "px";
+        this.$refs.volumecircular.style.top = diressheight + "px";
       });
     }
   },
@@ -120,7 +119,7 @@ export default {
     let volume = localStorage.getItem("playervolume")
       ? localStorage.getItem("playervolume")
       : 1;
-    this.positionX = volume * 100;
+    this.positionX = parseInt(volume * 100);
     this.$emit("settingvolume", volume);
   }
 };

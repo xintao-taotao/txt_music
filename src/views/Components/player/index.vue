@@ -514,8 +514,6 @@ export default {
         "songid",
         item
           ? item
-          : localStorage.getItem("songid")
-          ? localStorage.getItem("songid")
           : this.currentsongId
       );
     },

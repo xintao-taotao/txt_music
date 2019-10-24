@@ -111,7 +111,7 @@ export const timeconversion = (time) => {
 }
 
 /** css滚动组件 */
-export const scrollAnimation = (classname, time = 12, timeout = 1000) => {
+export const scrollAnimation = (classname, time = 8, timeout = 1000) => {
   setTimeout(() => {
     if (classname && time) {
       let div;

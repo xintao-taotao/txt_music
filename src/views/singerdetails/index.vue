@@ -259,7 +259,11 @@ export default {
           let width = 0;
           if (songerli && songerli.length > 0) {
             songerli.forEach((item, index) => {
-              width = width + item.offsetWidth + 70;
+              if (index !== songerli.length - 1) {
+                width = width + item.offsetWidth + 70;
+              } else {
+                width = width + item.offsetWidth;
+              }
             });
           }
           this.$refs.album.style.width = width + "px";

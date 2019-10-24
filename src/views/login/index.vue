@@ -283,6 +283,10 @@ export default {
             setToken(binding);
             this.$Message.success("登录成功！");
             goPageByPath("/");
+          } else {
+            console.log(res);
+            this.$Message.error();
+            return;
           }
         });
       } else {
@@ -356,16 +360,16 @@ export default {
           captcha: this.userpcode,
           password: this.retrieveuserpwd
         }).then(res => {
-          if(res.data.code === 200){
-            this.$Message.success('修改密码成功！');
+          if (res.data.code === 200) {
+            this.$Message.success("修改密码成功！");
             this.userloginphone = this.userphone;
             this.registered = false;
             this.forget = false;
             this.loginstatus = true;
-            this.userphone = '';
-            this.userpcode = '';
-            this.retrieveuserpwd = '';
-            this.isretrieveuserpwd = '';
+            this.userphone = "";
+            this.userpcode = "";
+            this.retrieveuserpwd = "";
+            this.isretrieveuserpwd = "";
           }
         });
       }
@@ -382,6 +386,9 @@ export default {
               setToken(binding);
               this.$Message.success("登录成功！");
               goPageByPath("/");
+            } else {
+              this.$Message.error(res.data.message);
+              return;
             }
           });
         }
