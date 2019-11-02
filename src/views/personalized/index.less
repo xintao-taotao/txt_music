@@ -200,7 +200,134 @@
   box-sizing: border-box;
 }
 
-.personalized-ctn{
+.personalized-ctn {
   overflow: hidden;
+  height: calc(100% - 164px - 20px);
+  margin-top: 20px;
+}
+
+.presonalized-header {
+  display: flex;
+  height: 164px;
+}
+
+.presonalized-left {
+  flex: 0 1 14%;
+  margin-right: 4%;
+}
+
+.presonalized-left>img {
+  width: 100%;
+  display: block;
+  margin: auto;
   height: 100%;
+}
+
+.presonalized-right {
+  flex: 0 1 82%;
+}
+
+.presonalized-right>h5 {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.presonalized-right>p {
+  font-size: 14px;
+}
+
+.operation-collection,
+.operation-shareIt,
+.operation-comment {
+  background: #737afd;
+  display: inline-block;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #6e6d6d;
+}
+
+.operation-list {
+  margin: 8px 0px;
+}
+
+.operation-list>div {
+  margin: 0px 6px;
+}
+
+.operation-list>div:last-child {
+  margin-right: 0px;
+}
+
+.operation-list>div:first-child {
+  margin-left: 0px;
+}
+
+.operation-collection-content,
+.operation-shareIt-content,
+.operation-comment-content {
+  display: flex;
+  cursor: pointer;
+}
+
+.operation-collection-content>img,
+.operation-shareIt-content>img,
+.operation-comment-content>img {
+  margin-right: 6px;
+}
+
+.personalized-img {
+  width: 100px;
+}
+
+.personalized-img>img {
+  width: 60px;
+  border-radius: 8px;
+}
+
+.personalized-ctn>ul>li {
+  display: flex;
+  align-items: center;
+  line-height: 84px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #8b8b8b;
+  padding: 0px 20px;
+}
+
+.personalized-ctn>ul>li:last-child {
+  border-bottom: 0px;
+}
+
+.personalized-index {
+  flex: 0 1 40px;
+}
+
+.personalized-name {
+  width: 33%;
+  height: 84px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personalized-songDuration {
+  padding: 0px 16px;
+}
+
+.personalized-songer {
+  width: 28%;
+  height: 84px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personalized-operation{
+  flex: auto;
+  padding-left: 20px;
+  display: flex;
+}
+
+.personalized-operation>i{
+  display: inline-block;
+  margin: 0px 4px;
 }

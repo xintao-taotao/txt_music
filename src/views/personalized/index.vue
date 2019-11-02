@@ -20,16 +20,75 @@
     <div class="personalized-ctn-div">
       <div class="presonalized-header">
         <div class="presonalized-left">
-          <img v-lazy="leaderboarddata.coverImgUrl">
+          <img v-lazy="leaderboarddata.coverImgUrl" />
         </div>
         <div class="presonalized-right">
-          {{leaderboarddata.name}}
-          {{leaderboarddata.updateTime}}
+          <h5>{{leaderboarddata.name}}</h5>
+          <p>更新时间：{{leaderboarddata.updateTime}}</p>
+          <div class="operation-list">
+            <!-- 收藏按钮--开始 -->
+            <div
+              class="operation-collection"
+              :class="this.leaderboarddata.subscribed ? 'subscribed' : 'noSubscribed'"
+              :title="this.leaderboarddata.subscribed ? '取消收藏' : `收藏${this.leaderboarddata.name}`"
+            >
+              <div class="operation-collection-content">
+                <img src="../../images/icon-subscribed.png" v-if="this.leaderboarddata.subscribed" />
+                <img src="../../images/icon-noSubscribed.png" v-else />
+                {{leaderboarddata.subscribedCount}}
+              </div>
+            </div>
+            <!-- 收藏按钮--结束 -->
+            <!-- 分享按钮--开始 -->
+            <div class="operation-shareIt" title="分享">
+              <div class="operation-shareIt-content">
+                <img src="../../images/icon-shareIt.png" />
+                {{leaderboarddata.shareCount}}
+              </div>
+            </div>
+            <!-- 分享按钮--结束 -->
+            <!-- 评论按钮--开始 -->
+            <div class="operation-comment" title="发表评论">
+              <div class="operation-comment-content">
+                <img src="../../images/icon-comment.png" />
+                {{leaderboarddata.commentCount}}
+              </div>
+            </div>
+            <!-- 评论按钮--结束 -->
+          </div>
+          <p>{{leaderboarddata.description}}</p>
         </div>
       </div>
       <scroll ref="scroll" :mouseWheel="true" class="personalized-ctn">
-        <ul>
-          <li v-for="(item,$index) in leaderboarddata" :key="$index">{{item}}</li>
+        <ul ref="personalizedul">
+          <li v-for="(item,$index) in leaderboarddata.tracks" :key="$index" ref="personalized">
+            <div class="personalized-index">{{$index + 1}}.</div>
+            <div class="personalized-img">
+              <img v-lazy="item.al.picUrl" @load="initheight" />
+            </div>
+            <div class="personalized-name">{{item.name}}</div>
+            <div class="personalized-songDuration">{{songtimeconversion(item.dt)}}</div>
+            <div class="personalized-songer" v-html="songer(item.ar)"></div>
+            <div class="personalized-operation">
+              <i class="personalized-operation-subscribed" :title="`收藏${item.name}`">
+                <img src="../../images/icon-subscribedBig.png" />
+              </i>
+              <i class="personalized-operation-shareIt" title="分享">
+                <img src="../../images/icon-shareItBig.png" />
+              </i>
+              <i class="personalized-operation-download">
+                <a ref="download" :title="`下载${item.name}`">
+                  <img src="../../images/icon-downloadSmall.png" />
+                </a>
+              </i>
+              <i class="personalized-operation-like">
+                <img src="../../images/icon-small_link.png" />
+              </i>
+              <i class="personalized-operation-mv" v-if="item.mv" :title="`观看${item.name}mv`">
+                <img src="../../images/icon-mvBig.png" />
+              </i>
+            </div>
+          </li>
         </ul>
       </scroll>
     </div>
@@ -37,7 +96,11 @@
 </template>
 
 <script>
-import { goPageByPath, timeconversionymdhms } from "utils/utils";
+import {
+  goPageByPath,
+  timeconversionymdhms,
+  scrollAnimation
+} from "utils/utils";
 import { mapMutations, mapGetters } from "vuex";
 import scroll from "../Components/scroll/index";
 import { leaderboard, allleaderboard } from "api/songs";
@@ -71,6 +134,32 @@ export default {
       /** 修改当前播放器播放模式 */
       setplayermode: "SET_PLAYERMODE"
     }),
+    /** 处理歌曲时长 */
+    songtimeconversion(count) {
+      let minutes = parseInt((count % (1000 * 60 * 60)) / (1000 * 60));
+      let seconds = (count % (1000 * 60)) / 1000;
+      seconds = ~~seconds;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      let data = minutes + ":" + seconds;
+      return data;
+    },
+    /** 处理歌手 */
+    songer(data) {
+      if (data.length > 1) {
+        let songerdata = "";
+        data.forEach((item, index) => {
+          if (index > 0) {
+            songerdata = songerdata + "&nbsp;&nbsp;&nbsp;&nbsp;" + item.name;
+          } else {
+            songerdata = songerdata + item.name;
+          }
+        });
+        return songerdata;
+      } else {
+        return data[0].name;
+      }
+    },
     /** 用户手动触发条件回调 */
     dataemit(data) {
       this.personalizedcondition =
@@ -80,6 +169,10 @@ export default {
           ? "云音乐新歌榜"
           : data.label;
       this.initdata();
+    },
+    /** 图片加载完成之后重新计算滚动高度 */
+    initheight() {
+      this.$refs.scroll.refresh();
     },
     /** 返回页面 */
     back() {
@@ -149,7 +242,6 @@ export default {
       leaderboard(this.personalizedcondition).then(res => {
         if (res.data.code === 200) {
           let data = res.data.playlist;
-          console.log(data);
           let updateTime = data.updateTime;
           updateTime = timeconversionymdhms(updateTime);
           this.leaderboarddata = data;
