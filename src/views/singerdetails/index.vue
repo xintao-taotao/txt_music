@@ -286,7 +286,7 @@ export default {
                 name: item.name,
                 ar: item.ar,
                 id: item.id,
-                flag: timeconversion(item.privilege.flag),
+                flag: timeconversion(item.dt),
                 picUrl: item.al.picUrl
               });
             });

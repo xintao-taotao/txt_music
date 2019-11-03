@@ -89,25 +89,13 @@ export const toJson = (str) => {
 
 /** 将歌曲时间转换成分秒 */
 export const timeconversion = (time) => {
-  let theTime = parseInt(time); /** 秒 */
-  let middle = 0; /** 分 */
-  let hour = 0; /** 小时 */
-  if (theTime > 60) {
-    middle = parseInt(theTime / 60);
-    theTime = parseInt(theTime % 60);
-    if (middle > 60) {
-      hour = parseInt(middle / 60);
-      middle = parseInt(middle % 60);
-    }
-  }
-  let result = "" + parseInt(theTime);
-  if (middle > 0) {
-    result = "" + parseInt(middle) + ":" + result;
-  }
-  if (hour > 0) {
-    result = "" + parseInt(hour) + ":" + result;
-  }
-  return result;
+  let minutes = parseInt((time % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = (time % (1000 * 60)) / 1000;
+  seconds = ~~seconds;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+  let data = minutes + ":" + seconds;
+  return data;
 }
 
 /** css滚动组件 */

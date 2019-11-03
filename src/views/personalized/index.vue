@@ -59,38 +59,48 @@
           <p>{{leaderboarddata.description}}</p>
         </div>
       </div>
-      <scroll ref="scroll" :mouseWheel="true" class="personalized-ctn">
-        <ul ref="personalizedul">
-          <li v-for="(item,$index) in leaderboarddata.tracks" :key="$index" ref="personalized">
-            <div class="personalized-index">{{$index + 1}}.</div>
-            <div class="personalized-img">
-              <img v-lazy="item.al.picUrl" @load="initheight" />
+      <div class="personalized-content">
+        <loading :show="loading"></loading>
+        <scroll ref="scroll" :mouseWheel="true" class="personalized-ctn">
+          <ul ref="personalizedul">
+            <div class="personalized-header">
+              <div class="personalized-header-left"></div>
             </div>
-            <div class="personalized-name">{{item.name}}</div>
-            <div class="personalized-songDuration">{{songtimeconversion(item.dt)}}</div>
-            <div class="personalized-songer" v-html="songer(item.ar)"></div>
-            <div class="personalized-operation">
-              <i class="personalized-operation-subscribed" :title="`收藏${item.name}`">
-                <img src="../../images/icon-subscribedBig.png" />
-              </i>
-              <i class="personalized-operation-shareIt" title="分享">
-                <img src="../../images/icon-shareItBig.png" />
-              </i>
-              <i class="personalized-operation-download">
-                <a ref="download" :title="`下载${item.name}`">
-                  <img src="../../images/icon-downloadSmall.png" />
-                </a>
-              </i>
-              <i class="personalized-operation-like">
-                <img src="../../images/icon-small_link.png" />
-              </i>
-              <i class="personalized-operation-mv" v-if="item.mv" :title="`观看${item.name}mv`">
-                <img src="../../images/icon-mvBig.png" />
-              </i>
-            </div>
-          </li>
-        </ul>
-      </scroll>
+            <li v-for="(item,$index) in leaderboarddata.tracks" :key="$index" ref="personalized">
+              <div class="personalized-index">{{$index + 1}}.</div>
+              <div class="personalized-img" @click="playersonger(item)">
+                <img v-lazy="item.al.picUrl" @load="initheight" />
+              </div>
+              <div
+                class="personalized-name"
+                @click="playersonger(item)"
+                v-html="item.name + (item.tns ? '&nbsp;&nbsp;-&nbsp;&nbsp;' + '(' + item.tns + ')' : '')"
+              ></div>
+              <div class="personalized-songDuration">{{songtimeconversion(item.dt)}}</div>
+              <div class="personalized-songer" v-html="songer(item.ar)"></div>
+              <div class="personalized-operation">
+                <i class="personalized-operation-subscribed" :title="`收藏${item.name}`">
+                  <img src="../../images/icon-subscribedBig.png" />
+                </i>
+                <i class="personalized-operation-shareIt" title="分享">
+                  <img src="../../images/icon-shareItBig.png" />
+                </i>
+                <i class="personalized-operation-download">
+                  <a ref="download" :title="`下载${item.name}`">
+                    <img src="../../images/icon-downloadSmall.png" />
+                  </a>
+                </i>
+                <i class="personalized-operation-like">
+                  <img src="../../images/icon-small_link.png" />
+                </i>
+                <i class="personalized-operation-mv" v-if="item.mv" :title="`观看${item.name}mv`">
+                  <img src="../../images/icon-mvBig.png" />
+                </i>
+              </div>
+            </li>
+          </ul>
+        </scroll>
+      </div>
     </div>
   </div>
 </template>
@@ -99,29 +109,32 @@
 import {
   goPageByPath,
   timeconversionymdhms,
-  scrollAnimation
+  timeconversion,
+  scrollAnimation,
+  playerrandom
 } from "utils/utils";
 import { mapMutations, mapGetters } from "vuex";
 import scroll from "../Components/scroll/index";
 import { leaderboard, allleaderboard } from "api/songs";
 import scrollLeaderboard from "../Components/scroll-leaderboard/index";
+import bus from "utils/bus";
 export default {
   data() {
     return {
       /** 用户选择的分类名字 */
       singername: "",
-      /** 歌曲列表 */
-      singerlist: [],
       /** 排行榜数组 */
       leaderboarddata: [],
       /** 用户选择数据 */
       personalizedcondition: 0,
       /** 用户选择数据文字 */
-      textpersonalizedcondition: "云音乐新歌榜"
+      textpersonalizedcondition: "云音乐新歌榜",
+      /** 加载状态 */
+      loading: false
     };
   },
   computed: {
-    ...mapGetters(["playerlist"])
+    ...mapGetters(["playerlist","currentsongId"])
   },
   methods: {
     ...mapMutations({
@@ -134,15 +147,37 @@ export default {
       /** 修改当前播放器播放模式 */
       setplayermode: "SET_PLAYERMODE"
     }),
+    playersonger(item) {
+      console.log(item);
+      if (item.id === this.currentsongId) {
+        bus.$emit("initcurrent", 0);
+      } else {
+        /** 深拷贝当前歌曲列表--开始 */
+        let date = [];
+        date.push(item);
+        /** 深拷贝当前歌曲列表--结束 */
+        this.setplayerlist(date);
+        let data = {};
+        data["flag"] = item.flag;
+        data["name"] = item.name;
+        data["picUrl"] = item.picUrl;
+        data["musicurl"] = "";
+        let songer = [];
+        if (item.ar && item.ar.length && item.ar.length > 0) {
+          item.ar.forEach((items, index) => {
+            songer.push(items);
+          });
+        }
+        data["songer"] = songer;
+        this.setsonginfo(data);
+        if (item.id !== this.currentsongId) {
+          this.setcurrentsongId(item.id);
+        }
+      }
+    },
     /** 处理歌曲时长 */
     songtimeconversion(count) {
-      let minutes = parseInt((count % (1000 * 60 * 60)) / (1000 * 60));
-      let seconds = (count % (1000 * 60)) / 1000;
-      seconds = ~~seconds;
-      minutes = minutes < 10 ? "0" + minutes : minutes;
-      seconds = seconds < 10 ? "0" + seconds : seconds;
-      let data = minutes + ":" + seconds;
-      return data;
+      return timeconversion(count);
     },
     /** 处理歌手 */
     songer(data) {
@@ -180,25 +215,24 @@ export default {
     },
     /** 处理随机播放按钮事件 */
     randomplayer() {
-      return;
       /** 深拷贝当前歌曲列表--开始 */
       let date = [];
-      for (let i = 0; i < this.singerlist.length; i++) {
-        date.push(this.singerlist[i]);
+      for (let i = 0; i < this.leaderboarddata.tracks.length; i++) {
+        date.push(this.leaderboarddata.tracks[i]);
       }
       /** 深拷贝当前歌曲列表--结束 */
       this.setplayermode(1);
       this.setplayerlist(playerrandom(date));
       /** 传入当前播放列表的长度 */
-      this.setcurrentsongId(this.playerlist[0].id);
-      if (this.playerlist.length > 0) {
+      this.setcurrentsongId(this.leaderboarddata.tracks[0].id);
+      if (this.leaderboarddata.tracks.length > 0) {
         let data = {};
-        this.playerlist.forEach((item, index) => {
+        this.leaderboarddata.tracks.forEach((item, index) => {
           if (this.currentsongId === item.id) {
-            data["flag"] = this.playerlist[0].flag;
-            data["name"] = this.playerlist[0].name;
-            data["picUrl"] = this.playerlist[0].picUrl;
-            data["songer"] = this.playerlist[0].ar;
+            data["flag"] = this.leaderboarddata.tracks[0].flag;
+            data["name"] = this.leaderboarddata.tracks[0].name;
+            data["picUrl"] = this.leaderboarddata.tracks[0].picUrl;
+            data["songer"] = this.leaderboarddata.tracks[0].ar;
           }
         });
         data["musicurl"] = "";
@@ -207,38 +241,38 @@ export default {
     },
     /** 处理播放按钮事件 */
     playerall() {
-      return;
       this.setplayermode(0);
       /** 深拷贝当前歌曲列表--开始 */
       let date = [];
-      for (let i = 0; i < this.singerlist.length; i++) {
-        date.push(this.singerlist[i]);
+      for (let i = 0; i < this.leaderboarddata.tracks.length; i++) {
+        date.push(this.leaderboarddata.tracks[i]);
       }
       /** 深拷贝当前歌曲列表--结束 */
       this.setplayerlist(date);
       let data = {};
-      data["flag"] = this.singerlist[0].flag;
-      data["name"] = this.singerlist[0].name;
-      data["picUrl"] = this.singerlist[0].picUrl;
+      data["flag"] = this.leaderboarddata.tracks[0].flag;
+      data["name"] = this.leaderboarddata.tracks[0].name;
+      data["picUrl"] = this.leaderboarddata.tracks[0].picUrl;
       data["musicurl"] = "";
       let songer = [];
       if (
-        this.singerlist[0].ar &&
-        this.singerlist[0].ar.length &&
-        this.singerlist[0].ar.length > 0
+        this.leaderboarddata.tracks[0].ar &&
+        this.leaderboarddata.tracks[0].ar.length &&
+        this.leaderboarddata.tracks[0].ar.length > 0
       ) {
-        this.singerlist[0].ar.forEach((item, index) => {
+        this.leaderboarddata.tracks[0].ar.forEach((item, index) => {
           songer.push(item);
         });
       }
       data["songer"] = songer;
       this.setsonginfo(data);
-      if (this.singerlist[0].id !== this.currentsongId) {
-        this.setcurrentsongId(this.singerlist[0].id);
+      if (this.leaderboarddata.tracks[0].id !== this.currentsongId) {
+        this.setcurrentsongId(this.leaderboarddata.tracks[0].id);
       }
     },
     /** 初始化获取数据 */
     initdata() {
+      this.loading = true;
       leaderboard(this.personalizedcondition).then(res => {
         if (res.data.code === 200) {
           let data = res.data.playlist;
@@ -246,7 +280,9 @@ export default {
           updateTime = timeconversionymdhms(updateTime);
           this.leaderboarddata = data;
           this.leaderboarddata.updateTime = updateTime;
+          this.leaderboarddata = Object.assign({}, this.leaderboarddata);
         }
+        this.loading = false;
       });
     }
   },

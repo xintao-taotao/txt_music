@@ -202,7 +202,7 @@
 
 .personalized-ctn {
   overflow: hidden;
-  height: calc(100% - 164px - 20px);
+  height: 100%;
   margin-top: 20px;
 }
 
@@ -277,6 +277,10 @@
 
 .personalized-img {
   width: 100px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .personalized-img>img {
@@ -307,6 +311,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .personalized-songDuration {
@@ -321,13 +326,18 @@
   white-space: nowrap;
 }
 
-.personalized-operation{
+.personalized-operation {
   flex: auto;
   padding-left: 20px;
   display: flex;
 }
 
-.personalized-operation>i{
+.personalized-operation>i {
   display: inline-block;
   margin: 0px 4px;
+}
+
+.personalized-content{
+  height: calc(100% - 164px - 20px);
+  position: relative;
 }

@@ -21,25 +21,28 @@
     </div>
     <div class="content">
       <scrollAlphabet @songername="songername"></scrollAlphabet>
-      <scroll :scrollX="true" :mouseWheel="true">
-        <ul class="hotlist" ref="hotlist">
-          <li
-            v-for="(item,index) in hotsongerlist"
-            :key="index"
-            ref="songerli"
-            @click="selectsonger(item)"
-            @mousedown="(e)=>{onsinger(e,index)}"
-            @mouseup="(e)=>{upsinger(e,index)}"
-            @mouseleave="(e)=>{upsinger(e,index)}"
-          >
-            <img v-lazy="item.picUrl" @load="inithotlist" />
-            <div class="songer-info">
-              <p>{{item.name}}</p>
-              <span v-for="(its,idx) in item.alias" :key="idx">{{its}}</span>
-            </div>
-          </li>
-        </ul>
-      </scroll>
+      <div class="hotclass">
+        <loading :show="hotloading"></loading>
+        <scroll :scrollX="true" :mouseWheel="true">
+          <ul class="hotlist" ref="hotlist">
+            <li
+              v-for="(item,index) in hotsongerlist"
+              :key="index"
+              ref="songerli"
+              @click="selectsonger(item)"
+              @mousedown="(e)=>{onsinger(e,index)}"
+              @mouseup="(e)=>{upsinger(e,index)}"
+              @mouseleave="(e)=>{upsinger(e,index)}"
+            >
+              <img v-lazy="item.picUrl" @load="inithotlist" />
+              <div class="songer-info">
+                <p>{{item.name}}</p>
+                <span v-for="(its,idx) in item.alias" :key="idx">{{its}}</span>
+              </div>
+            </li>
+          </ul>
+        </scroll>
+      </div>
       <div class="header fuheader">
         <div class="header-left fuheader-left">
           <i>歌手列表</i>
@@ -48,6 +51,7 @@
         <scroll-songertype @dataemit="dataemit"></scroll-songertype>
       </div>
       <div class="songer_div" :class="playerstatus ? 'minheight' : null">
+        <loading :show="classloading"></loading>
         <scroll :mouseWheel="true" ref="songerdiv">
           <ul class="songerlist_ul">
             <li v-for="(item,index) in songerlist" :key="index" @click="selectsonger(item)">
@@ -98,7 +102,11 @@ export default {
       /** 分类歌手数据分页 */
       useractiveindex: 0,
       /** 分类歌手每一页数据量 */
-      useractivepagecount: 30
+      useractivepagecount: 30,
+      /** 热门歌手加载状态 */
+      hotloading: false,
+      /** 分类歌手加载状态 */
+      classloading: false
     };
   },
   computed: {
@@ -137,6 +145,7 @@ export default {
     },
     /** 查询分类歌手数据 */
     selectclassificationsonger() {
+      this.classloading = true;
       songerlist(
         this.useractivefont,
         this.useractivepagecount,
@@ -168,13 +177,15 @@ export default {
                 trans: item.trans
               });
             });
-            scrollAnimation('fusonger-info-p');
+            scrollAnimation("fusonger-info-p");
           }
         }
+        this.classloading = false;
       });
     },
     /** 查询最受欢迎的歌手数据 */
     selectdata() {
+      this.hotloading = true;
       hotsonger(0, 10).then(res => {
         if (res.data.code === 200) {
           let data = res.data.artists;
@@ -210,6 +221,7 @@ export default {
             });
           }
         }
+        this.hotloading = false;
       });
     },
     /** 跳转到歌手详情页 */
