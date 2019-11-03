@@ -43,7 +43,7 @@
             :key="index"
           >{{item}}</p>
         </div>
-        <div class="songer-lyrics-ctn" v-if="songerlyriclist.length === 0">
+        <div class="songer-lyrics-ctn" v-if="songerlyriclist.length === 0 && lyricstatus">
           <p>此歌曲是纯音乐，请尽情享受吧！</p>
         </div>
       </scroll>
@@ -139,7 +139,11 @@ export default {
       /** 当前歌曲是否可以播放(配合记录上一首歌) */
       activestatus: false,
       /** 缓冲条宽度 */
-      playerbuffered: ""
+      playerbuffered: "",
+      /** 音乐是否准备就绪 */
+      musicstatus: false,
+      /** 歌词加载状态 */
+      lyricstatus: false
     };
   },
   components: {
@@ -252,11 +256,16 @@ export default {
             if (this.currentsongId === item.id) {
               /** 防止是最后一首歌曲 */
               if (index + 1 === this.playerlist.length) {
-                data["flag"] = this.playerlist[0].flag;
-                data["name"] = this.playerlist[0].name;
-                data["picUrl"] = this.playerlist[0].picUrl;
-                data["songer"] = this.playerlist[0].ar;
-                indexs = 0;
+                /** 防止播放列表只有一首歌的情况 */
+                if (this.playerlist.length === 1) {
+                  this.$refs.audio.currentTime = 0;
+                } else {
+                  data["flag"] = this.playerlist[0].flag;
+                  data["name"] = this.playerlist[0].name;
+                  data["picUrl"] = this.playerlist[0].picUrl;
+                  data["songer"] = this.playerlist[0].ar;
+                  indexs = 0;
+                }
               } else {
                 data["flag"] = this.playerlist[index + 1].flag;
                 data["name"] = this.playerlist[index + 1].name;
@@ -266,14 +275,16 @@ export default {
               }
             }
           });
-          data["musicurl"] = "";
-          this.setsonginfo(data);
-          this.cachesonginfo(data);
-          /** 如果id存在，则已经点播过一首歌，则push上一首歌的id给变量 */
-          if (this.currentsongId && !this.activestatus) {
-            this.prevsongerlist.push(this.currentsongId);
+          if (this.playerlist.length !== 1) {
+            data["musicurl"] = "";
+            this.setsonginfo(data);
+            this.cachesonginfo(data);
+            /** 如果id存在，则已经点播过一首歌，则push上一首歌的id给变量 */
+            if (this.currentsongId && !this.activestatus) {
+              this.prevsongerlist.push(this.currentsongId);
+            }
+            this.setcurrentsongId(this.playerlist[indexs].id);
           }
-          this.setcurrentsongId(this.playerlist[indexs].id);
           /** 如果是随机播放模式 */
         } else if (this.playermode === 1) {
           let data = {};
@@ -284,6 +295,7 @@ export default {
               if (index + 1 === this.playerlist.length) {
                 this.setcurrentsongId(null);
                 this.setplayerlist([]);
+                this.setplatstate(false);
               } else {
                 indexs = indexs + index + 1;
                 data["flag"] = this.playerlist[index + 1].flag;
@@ -324,11 +336,15 @@ export default {
     },
     /** 处理进度条点击事件 */
     progressClick(e) {
-      const rect = this.$refs.progressBar.getBoundingClientRect();
-      const offsetWidth = e.pageX - rect.left;
-      this._offset(offsetWidth);
-      const currentTime = this.$refs.audio.duration * this._getPercent();
-      this.$refs.audio.currentTime = currentTime;
+      if (this.musicstatus) {
+        const rect = this.$refs.progressBar.getBoundingClientRect();
+        const offsetWidth = e.pageX - rect.left;
+        this._offset(offsetWidth);
+        const currentTime = this.$refs.audio.duration * this._getPercent();
+        this.$refs.audio.currentTime = currentTime;
+      } else {
+        this.$Message.error("歌曲还没准备好哦！客官");
+      }
     },
     _triggerPercent() {
       const currentTime = this.$refs.audio.duration * this._getPercent();
@@ -418,9 +434,13 @@ export default {
     },
     /** 播放 */
     player() {
-      this.setplatstate(true);
-      this.cacheplaystate(true);
-      this.$refs.audio.play();
+      if (this.musicstatus) {
+        this.setplatstate(true);
+        this.cacheplaystate(true);
+        this.$refs.audio.play();
+      } else {
+        this.$Message.error("歌曲还没准备好哦！客官");
+      }
     },
     /** 下载成功提示 */
     downloadsuccess() {
@@ -428,9 +448,13 @@ export default {
     },
     /** 暂停播放歌曲 */
     musicpause() {
-      this.setplatstate(false);
-      this.cacheplaystate(false);
-      this.$refs.audio.pause();
+      if (this.musicstatus) {
+        this.setplatstate(false);
+        this.cacheplaystate(false);
+        this.$refs.audio.pause();
+      } else {
+        this.$Message.error("歌曲还没准备好哦！客官");
+      }
     },
     /** 初始化音量 */
     settingvolume(count) {
@@ -510,15 +534,11 @@ export default {
     },
     /** 缓存当前歌曲id */
     cachesongerid(item) {
-      localStorage.setItem(
-        "songid",
-        item
-          ? item
-          : this.currentsongId
-      );
+      localStorage.setItem("songid", item ? item : this.currentsongId);
     },
     /** 音频文件准备就绪 */
     audioready() {
+      this.musicstatus = true;
       this.musicplayer();
     },
     /** 缓冲条进度 */
@@ -570,35 +590,48 @@ export default {
         this.songerlyric && this.songerlyric.finalLrcMap
           ? this.songerlyric.finalLrcMap
           : [];
+      this.lyricstatus = true;
     },
     /** 手指触摸屏幕时触发 */
     progressTouchStart(e) {
-      this.touch.initiated = true;
-      this.touch.startX = e.touches[0].pageX;
-      this.touch.left = this.$refs.progress.clientWidth;
+      if (this.musicstatus) {
+        this.touch.initiated = true;
+        this.touch.startX = e.touches[0].pageX;
+        this.touch.left = this.$refs.progress.clientWidth;
+      } else {
+        this.$Message.error("歌曲还没准备好哦！客官");
+      }
     },
     /** 当手指从屏幕上离开时触发 */
     progressTouchEnd() {
-      this.touch.initiated = false;
-      this._triggerPercent();
+      if (this.musicstatus) {
+        this.touch.initiated = false;
+        this._triggerPercent();
+      } else {
+        this.$Message.error("歌曲还没准备好哦！客官");
+      }
     },
     /** 手指在进度条上滑动时触发 */
     progressTouchMove(e) {
       if (!this.touch.initiated) {
         return;
       }
-      const deltaX = e.touches[0].pageX - this.touch.startX;
-      const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth;
-      const offsetWidth = Math.min(
-        this.$refs.progressBar.clientWidth - progressBtnWidth,
-        Math.max(0, this.touch.left + deltaX)
-      );
-      this._offset(offsetWidth);
-      this.setsongschedule(
-        format(this.$refs.audio.duration * this._getPercent())
-      );
-      this.$refs.audio.currentTime =
-        this.$refs.audio.duration * this._getPercent();
+      if (this.musicstatus) {
+        const deltaX = e.touches[0].pageX - this.touch.startX;
+        const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth;
+        const offsetWidth = Math.min(
+          this.$refs.progressBar.clientWidth - progressBtnWidth,
+          Math.max(0, this.touch.left + deltaX)
+        );
+        this._offset(offsetWidth);
+        this.setsongschedule(
+          format(this.$refs.audio.duration * this._getPercent())
+        );
+        this.$refs.audio.currentTime =
+          this.$refs.audio.duration * this._getPercent();
+      } else {
+        this.$Message.error("歌曲还没准备好哦！客官");
+      }
     },
     /** 初始化下载当前音乐 */
     download() {
@@ -640,6 +673,16 @@ export default {
       this.songerlyriclist = [];
       /** 清空歌词对象 */
       this.songerlyric = null;
+      /** 初始化歌词加载状态 */
+      this.lyricstatus = false;
+      /** 初始化音乐加载状态 */
+      this.musicstatus = false;
+      /** 初始化歌曲缓冲进度条宽度 */
+      this.playerbuffered = "0%";
+      /** 初始化当前播放时间 */
+      this.setsongschedule("0:00");
+      /** 初始化歌词滚动位置 */
+      this.$refs.scroll.scrollTo(0, 0, 200);
       /** 开始播放当前歌曲 */
       this.initplayer();
       /** 获取歌曲歌词 */

@@ -148,7 +148,6 @@ export default {
       setplayermode: "SET_PLAYERMODE"
     }),
     playersonger(item) {
-      console.log(item);
       if (item.id === this.currentsongId) {
         bus.$emit("initcurrent", 0);
       } else {
@@ -224,15 +223,15 @@ export default {
       this.setplayermode(1);
       this.setplayerlist(playerrandom(date));
       /** 传入当前播放列表的长度 */
-      this.setcurrentsongId(this.leaderboarddata.tracks[0].id);
-      if (this.leaderboarddata.tracks.length > 0) {
+      this.setcurrentsongId(this.playerlist[0].id);
+      if (this.playerlist.length > 0) {
         let data = {};
-        this.leaderboarddata.tracks.forEach((item, index) => {
+        this.playerlist.forEach((item, index) => {
           if (this.currentsongId === item.id) {
-            data["flag"] = this.leaderboarddata.tracks[0].flag;
-            data["name"] = this.leaderboarddata.tracks[0].name;
-            data["picUrl"] = this.leaderboarddata.tracks[0].picUrl;
-            data["songer"] = this.leaderboarddata.tracks[0].ar;
+            data["flag"] = this.playerlist[0].flag;
+            data["name"] = this.playerlist[0].name;
+            data["picUrl"] = this.playerlist[0].picUrl;
+            data["songer"] = this.playerlist[0].ar;
           }
         });
         data["musicurl"] = "";

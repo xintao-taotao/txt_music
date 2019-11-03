@@ -284,7 +284,6 @@ export default {
             this.$Message.success("登录成功！");
             goPageByPath("/");
           } else {
-            console.log(res);
             this.$Message.error();
             return;
           }
