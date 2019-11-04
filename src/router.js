@@ -35,7 +35,7 @@ const routers = [{
     path: '/personalized',
     name: 'personalized',
     meta: {
-      title: 'txt-music 推荐歌单'
+      title: 'txt-music 推荐榜单'
     },
     component: (resolve) => require(['./views/personalized/index.vue'], resolve)
   },{

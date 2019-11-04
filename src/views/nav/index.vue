@@ -17,10 +17,10 @@
         <li
           class="recommend-list"
           :class="navactive === 2 ? 'active active-recommend-list' : null"
-          title="推荐歌单"
+          title="推荐榜单"
         >
           <i></i>
-          <span @click="jumpmenu('/personalized',2)">推荐歌单</span>
+          <span @click="jumpmenu('/personalized',2)">推荐榜单</span>
         </li>
         <li
           class="hot-topic"

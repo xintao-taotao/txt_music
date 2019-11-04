@@ -31,6 +31,7 @@
               class="operation-collection"
               :class="this.leaderboarddata.subscribed ? 'subscribed' : 'noSubscribed'"
               :title="this.leaderboarddata.subscribed ? '取消收藏' : `收藏${this.leaderboarddata.name}`"
+               @click="stopclick"
             >
               <div class="operation-collection-content">
                 <img src="../../images/icon-subscribed.png" v-if="this.leaderboarddata.subscribed" />
@@ -40,7 +41,7 @@
             </div>
             <!-- 收藏按钮--结束 -->
             <!-- 分享按钮--开始 -->
-            <div class="operation-shareIt" title="分享">
+            <div class="operation-shareIt" title="分享"  @click="stopclick">
               <div class="operation-shareIt-content">
                 <img src="../../images/icon-shareIt.png" />
                 {{leaderboarddata.shareCount}}
@@ -48,7 +49,7 @@
             </div>
             <!-- 分享按钮--结束 -->
             <!-- 评论按钮--开始 -->
-            <div class="operation-comment" title="发表评论">
+            <div class="operation-comment" title="发表评论" @click="stopclick">
               <div class="operation-comment-content">
                 <img src="../../images/icon-comment.png" />
                 {{leaderboarddata.commentCount}}
@@ -79,7 +80,7 @@
               <div class="personalized-songDuration">{{songtimeconversion(item.dt)}}</div>
               <div class="personalized-songer" v-html="songer(item.ar)"></div>
               <div class="personalized-operation">
-                <i class="personalized-operation-subscribed" :title="`收藏${item.name}`">
+                <i class="personalized-operation-subscribed" :title="`收藏${item.name}`" @click="songsubscribed(item)">
                   <img src="../../images/icon-subscribedBig.png" />
                 </i>
                 <i class="personalized-operation-shareIt" title="分享">
@@ -101,6 +102,7 @@
           </ul>
         </scroll>
       </div>
+      <TModal></TModal>
     </div>
   </div>
 </template>
@@ -193,6 +195,14 @@ export default {
       } else {
         return data[0].name;
       }
+    },
+    /** 功能暂未实现方法提示 */
+    stopclick(){
+      this.$Message.error('此功能暂未开放！');
+    },
+    /** 收藏歌曲 */
+    songsubscribed(songinfo){
+      console.log(songinfo);
     },
     /** 用户手动触发条件回调 */
     dataemit(data) {

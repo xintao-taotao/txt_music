@@ -1,0 +1,83 @@
+.txt-model {
+  height: 100%;
+  color: red;
+}
+
+button {
+  display: block;
+  width: 300px;
+  height: 44px;
+  margin: 20px auto;
+  border-radius: 4px;
+  background-color: #3884ff;
+  color: red;
+}
+
+.txt-model-mask>.centered {
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+
+.txt-model-mask>.txt-model-content p {
+  line-height: 30px;
+  text-align: center;
+}
+
+.txt-model-mask>.txt-model-content {
+  position: absolute;
+  height: px;
+  left: 0;
+  width: 520px;
+  background-color: red;
+  transition: all 0.3s ease-in;
+  transform: scale(1);
+}
+
+.txt-model-mask {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease-in;
+}
+
+.slide-enter-active {
+  animation-name: slideInUp;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+}
+
+.slide-leave-active {
+  animation-name: slideOutDown;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: scale(0.9);
+    visibility: visible;
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes slideOutDown {
+  0% {
+    transform: scale(1);
+  }
+
+  to {
+    visibility: hidden;
+    transform: scale(0.9);
+  }
+}
+
+.delay-leave-active {
+  animation-delay: 0.3s;
+}
