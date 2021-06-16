@@ -15,7 +15,7 @@
     "iview": "^3.5.0",
     "js-cookie": "^2.2.0",
     "npm": "^6.10.3",
-    "postcss": "^7.0.17",
+    "postcss": "^7.0.36",
     "postcss-pxtorem": "^4.0.1",
     "vue": "^2.6.10",
     "vue-create-api": "^0.2.2",
